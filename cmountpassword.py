@@ -1,6 +1,6 @@
 # encfsgui Get mount password
 # 
-# 
+#
 
 import os
 import sys

@@ -43,7 +43,11 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.selectumountbutton = self.findChild(QtWidgets.QPushButton, 'btn_selectumount')
         self.selectumountbutton.clicked.connect(self.SelectUmountButtonClicked)
 
-        self.settingsfile = "encfsgui.settings"
+        self.selectworkingfolderbutton = self.findChild(QtWidgets.QPushButton, 'btn_selectworkingfolder')
+        self.selectworkingfolderbutton.clicked.connect(self.SelectWorkingFolderClicked)
+
+        self.settingsfile = encfsgui_globals.settingsfile
+
 
     def SelectEncfsButtonClicked(self):
         self.txt_enfcsbinary = self.findChild(QtWidgets.QLineEdit, 'txt_encfsbinary')
@@ -72,6 +76,15 @@ class CSettingsWindow(QtWidgets.QDialog):
         if fileName:
             
             self.txt_umountbinary.setText("%s" % fileName)
+        return
+
+    def SelectWorkingFolderClicked(self):
+        self.txt_workingfolder = self.findChild(QtWidgets.QLineEdit, 'txt_workingfolder')
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        fileName, _ = QtWidgets.QFileDialog.getOpenFolder(self,"Select working folder", self.txt_workingfolder.displayText(),"All Folders (*)", options=options)
+        if fileName:
+            self.txt_workingfolder.setText("%s" % fileName)
         return
 
     def OKButtonClicked(self):

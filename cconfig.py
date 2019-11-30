@@ -1,6 +1,6 @@
 # encfsgui CConfig
 # 
-# 
+#  
 
 import os
 import sys
