@@ -294,6 +294,24 @@ class CMainWindow(QtWidgets.QDialog):
         self.SetInfoLabel()
         return
 
+    def AutoMount(self):
+        # process automounts
+        for volumename in encfsgui_globals.g_Volumes:
+            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+            if str(EncVolumeObj.automount) == "1":
+                thispassword = ""
+                if str(EncVolumeObj.passwordsaved) == "0":
+                    frmpassword = CMountPassword()
+                    frmpassword.setEncPath(EncVolumeObj.enc_path)
+                    frmpassword.setMountPath(EncVolumeObj.mount_path)
+                    frmpassword.show()
+                    frmpassword.exec_()
+                    # did we get a password?
+                    thispassword = frmpassword.getPassword()
+                else:
+                    thispassword = encfsgui_helper.getKeyChainPassword(volumename)
+                self.MountVolume(volumename, thispassword)
+        return
 
     def RefreshSettings(self):
         encfsgui_globals.appconfig.getSettings()
@@ -348,6 +366,11 @@ if __name__ == "__main__":
     encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
     
     mainwindow = CMainWindow()
+
+    mainwindow.RefreshSettings()
+    mainwindow.RefreshVolumes()
+    mainwindow.AutoMount()
+
     mainwindow.show()
     mainwindow.exec_()
     #app.exec_()
