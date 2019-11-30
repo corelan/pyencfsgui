@@ -22,13 +22,12 @@ In order to use pyencfsgui, you need to install the following dependencies:
 
   ```
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  sudo chown -R $(whoami) /usr/local/lib
   brew doctor
   ```
 
 2. Install OSXFuse
 
-  Download the dmg image from http://sourceforge.net/projects/osxfuse/files/ and install
+  Download the latest dmg installer image from https://osxfuse.github.io/ and install
 
 
 3. Install encfs
