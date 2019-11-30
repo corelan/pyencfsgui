@@ -28,7 +28,7 @@ class CConfig():
         return
 
     def getVolumes(self):
-        encfsgui_globals.g_Volumes = { }
+        encfsgui_globals.g_Volumes.clear()
         
         volumeconfig = configparser.ConfigParser()
         volumeconfig.read(encfsgui_globals.volumesfile)
@@ -63,7 +63,19 @@ class CConfig():
                         EncVolume.ismounted = True
                         break
 
-            encfsgui_globals.g_Volumes[volumename] = EncVolume   
+            encfsgui_globals.g_Volumes[volumename] = EncVolume
+
+            #for volumename in encfsgui_globals.g_Volumes:
+            #    encfsgui_helper.print_debug("Volume %s" % volumename)
+            #    EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+            #    encfsgui_helper.print_debug("enc path %s" % EncVolumeObj.enc_path)
+            #    encfsgui_helper.print_debug("mount path %s" % EncVolumeObj.mount_path)
+            #    encfsgui_helper.print_debug("automount %s" % EncVolumeObj.automount)
+            #    encfsgui_helper.print_debug("preventautounmount %s" % EncVolumeObj.preventautounmount)
+            #    encfsgui_helper.print_debug("allowother %s" % EncVolumeObj.allowother)
+            #    encfsgui_helper.print_debug("mountaslocal %s" % EncVolumeObj.mountaslocal)
+            #    encfsgui_helper.print_debug("encfsmountoptions %s" % EncVolumeObj.encfsmountoptions)
+            #    encfsgui_helper.print_debug("passwordsaved %s" % EncVolumeObj.passwordsaved)
                 
         return
     

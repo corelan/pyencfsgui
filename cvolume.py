@@ -228,6 +228,7 @@ class CVolumeWindow(QtWidgets.QDialog):
                 EncVolumeObj.mountaslocal = "1"
             else:
                 EncVolumeObj.mountaslocal = "0"
+
             if (self.chk_saveinkeychain.isChecked()):
                 EncVolumeObj.passwordsaved = "1"
             else:
@@ -274,7 +275,6 @@ class CVolumeWindow(QtWidgets.QDialog):
 
     def setRunMode(self, mode):
         self.runmode = mode
-
         self.lbl_encfsfolder = self.findChild(QtWidgets.QLabel,'lbl_encfsfolder')
 
         if mode == 0:
@@ -301,6 +301,7 @@ class CVolumeWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("mode: %d" % self.runmode)
         return
 
+
     def PopulateFields(self, volumename):
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
@@ -308,15 +309,21 @@ class CVolumeWindow(QtWidgets.QDialog):
             self.txt_encfsfolder.setText(EncVolumeObj.enc_path)
             self.txt_mountfolder.setText(EncVolumeObj.mount_path)
             self.txt_encfsmountoptions.setText(EncVolumeObj.encfsmountoptions)
+            self.chk_mountaslocal.setChecked(False)
+            self.chk_automount.setChecked(False)
+            self.chk_preventautounmount.setChecked(False)
+            self.chk_accesstoother.setChecked(False)
+            self.chk_saveinkeychain.setChecked(False)
+
             if str(EncVolumeObj.mountaslocal) == "1":
                 self.chk_mountaslocal.setChecked(True)
             if str(EncVolumeObj.automount) == "1":
                 self.chk_automount.setChecked(True)
-            if str(EncVolumeObj.preventautounmount == "1"):
+            if str(EncVolumeObj.preventautounmount) == "1":
                 self.chk_preventautounmount.setChecked(True)
-            if str(EncVolumeObj.allowother == "1"):
+            if str(EncVolumeObj.allowother) == "1":
                 self.chk_accesstoother.setChecked(True)
-            if str(EncVolumeObj.passwordsaved == "1"):
+            if str(EncVolumeObj.passwordsaved) == "1":
                 self.chk_saveinkeychain.setChecked(True)
         return
 
