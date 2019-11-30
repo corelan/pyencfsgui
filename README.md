@@ -56,6 +56,5 @@ In order to use pyencfsgui, you need to install the following dependencies:
 
 5. Install PyQt5
   ```
-  pip install --upgrade pip
   python3 -m pip install PyQt5
   ```
