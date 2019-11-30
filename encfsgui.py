@@ -160,13 +160,14 @@ class CMainWindow(QtWidgets.QDialog):
                 askforconfirmation = False
 
         if encfsgui_globals.g_CurrentlySelected != "":
-            if encfsgui_globals.g_CurrentlySelected in encfsgui_globals.g_Volumes:
-                EncVolumeObj = encfsgui_globals.g_Volumes[encfsgui_globals.g_CurrentlySelected]
+            volumename = encfsgui_globals.g_CurrentlySelected
+            if volumename in encfsgui_globals.g_Volumes:
+                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
                 dounmount = True
                 if askforconfirmation:
                     msgBox = QtWidgets.QMessageBox()
                     msgBox.setWindowTitle("Are you sure?")
-                    msgBox.setText("Unmount volume '%s' \n '%s'?\n\n(Make sure all files on this volume are closed first!)" % (encfsgui_globals.g_CurrentlySelected, EncVolumeObj.mount_path))
+                    msgBox.setText("Unmount volume '%s' \n '%s'?\n\n(Make sure all files on this volume are closed first!)" % (volumename, EncVolumeObj.mount_path))
                     msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes)
                     msgBox.addButton(QtWidgets.QMessageBox.No)
                     msgBox.show()
@@ -176,7 +177,11 @@ class CMainWindow(QtWidgets.QDialog):
                 if dounmount:
                     cmd = "%s '%s'" % (encfsgui_globals.g_Settings["umountpath"], EncVolumeObj.mount_path)
                     encfsgui_helper.execOSCmd(cmd)
+                    # did unmount work?
                     self.RefreshVolumes()
+                    EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                    if EncVolumeObj.ismounted:
+                        QtWidgets.QMessageBox.critical(None,"Error unmounting volume","Unable to unmount volume '%s'\nMake sure all files are closed and try again." % volumename)
         return
 
     def BrowseVolumeClicked(self):
@@ -215,11 +220,7 @@ class CMainWindow(QtWidgets.QDialog):
             self.RefreshVolumes()
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             if not EncVolumeObj.ismounted:
-                msgBox = QtWidgets.QMessageBox.critical()
-                msgBox.setWindowTitle("Unable to mount volume!")
-                msgBox.setText("Unable to mount volume '%s'" % volumename)
-                msgBox.show()
-                msgBox.exec_()
+                QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n" % volumename)
         return
 
 
