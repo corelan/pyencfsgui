@@ -58,7 +58,8 @@ def execOSCmd(cmd):
     outputobj = iter(p.stdout.readline, b'')
     outputlines = []
     for l in outputobj:
-        outputlines.append(str(l).replace('\\n','').replace("'",""))
+        thisline = l.decode()
+        outputlines.append(thisline.replace('\\n','').replace("'",""))
     return outputlines
 
 def openFolder(foldername):
@@ -67,7 +68,7 @@ def openFolder(foldername):
 
 def getKeyChainPassword(volumename):
     objname = "EncFSGUI_%s" % volumename
-    cmd = "sh -c 'security find-generic-password -a \"%s\" -s \"%s\" -w login.keychain'" % (objname, objname)
+    cmd = "sh -c \"security find-generic-password -a '%s' -s '%s' -w login.keychain\"" % (objname, objname)
     passarr = execOSCmd(cmd)
     password = str(passarr[0]).replace("\n","").strip()
-    return str(password)
+    return password

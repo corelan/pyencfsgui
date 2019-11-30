@@ -255,7 +255,7 @@ class CVolumeWindow(QtWidgets.QDialog):
                 encfsgui_globals.appconfig.delVolume(self.origvolumename)
                 encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
 
-            if (self.chk_saveinkeychain.isChecked() and self.txt_password != ""):
+            if (self.chk_saveinkeychain.isChecked() and self.txt_password.text() != ""):
                 self.SavePasswordInKeyChain(newvolumename, self.txt_password.text())
             # and close the dialog
             self.close()
@@ -316,6 +316,7 @@ class CVolumeWindow(QtWidgets.QDialog):
 
 
     def SavePasswordInKeyChain(self, volumename, password):
-        cmd = "sh -c \"security add-generic-password -U -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' -w '%s' login.keychain\"" % (volumename, volumename, password)
+        cmd = "sh -c \"security add-generic-password -U -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' -w '%s' login.keychain\"" % (volumename, volumename, str(password))
+        #encfsgui_helper.print_debug(cmd)
         setpwoutput = encfsgui_helper.execOSCmd(cmd)
         return

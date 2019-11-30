@@ -120,6 +120,7 @@ class CMainWindow(QtWidgets.QDialog):
             editvolumewindow.origvolumename = encfsgui_globals.g_CurrentlySelected
             editvolumewindow.PopulateFields(encfsgui_globals.g_CurrentlySelected)
             editvolumewindow.exec_()
+            encfsgui_globals.appconfig.getVolumes()
             self.RefreshVolumes()
         return 
 
@@ -154,7 +155,7 @@ class CMainWindow(QtWidgets.QDialog):
             # did we get a password?
             thispassword = frmpassword.getPassword()
         else:
-            thispassword = encfsgui_helper.getKeyChainPassword(volumename)
+            thispassword = str(encfsgui_helper.getKeyChainPassword(volumename))
         return thispassword
 
     def UnmountVolumeClicked(self):
@@ -218,7 +219,7 @@ class CMainWindow(QtWidgets.QDialog):
                 encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
 
             # do the actual mount
-            mountcmd = "sh -c \"echo '%s' | %s -v -S %s -o volname='%s' '%s' '%s' %s\"" % (password, encfsbin, extra_osxfuse_opts, volumename, encvol, mountvol, encfsmountoptions)
+            mountcmd = "sh -c \"echo '%s' | %s -v -S %s -o volname='%s' '%s' '%s' %s\"" % (str(password), encfsbin, extra_osxfuse_opts, volumename, encvol, mountvol, encfsmountoptions)
             #encfsgui_helper.print_debug("MOUNT: %s" % mountcmd)
             encfsgui_helper.execOSCmd(mountcmd)
             self.RefreshVolumes()
