@@ -7,6 +7,8 @@ global debugmode
 global settingsfile
 global volumesfile
 
+volumesfile = "encfsgui.volumes"
+
 class CEncryptedVolume:
 
     def __init__(self):

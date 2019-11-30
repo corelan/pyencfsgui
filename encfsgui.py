@@ -127,6 +127,8 @@ class CMainWindow(QtWidgets.QDialog):
         settingswindow.exec_()
         # when dialog closes, refresh settings (in case user made a change)
         self.RefreshSettings()
+        self.RefreshVolumes()
+        self.SetInfoLabel()
         return
 
     def MountVolumeClicked(self):
@@ -299,7 +301,7 @@ class CMainWindow(QtWidgets.QDialog):
     def SetInfoLabel(self):
         self.infolabel = self.findChild(QtWidgets.QLabel, 'lbl_InfoLabel')
         encfsinfo = "encfs v%s" % (getEncFSVersion(encfsgui_globals.g_Settings))
-        self.infolabel.setText("%s // Nr of volumes: %d" % (encfsinfo, len(encfsgui_globals.g_Volumes)))
+        self.infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, len(encfsgui_globals.g_Volumes), encfsgui_globals.volumesfile ))
         return
 
     def EnableDisableButtons(self):
@@ -336,10 +338,11 @@ class CMainWindow(QtWidgets.QDialog):
 if __name__ == "__main__":
 
     encfsgui_globals.settingsfile = 'encfsgui.settings'
-    encfsgui_globals.volumesfile = 'encfsgui.volumes'
 
     encfsgui_globals.debugmode = True
     encfsgui_globals.appconfig = CConfig()
+
+    encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
     
     mainwindow = CMainWindow()
     mainwindow.show()

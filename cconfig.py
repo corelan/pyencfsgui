@@ -23,7 +23,6 @@ from encfsgui_helper import *
 class CConfig():
     def __init__(self):
         self.settingsfile = encfsgui_globals.settingsfile
-        self.volumesfile = encfsgui_globals.volumesfile 
         self.getSettings()
         self.getVolumes()
         return
@@ -32,7 +31,7 @@ class CConfig():
         encfsgui_globals.g_Volumes = { }
         
         volumeconfig = configparser.ConfigParser()
-        volumeconfig.read(self.volumesfile)
+        volumeconfig.read(encfsgui_globals.volumesfile)
 
         # prepare to get mount states
         mountcmd = encfsgui_globals.g_Settings["mountpath"]
@@ -84,7 +83,10 @@ class CConfig():
             #encfsgui_helper.print_debug("%s = %s" % (settingkey, encfsgui_globals.g_Settings[settingkey]))
         # in case the current settings file is incomplete, pick up additional settings
         self.populateDefaultSettings()
-        self.saveSettings()   
+        self.saveSettings()
+
+        encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
+
         return
 
     def populateDefaultSettings(self):
@@ -101,6 +103,8 @@ class CConfig():
             encfsgui_globals.g_Settings["noconfirmationunmount"] = "false"
         if not "noconfirmationexit" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["noconfirmationexit"] = "false"
+        if not "workingfolder" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["workingfolder"] = "."
         return
 
     def addVolume(self):
@@ -120,4 +124,7 @@ class CConfig():
         # save file to disk
         with open(self.settingsfile, 'w') as configfile:
             config.write(configfile)
+
+        encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
+
         return

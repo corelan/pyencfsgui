@@ -230,12 +230,12 @@
     <rect>
      <x>20</x>
      <y>190</y>
-     <width>451</width>
+     <width>501</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Working folder for 'volume' configuration file (empty = current folder)</string>
+    <string>Working folder for 'volume' configuration file (empty or . = current folder)</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="txt_workingfolder">

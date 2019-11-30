@@ -82,9 +82,9 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.txt_workingfolder = self.findChild(QtWidgets.QLineEdit, 'txt_workingfolder')
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
-        fileName, _ = QtWidgets.QFileDialog.getOpenFolder(self,"Select working folder", self.txt_workingfolder.displayText(),"All Folders (*)", options=options)
-        if fileName:
-            self.txt_workingfolder.setText("%s" % fileName)
+        folderName = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory"))
+        if folderName:
+            self.txt_workingfolder.setText("%s" % folderName)
         return
 
     def OKButtonClicked(self):
@@ -104,7 +104,8 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.txt_mountbinary.setText("%s" % encfsgui_globals.g_Settings["mountpath"])
         self.txt_umountbinary = self.findChild(QtWidgets.QLineEdit, 'txt_umountbinary')
         self.txt_umountbinary.setText("%s" % encfsgui_globals.g_Settings["umountpath"])
-
+        self.txt_workingfolder = self.findChild(QtWidgets.QLineEdit, 'txt_workingfolder')
+        self.txt_workingfolder.setText("%s" % encfsgui_globals.g_Settings["workingfolder"])
         self.chk_autounmount = self.findChild(QtWidgets.QCheckBox, 'chk_autounmount')
         self.chk_noconfirmationunmount = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationunmount')
         self.chk_noconfirmationexit = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationexit')
@@ -123,9 +124,12 @@ class CSettingsWindow(QtWidgets.QDialog):
 
     def saveSettings(self):
         # update global settings
-        encfsgui_globals.g_Settings["encfspath"] = self.txt_enfcsbinary.displayText().strip()
-        encfsgui_globals.g_Settings["mountpath"] = self.txt_mountbinary.displayText().strip()
-        encfsgui_globals.g_Settings["umountpath"] = self.txt_umountbinary.displayText().strip()
+        encfsgui_globals.g_Settings["encfspath"] = str(self.txt_enfcsbinary.displayText().strip())
+        encfsgui_globals.g_Settings["mountpath"] = str(self.txt_mountbinary.displayText().strip())
+        encfsgui_globals.g_Settings["umountpath"] = str(self.txt_umountbinary.displayText().strip())
+        if (self.txt_workingfolder.displayText().strip().replace(" ","") == ""):
+            self.txt_workingfolder.setText(".")
+        encfsgui_globals.g_Settings["workingfolder"] = str(self.txt_workingfolder.displayText().strip())
         encfsgui_globals.g_Settings["autounmount"] = str(self.chk_autounmount.isChecked()).lower()
         encfsgui_globals.g_Settings["noconfirmationunmount"] = str(self.chk_noconfirmationunmount.isChecked()).lower()
         encfsgui_globals.g_Settings["noconfirmationexit"] = str(self.chk_noconfirmationexit.isChecked()).lower()
