@@ -27,6 +27,16 @@ class CVolumeWindow(QtWidgets.QDialog):
         # 2 = edit
         self.runmode = 0    # create
 
+        self.encfsfolderbutton = self.findChild(QtWidgets.QPushButton, 'btn_selectencfsfolder')
+        self.encfsfolderbutton.clicked.connect(self.SelectEncfsFolderClicked)
+
+        self.mountfolderbutton = self.findChild(QtWidgets.QPushButton, 'btn_selectmountfolder')
+        self.mountfolderbutton.clicked.connect(self.SelectMountFolderClicked)   
+
+        self.txt_encfsfolder = self.findChild(QtWidgets.QLineEdit, 'txt_encfsfolder')
+        self.txt_mountfolder = self.findChild(QtWidgets.QLineEdit, 'txt_mountfolder')    
+        self.txt_volumename = self.findChild(QtWidgets.QLineEdit, 'txt_volumename')    
+
         self.savebutton = self.findChild(QtWidgets.QPushButton, 'btn_save')
         self.savebutton.clicked.connect(self.SaveButtonClicked)
 
@@ -78,6 +88,18 @@ class CVolumeWindow(QtWidgets.QDialog):
 
         self.SelectProfileBalanced()
     
+    def SelectEncfsFolderClicked(self):
+        folderName = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory", self.txt_encfsfolder.displayText(), QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks))
+        if folderName:
+            self.txt_encfsfolder.setText("%s" % folderName)
+        return
+
+    def SelectMountFolderClicked(self):
+        folderName = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory", self.txt_mountfolder.displayText(), QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks))
+        if folderName:
+            self.txt_mountfolder.setText("%s" % folderName)
+        return
+
 
     def SelectProfileCustom(self):
         self.ciphercombo.setEnabled(True)
@@ -151,7 +173,20 @@ class CVolumeWindow(QtWidgets.QDialog):
         return
 
     def SaveButtonClicked(self):
-        self.close()
+        # sanity check
+        # 1. is volumename unique (only relevant if we're not editing an existing volume)
+        newvolumename = str(self.txt_volumename.displayText()).strip()
+        errorfound = False
+
+        if (self.runmode == 0) or (self.runmode == 1):
+            if (newvolumename in encfsgui_globals.g_Volumes):
+                errorfound = True
+                QtWidgets.QMessageBox.warning(None,"Error checking volume name","Volume name '%s' already exists.\n Please choose a unique volume name." % newvolumename )
+        if not errorfound:
+            # save everything
+
+            # and close the dialog
+            self.close()
         return
 
 
@@ -175,13 +210,23 @@ class CVolumeWindow(QtWidgets.QDialog):
             self.lbl_encfsfolder.setText("Location of existing encfs folder:")
             self.savebutton.setText("Add")
             self.grp_encfsoptions.setEnabled(False)
+
         if mode == 2:
             self.setWindowTitle("Edit an encfs volume")
             self.lbl_encfsfolder.setText("Location of existing encfs folder:")
             self.savebutton.setText("Save")
             self.grp_encfsoptions.setEnabled(False)
+
         return
 
     def getRunMode(self):
         encfsgui_helper.print_debug("mode: %d" % self.runmode)
+        return
+
+    def PopulateFields(self, volumename):
+        if volumename in encfsgui_globals.g_Volumes:
+            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+            self.txt_volumename.setText(volumename)
+            self.txt_encfsfolder.setText(EncVolumeObj.enc_path)
+            self.txt_mountfolder.setText(EncVolumeObj.mount_path)
         return

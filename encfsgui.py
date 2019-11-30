@@ -113,11 +113,13 @@ class CMainWindow(QtWidgets.QDialog):
         return       
 
     def EditVolumeButtonClicked(self):
-        editvolumewindow = CVolumeWindow()
-        editvolumewindow.show()
-        editvolumewindow.setRunMode(2)    # edit
-        editvolumewindow.exec_()
-        self.RefreshVolumes()
+        if encfsgui_globals.g_CurrentlySelected != "":
+            editvolumewindow = CVolumeWindow()
+            editvolumewindow.show()
+            editvolumewindow.setRunMode(2)    # edit
+            editvolumewindow.PopulateFields(encfsgui_globals.g_CurrentlySelected)
+            editvolumewindow.exec_()
+            self.RefreshVolumes()
         return 
 
     def SetttingsButtonClicked(self):
@@ -213,7 +215,7 @@ class CMainWindow(QtWidgets.QDialog):
             self.RefreshVolumes()
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             if not EncVolumeObj.ismounted:
-                msgBox = QtWidgets.QMessageBox()
+                msgBox = QtWidgets.QMessageBox.critical()
                 msgBox.setWindowTitle("Unable to mount volume!")
                 msgBox.setText("Unable to mount volume '%s'" % volumename)
                 msgBox.show()
@@ -230,7 +232,7 @@ class CMainWindow(QtWidgets.QDialog):
             if selectedindex == 1:
                 encfsgui_globals.g_CurrentlySelected = currentQTableWidgetItem.text()
             selectedindex += 1
-        encfsgui_helper.print_debug("Currently selected item: %s" % encfsgui_globals.g_CurrentlySelected)
+        #encfsgui_helper.print_debug("Currently selected item: %s" % encfsgui_globals.g_CurrentlySelected)
         # enable/disable buttons accordingly
         self.EnableDisableButtons()
         return
