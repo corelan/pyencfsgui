@@ -205,7 +205,7 @@ class CVolumeWindow(QtWidgets.QDialog):
                 errorfound = True
                 QtWidgets.QMessageBox.warning(None,"Password error","Both passwords do not match" )
 
-            if not self.chk_saveinkeychain.isChecked and not self.runmode == 2:
+            if not self.chk_saveinkeychain.isChecked() and not self.runmode == 2:
                 # in edit mode, we can allow empty passwords, providing that password has been saved in keychain already
                 if (self.txt_password.text() == "" or self.txt_password2.text() == ""):
                     errorfound = True

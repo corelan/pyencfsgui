@@ -75,7 +75,8 @@ class CMainWindow(QtWidgets.QDialog):
         self.browsevolumebutton.clicked.connect(self.BrowseVolumeClicked)
         
         self.removevolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_removeVolume')
-        
+        self.removevolumebutton.clicked.connect(self.RemoveVolumeClicked)
+
         self.infovolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_infoVolume')
         
         self.mountvolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_mountVolume')
@@ -141,6 +142,24 @@ class CMainWindow(QtWidgets.QDialog):
             encfsgui_globals.appconfig.getVolumes()
             self.RefreshVolumes()
         return 
+
+    def RemoveVolumeClicked(self):
+        volumename = encfsgui_globals.g_CurrentlySelected
+        if volumename != "":
+            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setIcon(QMessageBox.Question)
+            msgBox.setWindowTitle("Are you sure?")
+            msgBox.setText("Are you sure you would like to remove volume '%s' from this app?\n (mounted at '%s')?\n\nNote: this will not unmount the volume, and will not remove the actual encrypted folder.\nI will only remove the volume from the application." % (volumename, EncVolumeObj.mount_path))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
+            msgBox.addButton(QtWidgets.QMessageBox.Yes)
+            msgBox.show()
+            if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
+                encfsgui_globals.appconfig.delVolume(volumename)
+                encfsgui_globals.appconfig.getVolumes()
+                self.RefreshVolumes()
+                self.SetInfoLabel()
+        return
 
     def SetttingsButtonClicked(self):
         settingswindow = CSettingsWindow()
