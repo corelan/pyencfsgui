@@ -247,8 +247,14 @@ class CVolumeWindow(QtWidgets.QDialog):
                 EncVolumeObj.allowother = "1"
             else:
                 EncVolumeObj.allowother = "0"
-            
 
+            # in create mode, first create the actual encrypted folder
+            # and then add it to the config 
+
+            # add mode
+            if (self.runmode == 1):
+                encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
+            
             # in edit mode, remove previous volume from volume list
             # and add new one
             if (self.runmode == 2):

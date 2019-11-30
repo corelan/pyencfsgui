@@ -92,6 +92,7 @@ class CMainWindow(QtWidgets.QDialog):
 
     #methods linked to buttons
     def QuitButtonClicked(self):
+        self.AutoUnMount()
         sys.exit(0)
 
 
@@ -159,36 +160,41 @@ class CMainWindow(QtWidgets.QDialog):
         return thispassword
 
     def UnmountVolumeClicked(self):
+        if encfsgui_globals.g_CurrentlySelected != "":
+            volumename = encfsgui_globals.g_CurrentlySelected
+            self.UnmountVolume(volumename) 
+        return
+
+
+    def UnmountVolume(self, volumename):
         # do we need to ask for confirmation?
         askforconfirmation = True
         if "noconfirmationunmount" in encfsgui_globals.g_Settings:
             if encfsgui_globals.g_Settings["noconfirmationunmount"].lower() == "true":
                 askforconfirmation = False
+        if volumename in encfsgui_globals.g_Volumes:
+            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+            dounmount = True
+            if askforconfirmation:
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle("Are you sure?")
+                msgBox.setText("Unmount volume '%s' \n '%s'?\n\n(Make sure all files on this volume are closed first!)" % (volumename, EncVolumeObj.mount_path))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes)
+                msgBox.addButton(QtWidgets.QMessageBox.No)
+                msgBox.show()
+                if (msgBox.exec_() == QtWidgets.QMessageBox.No):
+                    dounmount = False
 
-        if encfsgui_globals.g_CurrentlySelected != "":
-            volumename = encfsgui_globals.g_CurrentlySelected
-            if volumename in encfsgui_globals.g_Volumes:
+            if dounmount:
+                cmd = "%s '%s'" % (encfsgui_globals.g_Settings["umountpath"], EncVolumeObj.mount_path)
+                encfsgui_helper.execOSCmd(cmd)
+                # did unmount work?
+                self.RefreshVolumes()
                 EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-                dounmount = True
-                if askforconfirmation:
-                    msgBox = QtWidgets.QMessageBox()
-                    msgBox.setWindowTitle("Are you sure?")
-                    msgBox.setText("Unmount volume '%s' \n '%s'?\n\n(Make sure all files on this volume are closed first!)" % (volumename, EncVolumeObj.mount_path))
-                    msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes)
-                    msgBox.addButton(QtWidgets.QMessageBox.No)
-                    msgBox.show()
-                    if (msgBox.exec_() == QtWidgets.QMessageBox.No):
-                        dounmount = False
-
-                if dounmount:
-                    cmd = "%s '%s'" % (encfsgui_globals.g_Settings["umountpath"], EncVolumeObj.mount_path)
-                    encfsgui_helper.execOSCmd(cmd)
-                    # did unmount work?
-                    self.RefreshVolumes()
-                    EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-                    if EncVolumeObj.ismounted:
-                        QtWidgets.QMessageBox.critical(None,"Error unmounting volume","Unable to unmount volume '%s'\nMake sure all files are closed and try again." % volumename)
+                if EncVolumeObj.ismounted:
+                    QtWidgets.QMessageBox.critical(None,"Error unmounting volume","Unable to unmount volume '%s'\nMake sure all files are closed and try again." % volumename)
         return
+
 
     def BrowseVolumeClicked(self):
         if encfsgui_globals.g_CurrentlySelected != "":
@@ -219,7 +225,7 @@ class CMainWindow(QtWidgets.QDialog):
                 encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
 
             # do the actual mount
-            mountcmd = "sh -c \"echo '%s' | %s -v -S %s -o volname='%s' '%s' '%s' %s\"" % (str(password), encfsbin, extra_osxfuse_opts, volumename, encvol, mountvol, encfsmountoptions)
+            mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
             #encfsgui_helper.print_debug("MOUNT: %s" % mountcmd)
             encfsgui_helper.execOSCmd(mountcmd)
             self.RefreshVolumes()
@@ -307,6 +313,15 @@ class CMainWindow(QtWidgets.QDialog):
                 if not EncVolumeObj.ismounted:
                     thispassword = self.getPasswordForVolume(volumename)
                     self.MountVolume(volumename, thispassword)
+        return
+
+    def AutoUnMount(self):
+        if str(encfsgui_globals.g_Settings["autounmount"]) == "true":
+            # unmount the volumes that don't have preventautounmount set
+            for volumename in encfsgui_globals.g_Volumes:
+                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                if str(EncVolumeObj.preventautounmount) == "0":
+                    self.UnmountVolume(volumename)
         return
 
     def RefreshSettings(self):

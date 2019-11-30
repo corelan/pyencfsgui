@@ -43,7 +43,6 @@ def getEncFSVersion(g_Settings):
     oscmd = g_Settings["encfspath"]
     cmdargs = '--version'
     cmdoutput = execOSCmd("%s %s" % (oscmd,cmdargs ))
-    #print_debug(cmdoutput)
     outputline = cmdoutput[0]
     outputparts = outputline.split(" ")
     encfsversion = outputparts[-1].replace('\n','')
