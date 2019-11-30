@@ -22,6 +22,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
 
   ```
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  sudo chown -R $(whoami) /usr/local/lib/pkgconfig
   brew doctor
   ```
 
