@@ -41,7 +41,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
 
   ```
   brew doctor
-  brew install homebrew/fuse/encfs
+  brew install encfs
   ```
 
   Check if encfs works:
