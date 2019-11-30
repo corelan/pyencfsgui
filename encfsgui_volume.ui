@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmVolume</class>
+ <widget class="QDialog" name="frmVolume">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>620</width>
+    <height>724</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>620</width>
+    <height>724</height>
+   </size>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>620</width>
+    <height>724</height>
+   </size>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Create a new encfs encrypted volume</string>
+  </property>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>601</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Volume settings:</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>191</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Unique volume name:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txt_volumename">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>581</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_encfsfolder">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>271</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Location of new (empty) encfs folder:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txt_encfsfolder">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>481</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_selectencfsfolder">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>90</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Browse</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>130</y>
+      <width>191</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Destination (mount) folder:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txt_mountfolder">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>150</y>
+      <width>481</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_selectmountfolder">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>140</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Browse</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="grp_encfsoptions">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>601</width>
+     <height>221</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>encfs options:</string>
+   </property>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>571</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>encfs profile</string>
+    </property>
+    <widget class="QRadioButton" name="radio_balanced">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>100</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Balanced</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
+    </widget>
+    <widget class="QRadioButton" name="radio_performance">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>30</y>
+       <width>100</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Performance</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
+    </widget>
+    <widget class="QRadioButton" name="radio_secure">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>30</y>
+       <width>100</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Secure</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
+    </widget>
+    <widget class="QRadioButton" name="radio_custom">
+     <property name="geometry">
+      <rect>
+       <x>440</x>
+       <y>30</y>
+       <width>100</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Custom</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">buttonGroup</string>
+     </attribute>
+    </widget>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>90</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cipher algorithm:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cmb_ciphers">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>110</y>
+      <width>181</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>90</y>
+      <width>60</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Keysize:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>90</y>
+      <width>60</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Blocksize:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cmb_keysize">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>110</y>
+      <width>131</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cmb_blocksize">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>110</y>
+      <width>104</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>140</y>
+      <width>141</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Filename encoding:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="cmb_filenameencoding">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>160</y>
+      <width>181</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_perblockhmac">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>190</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Per-block HMAC</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_perfileuniqueiv">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>190</y>
+      <width>141</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Per-file unique IV</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_chainediv">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>190</y>
+      <width>111</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Chained IV</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_externaliv">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>190</y>
+      <width>87</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>External IV</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>410</y>
+     <width>601</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Password options:</string>
+   </property>
+   <widget class="QLineEdit" name="txt_password">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>30</y>
+      <width>241</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::Password</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Password:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>121</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Repeat password:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txt_password2">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>60</y>
+      <width>241</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="echoMode">
+     <enum>QLineEdit::Password</enum>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_saveinkeychain">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>90</y>
+      <width>211</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save password in keychain</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_5">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>530</y>
+     <width>601</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>mount options:</string>
+   </property>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>141</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>encfs mount options:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>30</y>
+      <width>331</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_automount">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>481</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Automatically mount this volume when application starts</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_preventautounmount">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>431</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Prevent auto-unmounting this volume on application exit</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_accesstoother">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>571</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Allow access to 'other' user (you must be root/admin) - needed for Spotlight to work</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_mountaslocalvolume">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>321</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mount as a local volume</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="btn_save">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>690</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Create</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_cancel">
+   <property name="geometry">
+    <rect>
+     <x>500</x>
+     <y>690</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
+</ui>

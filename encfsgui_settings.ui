@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmSettings</class>
+ <widget class="QDialog" name="frmSettings">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>588</width>
+    <height>360</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>588</width>
+    <height>360</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>588</width>
+    <height>360</height>
+   </size>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>588</width>
+    <height>360</height>
+   </size>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>encfsgui Settings</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <widget class="QPushButton" name="btn_OK">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>310</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&amp;OK</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_cancel">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>310</y>
+     <width>113</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>171</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Full path to 'encfs' binary:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>80</y>
+     <width>381</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Full path to 'mount' binary:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>140</y>
+     <width>181</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Full path to 'umount' binary:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="txt_encfsbinary">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>40</y>
+     <width>451</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="txt_mountbinary">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>451</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="txt_umountbinary">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>160</y>
+     <width>451</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="chk_autounmount">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>200</y>
+     <width>441</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Auto unmount volumes when closing app</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="chk_noconfirmationunmount">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>230</y>
+     <width>451</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Do not prompt for confirmation when unmounting volume</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="chk_noconfirmationexit">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>260</y>
+     <width>391</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Do not prompt for confirmation on exit</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_selectencfs">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>30</y>
+     <width>113</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Select</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_selectmount">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>90</y>
+     <width>113</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Select</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_selectumount">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>150</y>
+     <width>113</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Select</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
