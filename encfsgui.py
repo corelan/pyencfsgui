@@ -137,20 +137,24 @@ class CMainWindow(QtWidgets.QDialog):
         # do we need to ask for password?
         if encfsgui_globals.g_CurrentlySelected != "":
             if encfsgui_globals.g_CurrentlySelected in encfsgui_globals.g_Volumes:
-                EncVolumeObj = encfsgui_globals.g_Volumes[encfsgui_globals.g_CurrentlySelected]
-                thispassword = ""
-                if str(EncVolumeObj.passwordsaved) == "0":
-                    frmpassword = CMountPassword()
-                    frmpassword.setEncPath(EncVolumeObj.enc_path)
-                    frmpassword.setMountPath(EncVolumeObj.mount_path)
-                    frmpassword.show()
-                    frmpassword.exec_()
-                    # did we get a password?
-                    thispassword = frmpassword.getPassword()
-                else:
-                    thispassword = encfsgui_helper.getKeyChainPassword(encfsgui_globals.g_CurrentlySelected)
+                thispassword = self.getPasswordForVolume(encfsgui_globals.g_CurrentlySelected)
                 self.MountVolume(encfsgui_globals.g_CurrentlySelected, thispassword)
         return
+
+    def getPasswordForVolume(self, volumename):
+        thispassword = ""
+        EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+        if str(EncVolumeObj.passwordsaved) == "0":
+            frmpassword = CMountPassword()
+            frmpassword.setEncPath(EncVolumeObj.enc_path)
+            frmpassword.setMountPath(EncVolumeObj.mount_path)
+            frmpassword.show()
+            frmpassword.exec_()
+            # did we get a password?
+            thispassword = frmpassword.getPassword()
+        else:
+            thispassword = encfsgui_helper.getKeyChainPassword(volumename)
+        return thispassword
 
     def UnmountVolumeClicked(self):
         # do we need to ask for confirmation?
@@ -194,14 +198,13 @@ class CMainWindow(QtWidgets.QDialog):
     def MountVolume(self, volumename, password):
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+            extra_osxfuse_opts = ""
             if (password != ""):
                 mountcmd = "%s '%s' '%s' %s" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path, EncVolumeObj.mount_path, EncVolumeObj.encfsmountoptions)
-                extra_osxfuse_opts = ""
                 if (EncVolumeObj.allowother):
                     extra_osxfuse_opts += "-o allow_other "
                 if (EncVolumeObj.mountaslocal):
                     extra_osxfuse_opts += "-o local "
-
             # first, create mount point if necessary
             createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
             encfsgui_helper.execOSCmd(createfoldercmd)
@@ -299,18 +302,9 @@ class CMainWindow(QtWidgets.QDialog):
         for volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             if str(EncVolumeObj.automount) == "1":
-                thispassword = ""
-                if str(EncVolumeObj.passwordsaved) == "0":
-                    frmpassword = CMountPassword()
-                    frmpassword.setEncPath(EncVolumeObj.enc_path)
-                    frmpassword.setMountPath(EncVolumeObj.mount_path)
-                    frmpassword.show()
-                    frmpassword.exec_()
-                    # did we get a password?
-                    thispassword = frmpassword.getPassword()
-                else:
-                    thispassword = encfsgui_helper.getKeyChainPassword(volumename)
-                self.MountVolume(volumename, thispassword)
+                if not EncVolumeObj.ismounted:
+                    thispassword = self.getPasswordForVolume(volumename)
+                    self.MountVolume(volumename, thispassword)
         return
 
     def RefreshSettings(self):

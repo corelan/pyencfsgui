@@ -16,21 +16,21 @@ def getNow():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def readfile(filename):
-    print_debug("Reading %s" % filename)
+    #print_debug("Reading %s" % filename)
     contents = []
     f = open(filename,"r")
     contents = f.readlines()
     f.close()
-    print_debug("Read %d lines" % len(contents))
+    #print_debug("Read %d lines" % len(contents))
     return contents
 
 def writefile(filename,contents):
-    print_debug("Creating %s" % filename)
+    #print_debug("Creating %s" % filename)
     f = open(filename,'w')
     for l in contents:
         f.write("%s\n" % l)
     f.close()
-    print_debug("File created, wrote %d lines" % len(contents))
+    #print_debug("File created, wrote %d lines" % len(contents))
     return
 
 def print_debug(line):
@@ -43,7 +43,7 @@ def getEncFSVersion(g_Settings):
     oscmd = g_Settings["encfspath"]
     cmdargs = '--version'
     cmdoutput = execOSCmd("%s %s" % (oscmd,cmdargs ))
-    print_debug(cmdoutput)
+    #print_debug(cmdoutput)
     outputline = cmdoutput[0]
     outputparts = outputline.split(" ")
     encfsversion = outputparts[-1].replace('\n','')
