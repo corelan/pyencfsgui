@@ -15,8 +15,8 @@ In order to use pyencfsgui, you need to install the following dependencies:
 - encfs
 - OSXFuse
 
-### Installing dependencies on OSX
 
+### Installing dependencies on OSX
 
 1. Install Homebrew
 
@@ -49,8 +49,13 @@ In order to use pyencfsgui, you need to install the following dependencies:
   encfs    
   ```
 
-
 4. Install python3
   ```
   brew install python3
+  ```
+
+5. Install PyQt5
+  ```
+  pip install --upgrade pip
+  python3 -m pip install PyQt5
   ```
