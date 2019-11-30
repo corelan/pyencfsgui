@@ -27,6 +27,8 @@ class CVolumeWindow(QtWidgets.QDialog):
         # 2 = edit
         self.runmode = 0    # create
 
+        self.origvolumename = ""
+
         self.encfsfolderbutton = self.findChild(QtWidgets.QPushButton, 'btn_selectencfsfolder')
         self.encfsfolderbutton.clicked.connect(self.SelectEncfsFolderClicked)
 
@@ -35,7 +37,16 @@ class CVolumeWindow(QtWidgets.QDialog):
 
         self.txt_encfsfolder = self.findChild(QtWidgets.QLineEdit, 'txt_encfsfolder')
         self.txt_mountfolder = self.findChild(QtWidgets.QLineEdit, 'txt_mountfolder')    
-        self.txt_volumename = self.findChild(QtWidgets.QLineEdit, 'txt_volumename')    
+        self.txt_volumename = self.findChild(QtWidgets.QLineEdit, 'txt_volumename')   
+        self.txt_password = self.findChild(QtWidgets.QLineEdit, 'txt_password')
+        self.txt_password2 = self.findChild(QtWidgets.QLineEdit, 'txt_password2')
+        self.txt_encfsmountoptions = self.findChild(QtWidgets.QLineEdit, 'txt_encfsmountoptions')
+
+        self.chk_saveinkeychain = self.findChild(QtWidgets.QCheckBox, 'chk_saveinkeychain')
+        self.chk_mountaslocal = self.findChild(QtWidgets.QCheckBox, 'chk_mountaslocal')
+        self.chk_automount = self.findChild(QtWidgets.QCheckBox, 'chk_automount')
+        self.chk_preventautounmount = self.findChild(QtWidgets.QCheckBox, 'chk_preventautounmount')
+        self.chk_accesstoother = self.findChild(QtWidgets.QCheckBox, 'chk_accesstoother')
 
         self.savebutton = self.findChild(QtWidgets.QPushButton, 'btn_save')
         self.savebutton.clicked.connect(self.SaveButtonClicked)
@@ -182,9 +193,70 @@ class CVolumeWindow(QtWidgets.QDialog):
             if (newvolumename in encfsgui_globals.g_Volumes):
                 errorfound = True
                 QtWidgets.QMessageBox.warning(None,"Error checking volume name","Volume name '%s' already exists.\n Please choose a unique volume name." % newvolumename )
+        
+        if (self.runmode == 2):
+            if (newvolumename != self.origvolumename):
+                if (newvolumename in encfsgui_globals.g_Volumes):
+                    errorfound = True
+                    QtWidgets.QMessageBox.warning(None,"Error checking volume name","Volume name '%s' already exists.\n Please choose a unique volume name." % newvolumename )
+
+        if (self.chk_saveinkeychain.isChecked() or self.runmode == 0):
+            if (self.txt_password.text() != self.txt_password2.text()):
+                errorfound = True
+                QtWidgets.QMessageBox.warning(None,"Password error","Both passwords do not match" )
+
+            if not self.chk_saveinkeychain.isChecked and not self.runmode == 2:
+                # in edit mode, we can allow empty passwords, providing that password has been saved in keychain already
+                if (self.txt_password.text() == "" or self.txt_password2.text() == ""):
+                    errorfound = True
+                    QtWidgets.QMessageBox.warning(None,"Password error","Password cannot be empty" )
+
+            if ("'" in self.txt_password.text()):
+                errorfound = True
+                QtWidgets.QMessageBox.warning(None,"Password error","Sorry, you're not allowed to use a single 'tick' character (') in the password" )
+
+        
         if not errorfound:
             # save everything
+            # translate options into object
+            EncVolumeObj = encfsgui_globals.CEncryptedVolume()
+            EncVolumeObj.enc_path = str(self.txt_encfsfolder.displayText()).strip()
+            EncVolumeObj.mount_path = str(self.txt_mountfolder.displayText()).strip()
+            EncVolumeObj.encfsmountoptions = str(self.txt_encfsmountoptions.displayText()).strip()
 
+            if (self.chk_mountaslocal.isChecked()):
+                EncVolumeObj.mountaslocal = "1"
+            else:
+                EncVolumeObj.mountaslocal = "0"
+            if (self.chk_saveinkeychain.isChecked()):
+                EncVolumeObj.passwordsaved = "1"
+            else:
+                EncVolumeObj.passwordsaved = "0"
+
+            if (self.chk_automount.isChecked()):
+                EncVolumeObj.automount = "1"
+            else:
+                EncVolumeObj.automount = "0"
+
+            if (self.chk_preventautounmount.isChecked()):
+                EncVolumeObj.preventautounmount = "1"
+            else:
+                EncVolumeObj.preventautounmount = "0"
+
+            if (self.chk_accesstoother.isChecked()):
+                EncVolumeObj.allowother = "1"
+            else:
+                EncVolumeObj.allowother = "0"
+            
+
+            # in edit mode, remove previous volume from volume list
+            # and add new one
+            if (self.runmode == 2):
+                encfsgui_globals.appconfig.delVolume(self.origvolumename)
+                encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
+
+            if (self.chk_saveinkeychain.isChecked() and self.txt_password != ""):
+                self.SavePasswordInKeyChain(newvolumename, self.txt_password.text())
             # and close the dialog
             self.close()
         return
@@ -229,4 +301,21 @@ class CVolumeWindow(QtWidgets.QDialog):
             self.txt_volumename.setText(volumename)
             self.txt_encfsfolder.setText(EncVolumeObj.enc_path)
             self.txt_mountfolder.setText(EncVolumeObj.mount_path)
+            self.txt_encfsmountoptions.setText(EncVolumeObj.encfsmountoptions)
+            if str(EncVolumeObj.mountaslocal) == "1":
+                self.chk_mountaslocal.setChecked(True)
+            if str(EncVolumeObj.automount) == "1":
+                self.chk_automount.setChecked(True)
+            if str(EncVolumeObj.preventautounmount == "1"):
+                self.chk_preventautounmount.setChecked(True)
+            if str(EncVolumeObj.allowother == "1"):
+                self.chk_accesstoother.setChecked(True)
+            if str(EncVolumeObj.passwordsaved == "1"):
+                self.chk_saveinkeychain.setChecked(True)
+        return
+
+
+    def SavePasswordInKeyChain(self, volumename, password):
+        cmd = "sh -c \"security add-generic-password -U -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' -w '%s' login.keychain\"" % (volumename, volumename, password)
+        setpwoutput = encfsgui_helper.execOSCmd(cmd)
         return

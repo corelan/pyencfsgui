@@ -107,10 +107,18 @@ class CConfig():
             encfsgui_globals.g_Settings["workingfolder"] = "."
         return
 
-    def addVolume(self):
+    def addVolume(self, volumename, EncVolumeObj):
+        encfsgui_globals.g_Volumes[volumename] = EncVolumeObj
+        # write g_Volumes to volumes file
+        self.saveVolumes()
         return
 
-    def delVolume(self):
+    def delVolume(self, volumename):
+        # remove volume from g_Volumes
+        if (volumename in encfsgui_globals.g_Volumes):
+            del encfsgui_globals.g_Volumes[volumename]
+        # write g_Volumes to volumes file
+        self.saveVolumes()
         return
 
     def saveSettings(self):
@@ -126,5 +134,24 @@ class CConfig():
             config.write(configfile)
 
         encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
+
+        return
+
+    def saveVolumes(self):
+        config = configparser.RawConfigParser()
+        for volumename in encfsgui_globals.g_Volumes:
+            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+            config.add_section(volumename)
+            config.set(volumename, 'enc_path' , EncVolumeObj.enc_path)
+            config.set(volumename, 'mount_path', EncVolumeObj.mount_path)
+            config.set(volumename, 'automount',  EncVolumeObj.automount)
+            config.set(volumename, 'preventautounmount',  EncVolumeObj.preventautounmount)
+            config.set(volumename, 'allowother',  EncVolumeObj.allowother)
+            config.set(volumename, 'mountaslocal',  EncVolumeObj.mountaslocal)
+            config.set(volumename, 'encfsmountoptions',  EncVolumeObj.encfsmountoptions)
+            config.set(volumename, 'passwordsaved',  EncVolumeObj.passwordsaved)
+
+        with open(encfsgui_globals.volumesfile, 'w') as configfile:
+            config.write(configfile)
 
         return

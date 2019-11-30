@@ -485,7 +485,7 @@
      <string>encfs mount options:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="txt_encfsmountoptions">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -534,7 +534,7 @@
      <string>Allow access to 'other' user (you must be root/admin) - needed for Spotlight to work</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="chk_mountaslocalvolume">
+   <widget class="QCheckBox" name="chk_mountaslocal">
     <property name="geometry">
      <rect>
       <x>10</x>

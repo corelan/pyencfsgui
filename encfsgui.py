@@ -117,6 +117,7 @@ class CMainWindow(QtWidgets.QDialog):
             editvolumewindow = CVolumeWindow()
             editvolumewindow.show()
             editvolumewindow.setRunMode(2)    # edit
+            editvolumewindow.origvolumename = encfsgui_globals.g_CurrentlySelected
             editvolumewindow.PopulateFields(encfsgui_globals.g_CurrentlySelected)
             editvolumewindow.exec_()
             self.RefreshVolumes()
@@ -331,17 +332,18 @@ class CMainWindow(QtWidgets.QDialog):
                 self.mountvolumebutton.setEnabled(False)
                 self.unmountvolumebutton.setEnabled(True)
                 self.browsevolumebutton.setEnabled(True)
+                self.editvolumebutton.setEnabled(False)
             else:
                 self.mountvolumebutton.setEnabled(True)
                 self.unmountvolumebutton.setEnabled(False)
                 self.browsevolumebutton.setEnabled(False)
-
+                self.editvolumebutton.setEnabled(True)
         else:
             self.mountvolumebutton.setEnabled(False)
             self.unmountvolumebutton.setEnabled(False)
             self.browsevolumebutton.setEnabled(False)
 
-        self.editvolumebutton.setEnabled(selectedenable)
+        
         self.infovolumebutton.setEnabled(selectedenable)
         self.removevolumebutton.setEnabled(selectedenable)
 
