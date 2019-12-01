@@ -11,6 +11,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, QStyle
 from PyQt5 import QtCore
 
 
@@ -63,6 +64,10 @@ class CMainWindow(QtWidgets.QDialog):
         self.quitbutton =  self.findChild(QtWidgets.QToolButton, 'btn_Quit')
         self.quitbutton.clicked.connect(self.QuitButtonClicked)
 
+        self.hidebutton = self.findChild(QtWidgets.QToolButton, 'btn_Hide')
+        self.hidebutton.clicked.connect(self.HideButtonClicked)
+        self.hidebutton.setVisible(False)
+
         self.createvolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_createVolume')
         self.createvolumebutton.clicked.connect(self.CreateVolumeButtonClicked)
 
@@ -85,6 +90,7 @@ class CMainWindow(QtWidgets.QDialog):
         self.removevolumebutton.clicked.connect(self.RemoveVolumeClicked)
 
         self.infovolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_infoVolume')
+        self.infovolumebutton.clicked.connect(self.ShowVolumeInfoClicked)
         
         self.mountvolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_mountVolume')
         self.mountvolumebutton.clicked.connect(self.MountVolumeClicked)
@@ -99,6 +105,8 @@ class CMainWindow(QtWidgets.QDialog):
         self.RefreshVolumes()
         self.EnableDisableButtons()
         self.SetInfoLabel()
+
+        self.CreateTrayMenu()
 
 
     #methods linked to buttons
@@ -128,6 +136,38 @@ class CMainWindow(QtWidgets.QDialog):
         if doexit:
             self.AutoUnMount()
             sys.exit(0)
+        return
+
+    def ShowButtonClicked(self):
+        self.show()
+        return
+
+    def HideButtonClicked(self):
+        self.setVisible(False)
+        return
+
+    def CreateTrayMenu(self):
+        # system tray menu
+        self.tray_icon = QSystemTrayIcon(self)
+        #self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_DriveHDIcon))
+        self.tray_icon.setIcon(QIcon('./bitmaps/encfsgui.png'))
+        
+        show_action = QAction("Show", self)
+        hide_action = QAction("Hide", self)
+        quit_action = QAction("Quit", self)
+        show_action.triggered.connect(self.ShowButtonClicked)
+        hide_action.triggered.connect(self.HideButtonClicked)
+        quit_action.triggered.connect(self.QuitButtonClicked)
+
+        tray_menu = QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addSeparator()
+        tray_menu.addSection("Volumes")
+        tray_menu.addSeparator()
+        #tray_menu.addAction(hide_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
         return
 
 
@@ -176,6 +216,9 @@ class CMainWindow(QtWidgets.QDialog):
                 encfsgui_globals.appconfig.getVolumes()
                 self.RefreshVolumes()
                 self.SetInfoLabel()
+        return
+
+    def ShowVolumeInfoClicked(self):
         return
 
     def SetttingsButtonClicked(self):
@@ -440,12 +483,10 @@ if __name__ == "__main__":
     mainwindow = CMainWindow()
     mainwindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
 
-
-
     mainwindow.RefreshSettings()
     mainwindow.RefreshVolumes()
     mainwindow.AutoMount()
 
     mainwindow.show()
-    mainwindow.exec_()
-    #app.exec_()
+    sys.exit(mainwindow.exec_())
+    

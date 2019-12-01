@@ -124,7 +124,7 @@
       </property>
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -159,7 +159,7 @@
      <widget class="QToolButton" name="btn_openVolume">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -204,7 +204,7 @@
      <widget class="QToolButton" name="btn_browseVolume">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -233,7 +233,7 @@
      <widget class="QToolButton" name="btn_removeVolume">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -262,7 +262,7 @@
      <widget class="QToolButton" name="btn_infoVolume">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -291,7 +291,7 @@
      <widget class="QToolButton" name="btn_editVolume">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -336,7 +336,7 @@
      <widget class="QToolButton" name="btn_mountVolume">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
         <weight>50</weight>
         <bold>false</bold>
@@ -370,7 +370,7 @@
      <widget class="QToolButton" name="btn_unmountVolume">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -399,7 +399,7 @@
      <widget class="QToolButton" name="btn_unmountAll">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -444,7 +444,7 @@
      <widget class="QToolButton" name="btn_Settings">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -486,10 +486,39 @@
      </spacer>
     </item>
     <item>
+     <widget class="QToolButton" name="btn_Hide">
+      <property name="font">
+       <font>
+        <family>Trebuchet MS</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Hide</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>bitmaps/hide.png</normaloff>bitmaps/hide.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="toolButtonStyle">
+       <enum>Qt::ToolButtonTextUnderIcon</enum>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QToolButton" name="btn_Quit">
       <property name="font">
        <font>
-        <family>Jura Medium</family>
+        <family>Trebuchet MS</family>
         <pointsize>11</pointsize>
        </font>
       </property>
