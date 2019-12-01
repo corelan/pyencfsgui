@@ -85,6 +85,9 @@ class CMainWindow(QtWidgets.QDialog):
         self.unmountvolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_unmountVolume')
         self.unmountvolumebutton.clicked.connect(self.UnmountVolumeClicked)
 
+        self.unmountallbutton = self.findChild(QtWidgets.QToolButton, 'btn_unmountAll')
+        self.unmountallbutton.clicked.connect(self.UnmountAllClicked)
+
         # enable/disablebuttons as needed
         self.RefreshVolumes()
         self.EnableDisableButtons()
@@ -208,8 +211,13 @@ class CMainWindow(QtWidgets.QDialog):
             self.UnmountVolume(volumename) 
         return
 
+    def UnmountAllClicked(self):
+        for volumename in encfsgui_globals.g_Volumes:
+            self.UnmountVolume(volumename, True)
+        self.RefreshVolumes()
+        return
 
-    def UnmountVolume(self, volumename):
+    def UnmountVolume(self, volumename, forced=False):
         # do we need to ask for confirmation?
         askforconfirmation = True
         if "noconfirmationunmount" in encfsgui_globals.g_Settings:
@@ -218,7 +226,7 @@ class CMainWindow(QtWidgets.QDialog):
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             dounmount = True
-            if askforconfirmation:
+            if askforconfirmation and not forced:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setIcon(QMessageBox.Question)
                 msgBox.setWindowTitle("Are you sure?")
