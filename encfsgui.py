@@ -203,22 +203,40 @@ class CMainWindow(QtWidgets.QDialog):
     def RemoveVolumeClicked(self):
         volumename = encfsgui_globals.g_CurrentlySelected
         if volumename != "":
-            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-            msgBox = QtWidgets.QMessageBox()
-            msgBox.setIcon(QMessageBox.Question)
-            msgBox.setWindowTitle("Are you sure?")
-            msgBox.setText("Are you sure you would like to remove volume '%s' from this app?\n (mounted at '%s')?\n\nNote: this will not unmount the volume, and will not remove the actual encrypted folder.\nI will only remove the volume from the application." % (volumename, EncVolumeObj.mount_path))
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
-            msgBox.addButton(QtWidgets.QMessageBox.Yes)
-            msgBox.show()
-            if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
-                encfsgui_globals.appconfig.delVolume(volumename)
-                encfsgui_globals.appconfig.getVolumes()
-                self.RefreshVolumes()
-                self.SetInfoLabel()
+            if volumename in encfsgui_globals.g_Volumes: 
+                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setIcon(QMessageBox.Question)
+                msgBox.setWindowTitle("Are you sure?")
+                msgBox.setText("Are you sure you would like to remove volume '%s' from this app?\n (mounted at '%s')?\n\nNote: this will not unmount the volume, and will not remove the actual encrypted folder.\nI will only remove the volume from the application." % (volumename, EncVolumeObj.mount_path))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
+                msgBox.addButton(QtWidgets.QMessageBox.Yes)
+                msgBox.show()
+                if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
+                    encfsgui_globals.appconfig.delVolume(volumename)
+                    encfsgui_globals.appconfig.getVolumes()
+                    self.RefreshVolumes()
+                    self.SetInfoLabel()
         return
 
     def ShowVolumeInfoClicked(self):
+        volumename = encfsgui_globals.g_CurrentlySelected
+        if volumename != "":
+            if volumename in encfsgui_globals.g_Volumes:
+                EncVolumeObj =  encfsgui_globals.g_Volumes[volumename]
+                cmd = "%sctl -i '%s'" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path)
+                cmdoutput = encfsgui_helper.execOSCmd(cmd)
+                infotext = "EncFS volume info for '%s'\n" % volumename
+                infotext += "Encrypted folder '%s'\n\n" % EncVolumeObj.enc_path
+                for l in cmdoutput:
+                    infotext = infotext + l + "\n"
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setIcon(QtWidgets.QMessageBox.Information)
+                msgBox.setWindowTitle("EncFS Volume info")
+                msgBox.setText(infotext)
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.show()
+                msgBox.exec_()
         return
 
     def SetttingsButtonClicked(self):
