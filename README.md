@@ -12,7 +12,7 @@ The downside is that it is a wrapper and may break if tools start behaving in a 
 In order to use pyencfsgui, you need to install the following dependencies:
 
 - python3
-- encfs
+- encfs (1.9.x)
 - OSXFuse
 
 

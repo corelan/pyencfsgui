@@ -61,6 +61,12 @@ def execOSCmd(cmd):
         outputlines.append(thisline.replace('\\n','').replace("'",""))
     return outputlines
 
+
+def execOScmdAsync(cmdarray):
+    p = subprocess.Popen(cmdarray) 
+    #p.terminate()
+    return
+
 def openFolder(foldername):
     subprocess.call(["open", "-R", foldername + "/"])
     return
@@ -71,3 +77,125 @@ def getKeyChainPassword(volumename):
     passarr = execOSCmd(cmd)
     password = str(passarr[0]).replace("\n","").strip()
     return password
+
+
+def getExpectScriptContents(insertbreak = False):
+    scriptcontents = ""
+    # header
+    newline = "#!/usr/bin/env expect\n"
+    scriptcontents += newline
+
+    newline = "set passwd [lindex $argv 0]\n"
+    scriptcontents += newline
+
+    newline = "set timeout 10\n"
+    scriptcontents += newline
+
+    # launch encfs
+    newline = "spawn \"$ENCFSBIN\" -v \"$ENCPATH\" \"$MOUNTPATH\"\n"
+    scriptcontents += newline
+
+    # activate expert mode
+    newline = "expect \"Please choose from one of the following options:\"\n"
+    scriptcontents += newline
+    newline = "expect \"?>\"\n"
+    scriptcontents += newline
+    newline = "send \"x\\n\"\n"
+    scriptcontents += newline
+
+    # set cipher algorithm
+    newline = "expect \"Enter the number corresponding to your choice: \"\n"
+    scriptcontents += newline
+    newline = "send \"$CIPHERALGO\\n\"\n"
+    scriptcontents += newline
+
+    # select cipher keysize
+    newline = "expect \"Selected key size:\"\n"
+    scriptcontents += newline
+    newline = "send \"$CIPHERKEYSIZE\\n\"\n"
+    scriptcontents += newline
+
+    # select filesystem block size
+    newline = "expect \"filesystem block size:\"\n"
+    scriptcontents += newline
+    newline = "send \"$BLOCKSIZE\\n\"\n"
+    scriptcontents += newline
+
+    # select encoding algo
+    newline = "expect \"Enter the number corresponding to your choice: \"\n"
+    scriptcontents += newline
+    newline = "send \"$ENCODINGALGO\\n\"\n"
+    scriptcontents += newline
+
+    if (insertbreak):
+        newline = "break\n"
+        scriptcontents += newline        
+
+    # filename IV chaining
+    newline = "expect \"Enable filename initialization vector chaining?\"\n"
+    scriptcontents += newline
+    newline = "send \"$IVCHAINING\\n\"\n"
+    scriptcontents += newline
+
+    # per filename IV
+    newline = "expect \"Enable per-file initialization vectors?\"\n"
+    scriptcontents += newline
+    newline = "send \"$PERFILEIV\\n\"\n"
+    scriptcontents += newline
+
+    # file to IV header chaining can only be used when both previous options are enabled
+    # which means it might slide to the next option right away
+    newline = "expect {\n"
+    scriptcontents += newline
+    newline = "\t\"Enable filename to IV header chaining?\" {\n"
+    scriptcontents += newline
+    newline = "\t\tsend \"$FILETOIVHEADERCHAINING\\n\"\n"
+    scriptcontents += newline
+    newline = "\t\texpect \"Enable block authentication code headers\"\n"
+    scriptcontents += newline
+    newline = "\t\tsend \"$BLOCKAUTHCODEHEADERS\\n\"\n"
+    scriptcontents += newline
+    newline = "\t\t}\n"
+    scriptcontents += newline
+    newline = "\t\"Enable block authentication code headers\" {\n"  #space matters
+    scriptcontents += newline
+    newline = "\t\tsend \"$BLOCKAUTHCODEHEADERS\\n\"\n"
+    scriptcontents += newline   
+    newline = "\t\t}\n"
+    scriptcontents += newline   
+    newline = "\t}\n"
+    scriptcontents += newline    
+
+    # add random bytes to each block header
+    newline = "expect \"Select a number of bytes, from 0 (no random bytes) to 8: \"\n"
+    scriptcontents += newline
+    newline = "send \"0\\n\"\n"
+    scriptcontents += newline
+
+    # file-hole pass-through
+    newline = "expect \"Enable file-hole pass-through?\"\n"
+    scriptcontents += newline
+    newline = "send \"\\n\"\n"
+    scriptcontents += newline        
+
+    # password
+    newline = "expect \"New Encfs Password: \"\n"
+    scriptcontents += newline
+    newline = "send \"$passwd\\n\"\n"
+    scriptcontents += newline    
+
+    newline = "expect \"Verify Encfs Password: \"\n"
+    scriptcontents += newline
+    newline = "send \"$passwd\\n\"\n"
+    scriptcontents += newline    
+
+    newline = "puts \"\\nDone.\\n\"\n"
+    scriptcontents += newline
+
+    newline = "expect \"\\n\"\n"
+    scriptcontents += newline    
+    
+    newline = "sleep x\n"  
+    scriptcontents += newline
+    
+    return scriptcontents

@@ -94,13 +94,19 @@ class CMainWindow(QtWidgets.QDialog):
     #methods linked to buttons
     def QuitButtonClicked(self):
         doexit = False
-
+        autunmount = False
+        if "autounmount" in encfsgui_globals.g_Settings:
+            if str(encfsgui_globals.g_Settings["autounmount"]) == "true":
+                autunmount = True
         if "noconfirmationexit" in encfsgui_globals.g_Settings:
             if str(encfsgui_globals.g_Settings["noconfirmationexit"]) == "false":
                 msgBox = QMessageBox()
                 msgBox.setIcon(QMessageBox.Question)
                 msgBox.setWindowTitle("Please confirm?")
-                msgBox.setText("Are you sure you would like to exit?")
+                if autunmount:
+                    msgBox.setText("Are you sure you would like to exit?\n\nPlease note that some volumes may be unmounted automatically when you exit the application, so please make sure all files are closed.")
+                else:
+                    msgBox.setText("Are you sure you would like to exit?")
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
                 msgBox.addButton(QtWidgets.QMessageBox.Yes)
                 msgBox.show()
@@ -113,6 +119,7 @@ class CMainWindow(QtWidgets.QDialog):
             self.AutoUnMount()
             sys.exit(0)
         return
+
 
     def CreateVolumeButtonClicked(self):
         createvolumewindow = CVolumeWindow()

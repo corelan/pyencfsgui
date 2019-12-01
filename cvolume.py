@@ -185,9 +185,32 @@ class CVolumeWindow(QtWidgets.QDialog):
 
     def SaveButtonClicked(self):
         # sanity check
-        # 1. is volumename unique (only relevant if we're not editing an existing volume)
         newvolumename = str(self.txt_volumename.displayText()).strip()
         errorfound = False
+
+        if (self.txt_volumename.text().replace(" ","") == ""):
+            errorfound = True
+            QtWidgets.QMessageBox.warning(None,"Error checking volume name","Volume name cannot be empty.\n Please enter a unique volume name."  )
+
+        if (self.txt_encfsfolder.text().replace(" ","") == ""):
+            errorfound = True
+            QtWidgets.QMessageBox.warning(None,"Error checking encfs folder path","Please select a valid encfs folder."  )
+        else:
+             if (self.runmode == 0):
+                # encfs folder must be empty
+                if (os.listdir(self.txt_encfsfolder.text())):
+                    QtWidgets.QMessageBox.warning(None,"Error checking encfs folder","Please make sure the new encfs is empty at this point."  )
+                    errorfound = True
+            
+        if (self.txt_mountfolder.text().replace(" ","") == ""):
+            errorfound = True
+            QtWidgets.QMessageBox.warning(None,"Error checking volume name","Please select a valid mount folder"  )
+        else:
+             if (self.runmode == 0):
+                # encfs folder must be empty
+                if (os.listdir(self.txt_mountfolder.text())):
+                    QtWidgets.QMessageBox.warning(None,"Error checking mount folder","Please make sure the mount folder is empty at this point."  )
+                    errorfound = True            
 
         if (self.runmode == 0) or (self.runmode == 1):
             if (newvolumename in encfsgui_globals.g_Volumes):
@@ -215,8 +238,9 @@ class CVolumeWindow(QtWidgets.QDialog):
                 errorfound = True
                 QtWidgets.QMessageBox.warning(None,"Password error","Sorry, you're not allowed to use a single 'tick' character (') in the password" )
 
-        
+
         if not errorfound:
+        
             # save everything
             # translate options into object
             EncVolumeObj = encfsgui_globals.CEncryptedVolume()
@@ -252,6 +276,10 @@ class CVolumeWindow(QtWidgets.QDialog):
             # in create mode, first create the actual encrypted folder
             # and then add it to the config 
 
+            if (self.runmode == 0):
+                if (self.CreateNewEncryptedVolume()):
+                    encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
+
             # add mode
             if (self.runmode == 1):
                 encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
@@ -272,6 +300,100 @@ class CVolumeWindow(QtWidgets.QDialog):
     def CancelButtonClicked(self):
         self.close()
         return
+
+    def CreateNewEncryptedVolume(self):
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setIcon(QMessageBox.Question)
+        msgBox.setWindowTitle("Are you sure?")
+        msgBox.setText("Are you sure you would like to create a new encfs volume '%s' at '%s' ?" % (self.txt_volumename.text(), self.txt_encfsfolder.text()))
+        msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
+        msgBox.addButton(QtWidgets.QMessageBox.Yes)
+        msgBox.show()
+
+        cipheralgos = {}
+        cipheralgos["AES"] = 1
+        cipheralgos["Blowfish"] = 2
+        cipheralgos["Camilla"] = 3
+        selectedalgo = str(cipheralgos[self.ciphercombo.currentText()])
+
+        fileencodings = {}
+        fileencodings["Block"] = 1
+        fileencodings["Block32"] = 2
+        fileencodings["Null"] = 3
+        fileencodings["Stream"] = 4
+        selectedfileencoding = str(fileencodings[self.filenameencodingcombo.currentText()])
+
+        encfolderfound = False
+
+        if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
+            # create expect script
+            scriptcontents = encfsgui_helper.getExpectScriptContents(False)
+            # replace variables in the script
+            scriptcontents = scriptcontents.replace("$ENCFSBIN", encfsgui_globals.g_Settings["encfspath"])
+            scriptcontents = scriptcontents.replace("$ENCPATH", self.txt_encfsfolder.text())
+            scriptcontents = scriptcontents.replace("$MOUNTPATH", self.txt_mountfolder.text())
+            scriptcontents = scriptcontents.replace("$CIPHERALGO", selectedalgo)
+            scriptcontents = scriptcontents.replace("$CIPHERKEYSIZE", self.keysizecombo.currentText())
+            scriptcontents = scriptcontents.replace("$BLOCKSIZE", self.blocksizecombo.currentText())
+            scriptcontents = scriptcontents.replace("$ENCODINGALGO", selectedfileencoding)
+
+            if (self.chk_chainediv.isChecked()):
+                scriptcontents = scriptcontents.replace("$IVCHAINING","")
+            else:
+                scriptcontents = scriptcontents.replace("$IVCHAINING","n")
+
+            if (self.chk_perfileuniqueiv.isChecked()):
+                scriptcontents = scriptcontents.replace("$PERFILEIV","")
+            else:
+                scriptcontents = scriptcontents.replace("$PERFILEIV","n")
+
+            if (self.chk_externaliv.isChecked()):
+                scriptcontents = scriptcontents.replace("$FILETOIVHEADERCHAINING","y")
+            else:
+                scriptcontents = scriptcontents.replace("$FILETOIVHEADERCHAINING","")   # n is default here
+            
+            if (self.chk_perblockhmac.isChecked()):
+                scriptcontents = scriptcontents.replace("$BLOCKAUTHCODEHEADERS","y")
+            else:
+                scriptcontents = scriptcontents.replace("$BLOCKAUTHCODEHEADERS","")  # n is default here
+
+            scriptcontents = scriptcontents.replace("sleep x","expect eof")
+
+            expectfilename = "expect.encfsgui"
+            # write script to file
+            scriptfile = open(expectfilename, 'w')
+            scriptfile.write(scriptcontents)
+            scriptfile.close()
+            # run script file
+            cmdarray = ["expect",expectfilename, self.txt_password.text(), ">/dev/null"]
+            encfsgui_helper.execOScmdAsync(cmdarray)
+            self.setEnabled(False)
+            time.sleep(3)
+            encfolderfound = False
+            secondswaited = 1
+            while not encfolderfound:
+                if (os.path.exists( self.txt_encfsfolder.text() + "/.encfs6.xml" )):
+                    encfolderfound = True
+                else:
+                    time.sleep(1)
+                    secondswaited += 1
+                if (secondswaited > 20):
+                    break
+            self.setEnabled(True)
+
+            # unmount new volume
+            cmd = "%s '%s'" % (encfsgui_globals.g_Settings["umountpath"], self.txt_mountfolder.text())
+            encfsgui_helper.execOSCmd(cmd)
+            
+            if encfolderfound:
+                QtWidgets.QMessageBox.information(None,"EncFS volume created successfully","EncFS volume was created successfully")
+            else:
+                QtWidgets.QMessageBox.information(None,"Error creating volume","Error while creating EncFS volume")
+      
+            #delete script file again
+            os.remove(expectfilename)          
+
+        return encfolderfound
 
     def setRunMode(self, mode):
         self.runmode = mode
