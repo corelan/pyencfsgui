@@ -11,9 +11,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QAction, QStyle
+from PyQt5.QtWidgets import QMessageBox, QSystemTrayIcon, QMenu, QAction, QStyle
 from PyQt5 import QtCore
-
 
 # forms
 import csettings 
@@ -206,7 +205,7 @@ class CMainWindow(QtWidgets.QDialog):
             if volumename in encfsgui_globals.g_Volumes: 
                 EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
                 msgBox = QtWidgets.QMessageBox()
-                msgBox.setIcon(QMessageBox.Question)
+                msgBox.setIcon(QtWidgets.QMessageBox.Question)
                 msgBox.setWindowTitle("Are you sure?")
                 msgBox.setText("Are you sure you would like to remove volume '%s' from this app?\n (mounted at '%s')?\n\nNote: this will not unmount the volume, and will not remove the actual encrypted folder.\nI will only remove the volume from the application." % (volumename, EncVolumeObj.mount_path))
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
