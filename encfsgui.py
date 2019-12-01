@@ -11,6 +11,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
+
 
 # forms
 import csettings 
@@ -51,6 +53,11 @@ class CMainWindow(QtWidgets.QDialog):
     def __init__(self):
         super(CMainWindow, self).__init__()
         uic.loadUi('encfsgui_main.ui', self)
+
+        # disable/remove buttons
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.CustomizeWindowHint)
+        self.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)
+        self.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
 
         # assign methods to buttons
         self.quitbutton =  self.findChild(QtWidgets.QToolButton, 'btn_Quit')
@@ -410,6 +417,7 @@ class CMainWindow(QtWidgets.QDialog):
             self.mountvolumebutton.setEnabled(False)
             self.unmountvolumebutton.setEnabled(False)
             self.browsevolumebutton.setEnabled(False)
+            self.editvolumebutton.setEnabled(False)
 
         
         self.infovolumebutton.setEnabled(selectedenable)
@@ -430,6 +438,9 @@ if __name__ == "__main__":
     encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
     
     mainwindow = CMainWindow()
+    mainwindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
+
+
 
     mainwindow.RefreshSettings()
     mainwindow.RefreshVolumes()
