@@ -142,7 +142,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def HideButtonClicked(self):
-        self.setVisible(False)
+        self.hide()
         return
 
     def CreateTrayMenu(self):
@@ -160,10 +160,7 @@ class CMainWindow(QtWidgets.QDialog):
 
         tray_menu = QMenu()
         tray_menu.addAction(show_action)
-        tray_menu.addSeparator()
-        tray_menu.addSection("Volumes")
-        tray_menu.addSeparator()
-        #tray_menu.addAction(hide_action)
+        tray_menu.addAction(hide_action)
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
@@ -498,12 +495,12 @@ if __name__ == "__main__":
     encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
     
     mainwindow = CMainWindow()
-    mainwindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
+    #mainwindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
 
     mainwindow.RefreshSettings()
     mainwindow.RefreshVolumes()
     mainwindow.AutoMount()
 
     mainwindow.show()
-    sys.exit(mainwindow.exec_())
-    
+    #sys.exit(mainwindow.exec_())
+    app.exec_()
