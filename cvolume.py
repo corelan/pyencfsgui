@@ -244,7 +244,7 @@ class CVolumeWindow(QtWidgets.QDialog):
 
             if ("'" in self.txt_password.text()):
                 errorfound = True
-                QtWidgets.QMessageBox.warning(None,"Password error","Sorry, you're not allowed to use a single 'tick' character (') in the password" )
+                QtWidgets.QMessageBox.warning(None,"Password error","Sorry, you're not allowed to use a 'single-tick' character (') in the password" )
 
 
         if not errorfound:

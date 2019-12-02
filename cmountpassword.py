@@ -20,6 +20,7 @@ from encfsgui_helper import *
 
 class CMountPassword(QtWidgets.QDialog):
     def __init__(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         super(CMountPassword, self).__init__()
         uic.loadUi('encfsgui_password.ui', self)
 
@@ -34,21 +35,26 @@ class CMountPassword(QtWidgets.QDialog):
         self.cancelbutton.clicked.connect(self.CancelButtonClicked)
 
     def setEncPath(self, path):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.lbl_enc_path.setText(path)
         return
 
     def setMountPath(self, path):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.lbl_mount_path.setText(path)
         return
 
     def getPassword(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         return self.txt_password.text()
     
     def OKButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.close()
         return
 
     def CancelButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.txt_password.setText("")
         self.close()
         return
