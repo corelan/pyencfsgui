@@ -5,6 +5,7 @@ import datetime
 import string
 import subprocess
 import configparser
+import inspect
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
@@ -51,6 +52,7 @@ encfsgui_globals.g_CurrentlySelected = ""
 #################
 class CMainWindow(QtWidgets.QDialog):
     def __init__(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         super(CMainWindow, self).__init__()
         uic.loadUi('encfsgui_main.ui', self)
 
@@ -117,6 +119,7 @@ class CMainWindow(QtWidgets.QDialog):
 
     #methods linked to buttons
     def QuitButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         doexit = False
         autunmount = False
         if "autounmount" in encfsgui_globals.g_Settings:
@@ -145,18 +148,21 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def ShowButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.show_action.setEnabled(False)
         self.hide_action.setEnabled(True)
         self.show()
         return
 
     def HideButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.show_action.setEnabled(True)
         self.hide_action.setEnabled(False)
         self.hide()
         return
 
     def AboutClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         abouttext = "pyencfsgui is a python3/PyQT5 based GUI wrapper around encfs.\n\n"
         abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina\n"
         abouttext += "It may work on older systems and older versions of encfs, but you'll have to try and see for yourself\n\n"
@@ -173,7 +179,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def CreateTrayMenu(self):
-        
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.show_action = QAction("Show", self)
         self.hide_action = QAction("Hide", self)
         self.settings_action = QAction("Settings", self)
@@ -188,7 +194,6 @@ class CMainWindow(QtWidgets.QDialog):
         self.quit_action.triggered.connect(self.QuitButtonClicked)
 
         self.PopulateVolumeMenu()
-
 
         self.tray_menu.addAction(self.show_action)
         self.tray_menu.addAction(self.hide_action)
@@ -215,6 +220,7 @@ class CMainWindow(QtWidgets.QDialog):
 
 
     def PopulateVolumeMenu(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.volume_menu.clear()
 
         for volumename in encfsgui_globals.g_Volumes:
@@ -240,6 +246,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def MenuMountVolume(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         actionname = self.sender().text()
         volumename = self.getVolumeNameFromAction(actionname)
         thispassword = self.getPasswordForVolume(volumename)
@@ -248,6 +255,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def MenuUnmountVolume(self, action):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         actionname = self.sender().text()
         volumename = self.getVolumeNameFromAction(actionname)
         self.UnmountVolume(volumename)
@@ -256,6 +264,7 @@ class CMainWindow(QtWidgets.QDialog):
 
 
     def getVolumeNameFromAction(self, actionname):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         volumename = ""
         startindex = 0
         if (actionname.startswith("Mount")):
@@ -265,6 +274,7 @@ class CMainWindow(QtWidgets.QDialog):
         return volumename
 
     def CreateVolumeButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         createvolumewindow = CVolumeWindow()
         createvolumewindow.show()
         createvolumewindow.setRunMode(0)    # create
@@ -274,6 +284,7 @@ class CMainWindow(QtWidgets.QDialog):
 
 
     def AddVolumeButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         addvolumewindow = CVolumeWindow()
         addvolumewindow.show()
         addvolumewindow.setRunMode(1)    # add
@@ -282,6 +293,7 @@ class CMainWindow(QtWidgets.QDialog):
         return       
 
     def EditVolumeButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         if encfsgui_globals.g_CurrentlySelected != "":
             editvolumewindow = CVolumeWindow()
             editvolumewindow.show()
@@ -294,6 +306,7 @@ class CMainWindow(QtWidgets.QDialog):
         return 
 
     def RemoveVolumeClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         volumename = encfsgui_globals.g_CurrentlySelected
         if volumename != "":
             if volumename in encfsgui_globals.g_Volumes: 
@@ -313,6 +326,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def ShowVolumeInfoClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         volumename = encfsgui_globals.g_CurrentlySelected
         if volumename != "":
             if volumename in encfsgui_globals.g_Volumes:
@@ -333,6 +347,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def SetttingsButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         settingswindow = CSettingsWindow()
         settingswindow.loadSettings()
         settingswindow.show()
@@ -344,6 +359,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def MountVolumeClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # do we need to ask for password?
         if encfsgui_globals.g_CurrentlySelected != "":
             if encfsgui_globals.g_CurrentlySelected in encfsgui_globals.g_Volumes:
@@ -352,6 +368,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def getPasswordForVolume(self, volumename):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         thispassword = ""
         EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
         if str(EncVolumeObj.passwordsaved) == "0":
@@ -367,18 +384,21 @@ class CMainWindow(QtWidgets.QDialog):
         return thispassword
 
     def UnmountVolumeClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         if encfsgui_globals.g_CurrentlySelected != "":
             volumename = encfsgui_globals.g_CurrentlySelected
             self.UnmountVolume(volumename) 
         return
 
     def UnmountAllClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         for volumename in encfsgui_globals.g_Volumes:
             self.UnmountVolume(volumename, True)
         self.RefreshVolumes()
         return
 
     def UnmountVolume(self, volumename, forced=False):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # do we need to ask for confirmation?
         askforconfirmation = True
         if "noconfirmationunmount" in encfsgui_globals.g_Settings:
@@ -410,6 +430,7 @@ class CMainWindow(QtWidgets.QDialog):
 
 
     def BrowseVolumeClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         if encfsgui_globals.g_CurrentlySelected != "":
             if encfsgui_globals.g_CurrentlySelected in encfsgui_globals.g_Volumes:
                 EncVolumeObj = encfsgui_globals.g_Volumes[encfsgui_globals.g_CurrentlySelected]
@@ -417,6 +438,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def MountVolume(self, volumename, password):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             extra_osxfuse_opts = ""
@@ -449,12 +471,14 @@ class CMainWindow(QtWidgets.QDialog):
 
 
     def TableEntrySelected(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # update the currently selected volume
         encfsgui_globals.g_CurrentlySelected = ""
         selectedindex = 0
         for currentQTableWidgetItem in self.volumetable.selectedItems():
             if selectedindex == 1:
                 encfsgui_globals.g_CurrentlySelected = currentQTableWidgetItem.text()
+                encfsgui_helper.print_debug("Selected entry %s" % encfsgui_globals.g_CurrentlySelected)
             selectedindex += 1
         # enable/disable buttons accordingly
         self.EnableDisableButtons()
@@ -462,6 +486,7 @@ class CMainWindow(QtWidgets.QDialog):
 
 
     def RefreshVolumes(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # get volumes from config file
         encfsgui_globals.appconfig.getVolumes()
         # show volumes in the table
@@ -517,6 +542,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def AutoMount(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # process automounts
         for volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
@@ -527,6 +553,7 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def AutoUnMount(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         if str(encfsgui_globals.g_Settings["autounmount"]) == "true":
             # unmount the volumes that don't have preventautounmount set
             for volumename in encfsgui_globals.g_Volumes:
@@ -536,17 +563,20 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def RefreshSettings(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         encfsgui_globals.appconfig.getSettings()
         self.SetInfoLabel()
         return
 
     def SetInfoLabel(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.infolabel = self.findChild(QtWidgets.QLabel, 'lbl_InfoLabel')
         encfsinfo = "encfs v%s" % (getEncFSVersion())
         self.infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, len(encfsgui_globals.g_Volumes), encfsgui_globals.volumesfile ))
         return
 
     def EnableDisableButtons(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # did we select an entry in the table?
         selectedenable = False
         if encfsgui_globals.g_CurrentlySelected != "":
@@ -577,18 +607,22 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
 
-
 if __name__ == "__main__":
 
     encfsgui_globals.settingsfile = 'encfsgui.settings'
 
-    encfsgui_globals.debugmode = True
     encfsgui_globals.appconfig = CConfig()
-
     encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
-    
+
+    if str(encfsgui_globals.g_Settings["debugmode"]).lower() == "true":
+        encfsgui_globals.debugmode = True
+    else:
+        encfsgui_globals.debugmode = False
+
+
     mainwindow = CMainWindow()
     mainwindow.RefreshSettings()
+
     mainwindow.RefreshVolumes()
     mainwindow.AutoMount()
 

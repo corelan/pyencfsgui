@@ -274,6 +274,19 @@
     <string>Hide to system tray at startup</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="chk_debugmode">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>380</y>
+     <width>121</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Debug mode</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

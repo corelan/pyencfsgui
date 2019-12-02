@@ -24,6 +24,7 @@ from cconfig import CConfig
 
 class CSettingsWindow(QtWidgets.QDialog):
     def __init__(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         super(CSettingsWindow, self).__init__()
         uic.loadUi('encfsgui_settings.ui', self)
 
@@ -50,6 +51,7 @@ class CSettingsWindow(QtWidgets.QDialog):
 
 
     def SelectEncfsButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.txt_enfcsbinary = self.findChild(QtWidgets.QLineEdit, 'txt_encfsbinary')
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
@@ -60,6 +62,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         return
 
     def SelectMountButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.txt_mountbinary = self.findChild(QtWidgets.QLineEdit, 'txt_mountbinary')
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
@@ -69,6 +72,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         return
 
     def SelectUmountButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.txt_umountbinary = self.findChild(QtWidgets.QLineEdit, 'txt_umountbinary')
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
@@ -79,6 +83,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         return
 
     def SelectWorkingFolderClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.txt_workingfolder = self.findChild(QtWidgets.QLineEdit, 'txt_workingfolder')
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
@@ -88,15 +93,18 @@ class CSettingsWindow(QtWidgets.QDialog):
         return
 
     def OKButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.saveSettings()
         self.close()
         return
 
     def CancelButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.close()
         return
 
     def loadSettings(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # populate fields
         self.txt_enfcsbinary = self.findChild(QtWidgets.QLineEdit, 'txt_encfsbinary')
         self.txt_enfcsbinary.setText("%s" % encfsgui_globals.g_Settings["encfspath"])
@@ -110,6 +118,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.chk_autounmount = self.findChild(QtWidgets.QCheckBox, 'chk_autounmount')
         self.chk_noconfirmationunmount = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationunmount')
         self.chk_noconfirmationexit = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationexit')
+        self.chk_debugmode = self.findChild(QtWidgets.QCheckBox, 'chk_debugmode')
 
         if (encfsgui_globals.g_Settings["autounmount"].lower() == "true"):
             self.chk_autounmount.setChecked(True)
@@ -124,10 +133,15 @@ class CSettingsWindow(QtWidgets.QDialog):
 
         if (encfsgui_globals.g_Settings["noconfirmationexit"].lower() == "true"):
             self.chk_noconfirmationexit.setChecked(True)
+
+        if (encfsgui_globals.g_Settings["debugmode"].lower() == "true"):
+            self.chk_debugmode.setChecked(True)
+
         return
 
 
     def saveSettings(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # update global settings
         encfsgui_globals.g_Settings["encfspath"] = str(self.txt_enfcsbinary.displayText().strip())
         encfsgui_globals.g_Settings["mountpath"] = str(self.txt_mountbinary.displayText().strip())
@@ -139,6 +153,13 @@ class CSettingsWindow(QtWidgets.QDialog):
         encfsgui_globals.g_Settings["noconfirmationunmount"] = str(self.chk_noconfirmationunmount.isChecked()).lower()
         encfsgui_globals.g_Settings["noconfirmationexit"] = str(self.chk_noconfirmationexit.isChecked()).lower()
         encfsgui_globals.g_Settings["starthidden"] = str(self.chk_starthidden.isChecked()).lower()
+        encfsgui_globals.g_Settings["debugmode"] = str(self.chk_debugmode.isChecked()).lower()
+        if self.chk_debugmode.isChecked():
+            encfsgui_globals.debugmode = True
+            encfsgui_helper.print_debug("Enable debug mode")
+        else:
+            encfsgui_helper.print_debug("Disable debug mode")
+            encfsgui_globals.debugmode = False
         # and write to file
         config = configparser.RawConfigParser()
         config.add_section('config')

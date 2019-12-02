@@ -4,9 +4,11 @@ import time
 import datetime
 import string
 import subprocess
+import inspect
 
 import encfsgui_globals
 from encfsgui_globals import *
+
 #################################
 ### METHODS, HELPER FUNCTIONS ###
 #################################
@@ -16,29 +18,32 @@ def getNow():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def readfile(filename):
-    #print_debug("Reading %s" % filename)
+    print_debug("Start %s" % inspect.stack()[0][3])
+    print_debug("Reading %s" % filename)
     contents = []
     f = open(filename,"r")
     contents = f.readlines()
     f.close()
-    #print_debug("Read %d lines" % len(contents))
+    print_debug("Read %d lines" % len(contents))
     return contents
 
 def writefile(filename,contents):
-    #print_debug("Creating %s" % filename)
+    print_debug("Start %s" % inspect.stack()[0][3])
+    print_debug("Creating %s" % filename)
     f = open(filename,'w')
     for l in contents:
         f.write("%s\n" % l)
     f.close()
-    #print_debug("File created, wrote %d lines" % len(contents))
+    print_debug("File created, wrote %d lines" % len(contents))
     return
 
 def print_debug(line):
     if encfsgui_globals.debugmode:
-        print("%s - DEBUG : %s" % (getNow(), line))
+        print("%s - DEBUG : %s" % (getNow(), str(line)))
     return
 
 def getEncFSVersion():
+    print_debug("Start %s" % inspect.stack()[0][3])
     encfsversion = ""
     oscmd = encfsgui_globals.g_Settings["encfspath"]
     cmdargs = '--version'
@@ -49,7 +54,8 @@ def getEncFSVersion():
     return encfsversion
 
 def execOSCmd(cmd):
-    #print_debug("Executing '%s'" % cmd)
+    print_debug("Start %s" % inspect.stack()[0][3])
+    print_debug("Executing '%s'" % cmd)
     p = subprocess.Popen('%s' % cmd,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT,
@@ -63,15 +69,19 @@ def execOSCmd(cmd):
 
 
 def execOScmdAsync(cmdarray):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    print_debug("Executing %s" % cmdarray)
     p = subprocess.Popen(cmdarray) 
     #p.terminate()
     return
 
 def openFolder(foldername):
+    print_debug("Start %s" % inspect.stack()[0][3])
     subprocess.call(["open", "-R", foldername + "/"])
     return
 
 def getKeyChainPassword(volumename):
+    print_debug("Start %s" % inspect.stack()[0][3])
     objname = "EncFSGUI_%s" % volumename
     cmd = "sh -c \"security find-generic-password -a '%s' -s '%s' -w login.keychain\"" % (objname, objname)
     passarr = execOSCmd(cmd)
@@ -80,6 +90,7 @@ def getKeyChainPassword(volumename):
 
 
 def getExpectScriptContents(insertbreak = False):
+    print_debug("Start %s" % inspect.stack()[0][3])
     scriptcontents = ""
     # header
     newline = "#!/usr/bin/env expect\n"

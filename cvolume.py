@@ -20,6 +20,7 @@ from encfsgui_helper import *
 
 class CVolumeWindow(QtWidgets.QDialog):
     def __init__(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         super(CVolumeWindow, self).__init__()
         uic.loadUi('encfsgui_volume.ui', self)
         # 0 = create
@@ -100,12 +101,14 @@ class CVolumeWindow(QtWidgets.QDialog):
         self.SelectProfileBalanced()
     
     def SelectEncfsFolderClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         folderName = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory", self.txt_encfsfolder.displayText(), QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks))
         if folderName:
             self.txt_encfsfolder.setText("%s" % folderName)
         return
 
     def SelectMountFolderClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         folderName = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory", self.txt_mountfolder.displayText(), QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks))
         if folderName:
             self.txt_mountfolder.setText("%s" % folderName)
@@ -113,6 +116,7 @@ class CVolumeWindow(QtWidgets.QDialog):
 
 
     def SelectProfileCustom(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.ciphercombo.setEnabled(True)
         self.keysizecombo.setEnabled(True)
         self.blocksizecombo.setEnabled(True)
@@ -125,6 +129,7 @@ class CVolumeWindow(QtWidgets.QDialog):
 
 
     def SelectProfileBalanced(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.ciphercombo.setEnabled(False)
         self.keysizecombo.setEnabled(False)
         self.blocksizecombo.setEnabled(False)
@@ -146,6 +151,7 @@ class CVolumeWindow(QtWidgets.QDialog):
         return
 
     def SelectProfilePerformance(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.ciphercombo.setEnabled(False)
         self.keysizecombo.setEnabled(False)
         self.blocksizecombo.setEnabled(False)
@@ -165,6 +171,7 @@ class CVolumeWindow(QtWidgets.QDialog):
         return
 
     def SelectProfileSecure(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.ciphercombo.setEnabled(False)
         self.keysizecombo.setEnabled(False)
         self.blocksizecombo.setEnabled(False)
@@ -184,6 +191,7 @@ class CVolumeWindow(QtWidgets.QDialog):
         return
 
     def SaveButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # sanity check
         newvolumename = str(self.txt_volumename.displayText()).strip()
         errorfound = False
@@ -298,10 +306,12 @@ class CVolumeWindow(QtWidgets.QDialog):
 
 
     def CancelButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.close()
         return
 
     def CreateNewEncryptedVolume(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         msgBox = QtWidgets.QMessageBox()
         msgBox.setIcon(QMessageBox.Question)
         msgBox.setWindowTitle("Are you sure?")
@@ -396,6 +406,7 @@ class CVolumeWindow(QtWidgets.QDialog):
         return encfolderfound
 
     def setRunMode(self, mode):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.runmode = mode
         self.lbl_encfsfolder = self.findChild(QtWidgets.QLabel,'lbl_encfsfolder')
 
@@ -420,11 +431,13 @@ class CVolumeWindow(QtWidgets.QDialog):
         return
 
     def getRunMode(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         encfsgui_helper.print_debug("mode: %d" % self.runmode)
         return
 
 
     def PopulateFields(self, volumename):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             self.txt_volumename.setText(volumename)
@@ -451,7 +464,8 @@ class CVolumeWindow(QtWidgets.QDialog):
 
 
     def SavePasswordInKeyChain(self, volumename, password):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         cmd = "sh -c \"security add-generic-password -U -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' -w '%s' login.keychain\"" % (volumename, volumename, str(password))
-        #encfsgui_helper.print_debug(cmd)
+        encfsgui_helper.print_debug(cmd)
         setpwoutput = encfsgui_helper.execOSCmd(cmd)
         return

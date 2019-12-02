@@ -8,9 +8,9 @@ global settingsfile
 global volumesfile
 
 volumesfile = "encfsgui.volumes"
+debugmode = False
 
 class CEncryptedVolume:
-
     def __init__(self):
         #self.volumename = ""
         self.enc_path = ""

@@ -68,8 +68,7 @@ class CConfig():
         return
     
     def getSettings(self):
-        # read settings from settings file
-
+        
         # if file does not exist, generate default file
         if not os.path.exists(self.settingsfile):
             self.populateDefaultSettings()
@@ -107,15 +106,21 @@ class CConfig():
             encfsgui_globals.g_Settings["workingfolder"] = "."
         if not "starthidden" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["starthidden"] = "false"
+        if not "debugmode" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["debugmode"] = "false"
+            encfsgui_globals.debugmode = False
+
         return
 
     def addVolume(self, volumename, EncVolumeObj):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         encfsgui_globals.g_Volumes[volumename] = EncVolumeObj
         # write g_Volumes to volumes file
         self.saveVolumes()
         return
 
     def delVolume(self, volumename):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # remove volume from g_Volumes
         if (volumename in encfsgui_globals.g_Volumes):
             del encfsgui_globals.g_Volumes[volumename]
@@ -140,6 +145,7 @@ class CConfig():
         return
 
     def saveVolumes(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         config = configparser.RawConfigParser()
         for volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
