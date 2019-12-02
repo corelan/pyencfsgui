@@ -1,12 +1,13 @@
 # pyencfsgui
 
-## What is pyencfsgui 
+## What is pyencfsgui?
 
 pyencfsgui is a Qt based GUI/wrapper around encfs, encfsctl and mount, written in python3, and relies on OSXFuse to provide a filesystem.<br>
 In other words, it relies entirely on those utilities, the ability to interact with those tools and to capture the output from those tools.<br>
 As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
 The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
-pyencfsgui was developed and tested on OSX High Sierra and OSX Catalina, using encfs version 1.9.x
+pyencfsgui was developed and tested on OSX High Sierra, Mojave and OSX Catalina, using encfs version 1.9.x. <br>
+(It can open existing volumes that have been created with older versions of encfs too)
 
 ## Dependencies
 
