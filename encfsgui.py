@@ -503,4 +503,5 @@ if __name__ == "__main__":
 
     mainwindow.show()
     #sys.exit(mainwindow.exec_())
+    app.setQuitOnLastWindowClosed(False)
     app.exec_()
