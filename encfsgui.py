@@ -152,6 +152,7 @@ class CMainWindow(QtWidgets.QDialog):
         self.show_action.setEnabled(False)
         self.hide_action.setEnabled(True)
         self.show()
+        self.setFocus()
         return
 
     def HideButtonClicked(self):
@@ -376,6 +377,7 @@ class CMainWindow(QtWidgets.QDialog):
             frmpassword.setEncPath(EncVolumeObj.enc_path)
             frmpassword.setMountPath(EncVolumeObj.mount_path)
             frmpassword.show()
+            frmpassword.setFocus()
             frmpassword.exec_()
             # did we get a password?
             thispassword = frmpassword.getPassword()
