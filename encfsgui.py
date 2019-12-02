@@ -65,7 +65,6 @@ class CMainWindow(QtWidgets.QDialog):
 
         self.hidebutton = self.findChild(QtWidgets.QToolButton, 'btn_Hide')
         self.hidebutton.clicked.connect(self.HideButtonClicked)
-        self.hidebutton.setVisible(False)
 
         self.createvolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_createVolume')
         self.createvolumebutton.clicked.connect(self.CreateVolumeButtonClicked)
@@ -353,14 +352,12 @@ class CMainWindow(QtWidgets.QDialog):
 
     def TableEntrySelected(self):
         # update the currently selected volume
-        #encfsgui_helper.print_debug("Table clicked")
         encfsgui_globals.g_CurrentlySelected = ""
         selectedindex = 0
         for currentQTableWidgetItem in self.volumetable.selectedItems():
             if selectedindex == 1:
                 encfsgui_globals.g_CurrentlySelected = currentQTableWidgetItem.text()
             selectedindex += 1
-        #encfsgui_helper.print_debug("Currently selected item: %s" % encfsgui_globals.g_CurrentlySelected)
         # enable/disable buttons accordingly
         self.EnableDisableButtons()
         return
@@ -484,7 +481,6 @@ class CMainWindow(QtWidgets.QDialog):
 
 
 
-
 if __name__ == "__main__":
 
     encfsgui_globals.settingsfile = 'encfsgui.settings'
@@ -495,13 +491,12 @@ if __name__ == "__main__":
     encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
     
     mainwindow = CMainWindow()
-    #mainwindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
-
     mainwindow.RefreshSettings()
     mainwindow.RefreshVolumes()
     mainwindow.AutoMount()
 
-    mainwindow.show()
-    #sys.exit(mainwindow.exec_())
+    if str(encfsgui_globals.g_Settings["starthidden"]).lower() == "false":
+        mainwindow.show()
+
     app.setQuitOnLastWindowClosed(False)
     app.exec_()

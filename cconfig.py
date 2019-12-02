@@ -65,18 +65,6 @@ class CConfig():
 
             encfsgui_globals.g_Volumes[volumename] = EncVolume
 
-            #for volumename in encfsgui_globals.g_Volumes:
-            #    encfsgui_helper.print_debug("Volume %s" % volumename)
-            #    EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-            #    encfsgui_helper.print_debug("enc path %s" % EncVolumeObj.enc_path)
-            #    encfsgui_helper.print_debug("mount path %s" % EncVolumeObj.mount_path)
-            #    encfsgui_helper.print_debug("automount %s" % EncVolumeObj.automount)
-            #    encfsgui_helper.print_debug("preventautounmount %s" % EncVolumeObj.preventautounmount)
-            #    encfsgui_helper.print_debug("allowother %s" % EncVolumeObj.allowother)
-            #    encfsgui_helper.print_debug("mountaslocal %s" % EncVolumeObj.mountaslocal)
-            #    encfsgui_helper.print_debug("encfsmountoptions %s" % EncVolumeObj.encfsmountoptions)
-            #    encfsgui_helper.print_debug("passwordsaved %s" % EncVolumeObj.passwordsaved)
-                
         return
     
     def getSettings(self):
@@ -117,6 +105,8 @@ class CConfig():
             encfsgui_globals.g_Settings["noconfirmationexit"] = "false"
         if not "workingfolder" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["workingfolder"] = "."
+        if not "starthidden" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["starthidden"] = "false"
         return
 
     def addVolume(self, volumename, EncVolumeObj):

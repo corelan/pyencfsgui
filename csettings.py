@@ -106,12 +106,16 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.txt_umountbinary.setText("%s" % encfsgui_globals.g_Settings["umountpath"])
         self.txt_workingfolder = self.findChild(QtWidgets.QLineEdit, 'txt_workingfolder')
         self.txt_workingfolder.setText("%s" % encfsgui_globals.g_Settings["workingfolder"])
+        self.chk_starthidden = self.findChild(QtWidgets.QCheckBox, 'chk_starthidden')
         self.chk_autounmount = self.findChild(QtWidgets.QCheckBox, 'chk_autounmount')
         self.chk_noconfirmationunmount = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationunmount')
         self.chk_noconfirmationexit = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationexit')
 
         if (encfsgui_globals.g_Settings["autounmount"].lower() == "true"):
             self.chk_autounmount.setChecked(True)
+
+        if (encfsgui_globals.g_Settings["starthidden"].lower() == "true"):
+            self.chk_starthidden.setChecked(True)
 
         if (encfsgui_globals.g_Settings["noconfirmationunmount"].lower() == "true"):
             self.chk_noconfirmationunmount.setChecked(True)
@@ -121,6 +125,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         if (encfsgui_globals.g_Settings["noconfirmationexit"].lower() == "true"):
             self.chk_noconfirmationexit.setChecked(True)
         return
+
 
     def saveSettings(self):
         # update global settings
@@ -133,6 +138,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         encfsgui_globals.g_Settings["autounmount"] = str(self.chk_autounmount.isChecked()).lower()
         encfsgui_globals.g_Settings["noconfirmationunmount"] = str(self.chk_noconfirmationunmount.isChecked()).lower()
         encfsgui_globals.g_Settings["noconfirmationexit"] = str(self.chk_noconfirmationexit.isChecked()).lower()
+        encfsgui_globals.g_Settings["starthidden"] = str(self.chk_starthidden.isChecked()).lower()
         # and write to file
         config = configparser.RawConfigParser()
         config.add_section('config')
