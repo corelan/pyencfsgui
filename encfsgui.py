@@ -104,6 +104,14 @@ class CMainWindow(QtWidgets.QDialog):
         self.EnableDisableButtons()
         self.SetInfoLabel()
 
+        # system tray menu
+        self.tray_icon = QSystemTrayIcon(self)
+        #self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_DriveHDIcon))
+        self.tray_icon.setIcon(QIcon('./bitmaps/encfsgui.png'))
+        self.tray_menu = QMenu()
+
+        self.volume_menu = QMenu()
+
         self.CreateTrayMenu()
 
 
@@ -137,34 +145,103 @@ class CMainWindow(QtWidgets.QDialog):
         return
 
     def ShowButtonClicked(self):
+        self.show_action.setEnabled(False)
+        self.hide_action.setEnabled(True)
         self.show()
         return
 
     def HideButtonClicked(self):
+        self.show_action.setEnabled(True)
+        self.hide_action.setEnabled(False)
         self.hide()
         return
 
     def CreateTrayMenu(self):
-        # system tray menu
-        self.tray_icon = QSystemTrayIcon(self)
-        #self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_DriveHDIcon))
-        self.tray_icon.setIcon(QIcon('./bitmaps/encfsgui.png'))
         
-        show_action = QAction("Show", self)
-        hide_action = QAction("Hide", self)
-        quit_action = QAction("Quit", self)
-        show_action.triggered.connect(self.ShowButtonClicked)
-        hide_action.triggered.connect(self.HideButtonClicked)
-        quit_action.triggered.connect(self.QuitButtonClicked)
+        self.show_action = QAction("Show", self)
+        self.hide_action = QAction("Hide", self)
+        self.quit_action = QAction("Quit", self)
+        self.settings_action = QAction("Settings", self)
+        
+        self.show_action.triggered.connect(self.ShowButtonClicked)
+        self.settings_action.triggered.connect(self.SetttingsButtonClicked)
+        self.hide_action.triggered.connect(self.HideButtonClicked)
+        self.quit_action.triggered.connect(self.QuitButtonClicked)
 
-        tray_menu = QMenu()
-        tray_menu.addAction(show_action)
-        tray_menu.addAction(hide_action)
-        tray_menu.addAction(quit_action)
-        self.tray_icon.setContextMenu(tray_menu)
+        self.PopulateVolumeMenu()
+
+
+        self.tray_menu.addAction(self.show_action)
+        self.tray_menu.addAction(self.hide_action)
+        self.tray_menu.addSeparator()
+        self.tray_menu.addAction(self.settings_action)
+        self.tray_menu.addSeparator()
+        self.volume_menu.setTitle("Volumes")
+        self.tray_menu.addMenu(self.volume_menu)
+        self.tray_menu.addSeparator()
+        self.tray_menu.addAction(self.quit_action)
+
+        if self.isVisible():
+            self.show_action.setEnabled(False)
+            self.hide_action.setEnabled(True)
+        else:
+            self.show_action.setEnabled(True)
+            self.hide_action.setEnabled(False)
+
+        self.tray_icon.setContextMenu(self.tray_menu)
         self.tray_icon.show()
         return
 
+
+    def PopulateVolumeMenu(self):
+        self.volume_menu.clear()
+
+        for volumename in encfsgui_globals.g_Volumes:
+            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+
+            self.volume_mount = QAction("Mount %s" % volumename, self)
+            self.volume_mount.triggered.connect(self.MenuMountVolume)
+            self.volume_menu.addAction(self.volume_mount)
+            
+            self.volume_unmount = QAction("Unmount %s" % volumename, self)
+            self.volume_unmount.triggered.connect(self.MenuUnmountVolume)
+            self.volume_menu.addAction(self.volume_unmount)
+
+            self.volume_menu.addSeparator()
+
+            if EncVolumeObj.ismounted:
+                self.volume_mount.setEnabled(False)
+                self.volume_unmount.setEnabled(True)
+            else:
+                self.volume_mount.setEnabled(True)
+                self.volume_unmount.setEnabled(False)
+
+        return
+
+    def MenuMountVolume(self):
+        actionname = self.sender().text()
+        volumename = self.getVolumeNameFromAction(actionname)
+        thispassword = self.getPasswordForVolume(volumename)
+        self.MountVolume(volumename, thispassword)
+        self.PopulateVolumeMenu()
+        return
+
+    def MenuUnmountVolume(self, action):
+        actionname = self.sender().text()
+        volumename = self.getVolumeNameFromAction(actionname)
+        self.UnmountVolume(volumename)
+        self.PopulateVolumeMenu()
+        return
+
+
+    def getVolumeNameFromAction(self, actionname):
+        volumename = ""
+        startindex = 0
+        if (actionname.startswith("Mount")):
+            volumename = actionname.lstrip("Mount ")
+        elif (actionname.startswith("Unmount")):
+            volumename = actionname.lstrip("Unmount ")
+        return volumename
 
     def CreateVolumeButtonClicked(self):
         createvolumewindow = CVolumeWindow()
@@ -441,7 +518,6 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_globals.appconfig.getSettings()
         self.SetInfoLabel()
         return
-
 
     def SetInfoLabel(self):
         self.infolabel = self.findChild(QtWidgets.QLabel, 'lbl_InfoLabel')
