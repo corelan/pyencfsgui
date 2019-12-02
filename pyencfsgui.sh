@@ -1,3 +1,3 @@
-cd /path_to_pyencfsgui_here
+cd /Users/corelanc0d3r/pyencfsgui
 python3 encfsgui.py &
 exit
