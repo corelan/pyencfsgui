@@ -279,6 +279,7 @@ class CMainWindow(QtWidgets.QDialog):
         createvolumewindow = CVolumeWindow()
         createvolumewindow.show()
         createvolumewindow.setRunMode(0)    # create
+        createvolumewindow.setFocus()
         createvolumewindow.exec_()
         self.RefreshVolumes()
         return
@@ -289,6 +290,7 @@ class CMainWindow(QtWidgets.QDialog):
         addvolumewindow = CVolumeWindow()
         addvolumewindow.show()
         addvolumewindow.setRunMode(1)    # add
+        addvolumewindow.setFocus()
         addvolumewindow.exec_()
         self.RefreshVolumes()
         return       
@@ -301,6 +303,7 @@ class CMainWindow(QtWidgets.QDialog):
             editvolumewindow.setRunMode(2)    # edit
             editvolumewindow.origvolumename = encfsgui_globals.g_CurrentlySelected
             editvolumewindow.PopulateFields(encfsgui_globals.g_CurrentlySelected)
+            editvolumewindow.setFocus()
             editvolumewindow.exec_()
             encfsgui_globals.appconfig.getVolumes()
             self.RefreshVolumes()
@@ -352,6 +355,7 @@ class CMainWindow(QtWidgets.QDialog):
         settingswindow = CSettingsWindow()
         settingswindow.loadSettings()
         settingswindow.show()
+        settingswindow.setFocus()
         settingswindow.exec_()
         # when dialog closes, refresh settings (in case user made a change)
         self.RefreshSettings()
