@@ -100,6 +100,10 @@ Sure!  Simply follow these steps:
     ```
     mv pyencfsgui.app pyencfsgui.bash
     ```
+- Open Finder, go to the folder that contains the repository, select the pyencfsgui.sh script, right-click and choose "Get Info"
+- Make sure the script will open with "Terminal"
+
+(it might be a good idea to also check/confirm that Terminal will close itself when the script exits)
 
 Bonus: if you would like to use the encfsgui icon for the shortcut in Dock, follow these steps:
 - Open "encfsgui.png" in the bitmaps folder
