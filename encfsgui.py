@@ -280,6 +280,7 @@ class CMainWindow(QtWidgets.QDialog):
         createvolumewindow.show()
         createvolumewindow.setRunMode(0)    # create
         createvolumewindow.setFocus()
+        createvolumewindow.activateWindow()
         createvolumewindow.exec_()
         self.RefreshVolumes()
         return
@@ -291,6 +292,7 @@ class CMainWindow(QtWidgets.QDialog):
         addvolumewindow.show()
         addvolumewindow.setRunMode(1)    # add
         addvolumewindow.setFocus()
+        addvolumewindow.activateWindow()
         addvolumewindow.exec_()
         self.RefreshVolumes()
         return       
@@ -304,6 +306,7 @@ class CMainWindow(QtWidgets.QDialog):
             editvolumewindow.origvolumename = encfsgui_globals.g_CurrentlySelected
             editvolumewindow.PopulateFields(encfsgui_globals.g_CurrentlySelected)
             editvolumewindow.setFocus()
+            editvolumewindow.activateWindow()
             editvolumewindow.exec_()
             encfsgui_globals.appconfig.getVolumes()
             self.RefreshVolumes()
@@ -356,6 +359,7 @@ class CMainWindow(QtWidgets.QDialog):
         settingswindow.loadSettings()
         settingswindow.show()
         settingswindow.setFocus()
+        settingswindow.activateWindow()
         settingswindow.exec_()
         # when dialog closes, refresh settings (in case user made a change)
         self.RefreshSettings()
@@ -382,6 +386,7 @@ class CMainWindow(QtWidgets.QDialog):
             frmpassword.setMountPath(EncVolumeObj.mount_path)
             frmpassword.show()
             frmpassword.setFocus()
+            frmpassword.activateWindow()
             frmpassword.exec_()
             thispassword = frmpassword.getPassword()
         else:
