@@ -412,22 +412,24 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # do we need to ask for confirmation?
         askforconfirmation = True
+        dounmount = False
         if "noconfirmationunmount" in encfsgui_globals.g_Settings:
             if encfsgui_globals.g_Settings["noconfirmationunmount"].lower() == "true":
                 askforconfirmation = False
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-            dounmount = True
-            if askforconfirmation and not forced:
-                msgBox = QtWidgets.QMessageBox()
-                msgBox.setIcon(QMessageBox.Question)
-                msgBox.setWindowTitle("Are you sure?")
-                msgBox.setText("Unmount volume '%s' \n '%s'?\n\n(Make sure all files on this volume are closed first!)" % (volumename, EncVolumeObj.mount_path))
-                msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes)
-                msgBox.addButton(QtWidgets.QMessageBox.No)
-                msgBox.show()
-                if (msgBox.exec_() == QtWidgets.QMessageBox.No):
-                    dounmount = False
+            if EncVolumeObj.ismounted:
+                dounmount = True
+                if askforconfirmation and not forced:
+                    msgBox = QtWidgets.QMessageBox()
+                    msgBox.setIcon(QMessageBox.Question)
+                    msgBox.setWindowTitle("Are you sure?")
+                    msgBox.setText("Unmount volume '%s' \n '%s'?\n\n(Make sure all files on this volume are closed first!)" % (volumename, EncVolumeObj.mount_path))
+                    msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes)
+                    msgBox.addButton(QtWidgets.QMessageBox.No)
+                    msgBox.show()
+                    if (msgBox.exec_() == QtWidgets.QMessageBox.No):
+                        dounmount = False
 
             if dounmount:
                 cmd = "%s '%s'" % (encfsgui_globals.g_Settings["umountpath"], EncVolumeObj.mount_path)
