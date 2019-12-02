@@ -12,6 +12,7 @@ import configparser
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
 
 import encfsgui_globals
 from encfsgui_globals import *
@@ -27,6 +28,11 @@ class CSettingsWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         super(CSettingsWindow, self).__init__()
         uic.loadUi('encfsgui_settings.ui', self)
+
+        # disable/remove buttons
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)
+        self.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
 
         # assign methods to buttons
         self.okbutton =  self.findChild(QtWidgets.QPushButton, 'btn_OK')

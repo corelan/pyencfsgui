@@ -11,6 +11,7 @@ import string
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
 
 import encfsgui_globals
 from encfsgui_globals import *
@@ -23,6 +24,11 @@ class CMountPassword(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         super(CMountPassword, self).__init__()
         uic.loadUi('encfsgui_password.ui', self)
+
+        # disable/remove buttons
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)
+        self.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
 
         self.lbl_enc_path = self.findChild(QtWidgets.QLabel, 'lbl_enc_path')
         self.lbl_mount_path = self.findChild(QtWidgets.QLabel, 'lbl_mount_path')

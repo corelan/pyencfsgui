@@ -57,7 +57,7 @@ class CMainWindow(QtWidgets.QDialog):
         uic.loadUi('encfsgui_main.ui', self)
 
         # disable/remove buttons
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.CustomizeWindowHint)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         self.setWindowFlag(QtCore.Qt.WindowMaximizeButtonHint, False)
         self.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
 
@@ -137,6 +137,7 @@ class CMainWindow(QtWidgets.QDialog):
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
                 msgBox.addButton(QtWidgets.QMessageBox.Yes)
                 msgBox.show()
+                msgBox.setFocus()
                 if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
                     doexit = True
             else:
@@ -227,11 +228,11 @@ class CMainWindow(QtWidgets.QDialog):
         for volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
 
-            self.volume_mount = QAction("Mount %s" % volumename, self)
+            self.volume_mount = QAction("Mount '%s'" % volumename, self)
             self.volume_mount.triggered.connect(self.MenuMountVolume)
             self.volume_menu.addAction(self.volume_mount)
             
-            self.volume_unmount = QAction("Unmount %s" % volumename, self)
+            self.volume_unmount = QAction("Unmount '%s'" % volumename, self)
             self.volume_unmount.triggered.connect(self.MenuUnmountVolume)
             self.volume_menu.addAction(self.volume_unmount)
 
@@ -267,11 +268,10 @@ class CMainWindow(QtWidgets.QDialog):
     def getVolumeNameFromAction(self, actionname):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         volumename = ""
-        startindex = 0
         if (actionname.startswith("Mount")):
-            volumename = actionname.lstrip("Mount ")
+            volumename = actionname.lstrip("Mount ").lstrip("'").rstrip("'")
         elif (actionname.startswith("Unmount")):
-            volumename = actionname.lstrip("Unmount ")
+            volumename = actionname.lstrip("Unmount ").lstrip("'").rstrip("'")
         return volumename
 
     def CreateVolumeButtonClicked(self):
@@ -383,7 +383,6 @@ class CMainWindow(QtWidgets.QDialog):
             frmpassword.show()
             frmpassword.setFocus()
             frmpassword.exec_()
-            # did we get a password?
             thispassword = frmpassword.getPassword()
         else:
             thispassword = str(encfsgui_helper.getKeyChainPassword(volumename))
