@@ -14,13 +14,14 @@ pyencfsgui was developed and tested on OSX High Sierra, Mojave and OSX Catalina,
 In order to use pyencfsgui, you need to install the following dependencies:
 
 - python3 (and PyQT5)
-- encfs (1.9.x)
 - OSXFuse
+- encfs (1.9.x)
+
 
 
 ### Installing dependencies on OSX
 
-1. Install Homebrew
+#### 1. Install Homebrew
 
   ```
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -28,7 +29,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
   brew doctor
   ```
 
-2. Install OSXFuse
+#### 2. Install OSXFuse
 
   Download the latest dmg installer image from https://osxfuse.github.io/ and run the installer.
 
@@ -42,7 +43,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
   Make sure to enable the kernel extension in System Preferences → Security & Privacy → General  if/as requested
   Reboot for osxfuse to work correctly.
 
-3. Install encfs
+#### 3. Install encfs
 
   ```
   brew update
@@ -60,12 +61,12 @@ In order to use pyencfsgui, you need to install the following dependencies:
   encfs    
   ```
 
-4. Install python3
+#### 4. Install python3
   ```
   brew install python3
   ```
 
-5. Install PyQt5
+#### 5. Install PyQt5
   ```
   pip3 install --upgrade pip --user
   python3 -m pip install PyQt5 --user
