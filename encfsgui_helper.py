@@ -49,6 +49,9 @@ def getEncFSVersion():
     cmdargs = '--version'
     cmdoutput = execOSCmd("%s %s" % (oscmd,cmdargs ))
     outputline = cmdoutput[0]
+    for line in cmdoutput:
+        if line.startswith("encfs "):
+            outputline = line
     outputparts = outputline.split(" ")
     encfsversion = outputparts[-1].replace('\n','')
     return encfsversion
