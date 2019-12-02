@@ -156,16 +156,35 @@ class CMainWindow(QtWidgets.QDialog):
         self.hide()
         return
 
+    def AboutClicked(self):
+        abouttext = "pyencfsgui is a python3/PyQT5 based GUI wrapper around encfs.\n\n"
+        abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina\n"
+        abouttext += "It may work on older systems and older versions of encfs, but you'll have to try and see for yourself\n\n"
+        abouttext += "pyencfsgui was written in 2019 by Peter 'corelanc0d3r' Van Eeckhoutte\n"
+        abouttext += "Corelan Consulting bvba - www.corelan-consulting.com | www.corelan-training.com\n\n"
+        abouttext += "Project repository: https://github.com/corelan/pyencfsgui\n\n"
+        abouttext +=  "You are running encfs version %s" % getEncFSVersion()
+
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("About pyencfsgui")
+        msgBox.setText(abouttext)
+        msgBox.show()
+        msgBox.exec_()
+        return
+
     def CreateTrayMenu(self):
         
         self.show_action = QAction("Show", self)
         self.hide_action = QAction("Hide", self)
-        self.quit_action = QAction("Quit", self)
         self.settings_action = QAction("Settings", self)
+        self.about_action = QAction("About", self)
+        self.quit_action = QAction("Quit", self)
+        
         
         self.show_action.triggered.connect(self.ShowButtonClicked)
-        self.settings_action.triggered.connect(self.SetttingsButtonClicked)
         self.hide_action.triggered.connect(self.HideButtonClicked)
+        self.settings_action.triggered.connect(self.SetttingsButtonClicked)
+        self.about_action.triggered.connect(self.AboutClicked)
         self.quit_action.triggered.connect(self.QuitButtonClicked)
 
         self.PopulateVolumeMenu()
@@ -178,6 +197,8 @@ class CMainWindow(QtWidgets.QDialog):
         self.tray_menu.addSeparator()
         self.volume_menu.setTitle("Volumes")
         self.tray_menu.addMenu(self.volume_menu)
+        self.tray_menu.addSeparator()
+        self.tray_menu.addAction(self.about_action)
         self.tray_menu.addSeparator()
         self.tray_menu.addAction(self.quit_action)
 
@@ -521,7 +542,7 @@ class CMainWindow(QtWidgets.QDialog):
 
     def SetInfoLabel(self):
         self.infolabel = self.findChild(QtWidgets.QLabel, 'lbl_InfoLabel')
-        encfsinfo = "encfs v%s" % (getEncFSVersion(encfsgui_globals.g_Settings))
+        encfsinfo = "encfs v%s" % (getEncFSVersion())
         self.infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, len(encfsgui_globals.g_Volumes), encfsgui_globals.volumesfile ))
         return
 

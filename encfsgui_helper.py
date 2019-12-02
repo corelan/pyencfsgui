@@ -38,9 +38,9 @@ def print_debug(line):
         print("%s - DEBUG : %s" % (getNow(), line))
     return
 
-def getEncFSVersion(g_Settings):
+def getEncFSVersion():
     encfsversion = ""
-    oscmd = g_Settings["encfspath"]
+    oscmd = encfsgui_globals.g_Settings["encfspath"]
     cmdargs = '--version'
     cmdoutput = execOSCmd("%s %s" % (oscmd,cmdargs ))
     outputline = cmdoutput[0]
