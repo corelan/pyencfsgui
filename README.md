@@ -81,3 +81,28 @@ In order to use pyencfsgui, you need to install the following dependencies:
 - Check/edit the settings as needed
 - Create a new volume (or add an existing one to the application)
 - Enjoy!
+
+### Can I add a shortcut to the app in my Dock?
+
+Sure!  Simply follow these steps:
+- Edit file pyencfsgui.sh and replace `path_to_pyencfsgui_here` (first line) with the full path to the folder where you have put the pyencfsgui repository
+- Open a Terminal and go to the folder than contains the pyencfsgui repository
+- Make the script executable:
+    ```
+    chmod +x pyencfsgui.sh
+    ````
+- Rename the script to pyencfsgui.app
+    ```
+    mv pyencfsgui.sh pyencfsgui.app
+    ```
+- Open Finder, go to the folder that contains the repository, and drag the .app file into your dock
+- In Terminal, rename the file back to .sh
+    ```
+    mv pyencfsgui.app pyencfsgui.bash
+    ```
+
+Bonus: if you would like to use the encfsgui icon for the shortcut in Dock, follow these steps:
+- Open "encfsgui.png" in the bitmaps folder
+- Use Cmd+A to select the image, and then Cmd+C to copy it to clipboard
+- Launch finder, open the folder that contains the pyencfsgui.sh script. Select the file, right-click and choose "Get Info"
+- Select the icon in the upper left corner of the Info window.  Then press Cmd+V to paste the image.
