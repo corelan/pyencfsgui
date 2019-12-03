@@ -215,14 +215,14 @@ class CMainWindow(QtWidgets.QDialog):
                 if not EncVolumeObj.ismounted:
                     self.volumemountaction = QAction("Mount volume", self) 
                     self.volumetablemenu.addAction(self.volumemountaction)
-                    self.volumemountaction.triggered.connect(self.MenuMountVolume)
+                    self.volumemountaction.triggered.connect(self.TableMenuMountVolume)
                     self.volumeeditaction = QAction("Edit volume", self)
                     self.volumetablemenu.addAction(self.volumeeditaction)
                     self.volumeeditaction.triggered.connect(self.EditVolumeButtonClicked)
                 else:
                     self.volumeunmountaction = QAction("Unmount volume", self) 
                     self.volumetablemenu.addAction(self.volumeunmountaction)
-                    self.volumeunmountaction.triggered.connect(self.MenuUnmountVolume)
+                    self.volumeunmountaction.triggered.connect(self.TableMenuUnmountVolume)
                 self.volumeinfoaction = QAction("Show info", self)
                 self.volumetablemenu.addAction(self.volumeinfoaction)
                 self.volumeinfoaction.triggered.connect(self.ShowVolumeInfoClicked)
@@ -302,15 +302,33 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         actionname = self.sender().text()
         volumename = self.getVolumeNameFromAction(actionname)
-        thispassword = self.getPasswordForVolume(volumename)
-        self.MountVolume(volumename, thispassword)
+        if volumename in encfsgui_globals.g_Volumes:
+            thispassword = self.getPasswordForVolume(volumename)
+            self.MountVolume(volumename, thispassword)
         self.PopulateVolumeMenu()
         return
+
+    def TableMenuMountVolume(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        volumename = encfsgui_globals.g_CurrentlySelected
+        if volumename in encfsgui_globals.g_Volumes:
+            thispassword = self.getPasswordForVolume(volumename)
+            self.MountVolume(volumename, thispassword)
+        self.PopulateVolumeMenu()
+        return
+
 
     def MenuUnmountVolume(self, action):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         actionname = self.sender().text()
         volumename = self.getVolumeNameFromAction(actionname)
+        self.UnmountVolume(volumename)
+        self.PopulateVolumeMenu()
+        return
+
+    def TableMenuUnmountVolume(self, action):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        volumename = encfsgui_globals.g_CurrentlySelected
         self.UnmountVolume(volumename)
         self.PopulateVolumeMenu()
         return

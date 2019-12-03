@@ -58,12 +58,17 @@ class CConfig():
                 EncVolume.passwordsaved = volumeconfig[volumename]["passwordsaved"]
 
             EncVolume.ismounted = False
+            encfsgui_helper.print_debug("Check if volume %s is mounted" % volumename)
             if EncVolume.mount_path != "":
+                # the extra space is important !
+                path_to_check = "%s " % EncVolume.mount_path
                 for item in mountlist:        
-                    if "encfs" in str(item) and EncVolume.mount_path in str(item):
+                    if "encfs" in str(item) and path_to_check in str(item):
+                        encfsgui_helper.print_debug("Volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item)))
                         EncVolume.ismounted = True
                         break
-
+                if not EncVolume.ismounted:
+                    encfsgui_helper.print_debug("Volume is not mounted")
             encfsgui_globals.g_Volumes[volumename] = EncVolume
 
         return
