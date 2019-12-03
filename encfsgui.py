@@ -112,10 +112,30 @@ class CMainWindow(QtWidgets.QDialog):
         #self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_DriveHDIcon))
         self.tray_icon.setIcon(QIcon('./bitmaps/encfsgui.png'))
         self.tray_menu = QMenu()
-
         self.volume_menu = QMenu()
-
         self.CreateTrayMenu()
+
+        # context menu for TableWidget
+        self.volumetable = self.findChild(QtWidgets.QTableWidget, 'tbl_Volumes')
+        self.volumetablemenu = QMenu()
+        self.volumetable.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.volumetable.customContextMenuRequested.connect(self.CreateVolumeMenu)
+        # capture right click
+        self.volumetable.viewport().installEventFilter(self)
+
+    def eventFilter(self, source, event):
+        if(event.type() == QtCore.QEvent.MouseButtonPress and
+           event.buttons() == QtCore.Qt.RightButton and
+           source is self.volumetable.viewport()):
+            item = self.volumetable.itemAt(event.pos())
+            encfsgui_helper.print_debug('Right-click at Global Pos: %s' % event.globalPos())
+            if item is not None:
+                encfsgui_helper.print_debug('Right-click Table Item: %s %s' % (item.row(), item.column()))
+                encfsgui_helper.print_debug('Currently selected volume: %s' % encfsgui_globals.g_CurrentlySelected)
+                self.CreateVolumeMenu()
+                self.volumetablemenu.exec_(event.globalPos())
+                #menu.exec_(event.globalPos())
+        return super(CMainWindow, self).eventFilter(source, event)
 
 
     #methods linked to buttons
@@ -180,6 +200,27 @@ class CMainWindow(QtWidgets.QDialog):
         msgBox.show()
         msgBox.exec_()
         return
+
+
+    # context menu
+    def CreateVolumeMenu(self):
+        self.volumetablemenu.clear()
+        volumename = encfsgui_globals.g_CurrentlySelected 
+        if volumename != "":
+            if volumename in encfsgui_globals.g_Volumes:
+                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                if not EncVolumeObj.ismounted:
+                    self.volumemountaction = QAction("Mount '%s'" % volumename, self) 
+                    self.volumetablemenu.addAction(self.volumemountaction)
+                    self.volumemountaction.triggered.connect(self.MenuMountVolume)
+                else:
+                    self.volumeunmountaction = QAction("Unmount '%s'" % volumename, self) 
+                    self.volumetablemenu.addAction(self.volumeunmountaction)
+                    self.volumeunmountaction.triggered.connect(self.MenuUnmountVolume)
+        return
+
+
+    # system tray menu
 
     def CreateTrayMenu(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
@@ -613,7 +654,6 @@ class CMainWindow(QtWidgets.QDialog):
             self.browsevolumebutton.setEnabled(False)
             self.editvolumebutton.setEnabled(False)
 
-        
         self.infovolumebutton.setEnabled(selectedenable)
         self.removevolumebutton.setEnabled(selectedenable)
 
