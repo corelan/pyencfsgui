@@ -209,14 +209,23 @@ class CMainWindow(QtWidgets.QDialog):
         if volumename != "":
             if volumename in encfsgui_globals.g_Volumes:
                 EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                self.volumemenuheader = QAction("Actions for volume '%s':" % volumename, self)
+                self.volumetablemenu.addAction(self.volumemenuheader)
+                self.volumetablemenu.addSeparator()
                 if not EncVolumeObj.ismounted:
-                    self.volumemountaction = QAction("Mount '%s'" % volumename, self) 
+                    self.volumemountaction = QAction("Mount volume", self) 
                     self.volumetablemenu.addAction(self.volumemountaction)
                     self.volumemountaction.triggered.connect(self.MenuMountVolume)
+                    self.volumeeditaction = QAction("Edit volume", self)
+                    self.volumetablemenu.addAction(self.volumeeditaction)
+                    self.volumeeditaction.triggered.connect(self.EditVolumeButtonClicked)
                 else:
-                    self.volumeunmountaction = QAction("Unmount '%s'" % volumename, self) 
+                    self.volumeunmountaction = QAction("Unmount volume", self) 
                     self.volumetablemenu.addAction(self.volumeunmountaction)
                     self.volumeunmountaction.triggered.connect(self.MenuUnmountVolume)
+                self.volumeinfoaction = QAction("Show info", self)
+                self.volumetablemenu.addAction(self.volumeinfoaction)
+                self.volumeinfoaction.triggered.connect(self.ShowVolumeInfoClicked)
         return
 
 
