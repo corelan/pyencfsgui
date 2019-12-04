@@ -42,6 +42,9 @@ from encfsgui_helper import *
 
 app = QApplication([])
 
+
+# init globals
+
 encfsgui_globals.g_Volumes = { }
 encfsgui_globals.g_Settings = { }
 encfsgui_globals.g_CurrentlySelected = ""
@@ -727,7 +730,6 @@ if __name__ == "__main__":
 
     if str(encfsgui_globals.g_Settings["starthidden"]).lower() == "false":
         mainwindow.show()
-
 
     if updateresult == 1:
         msgBox = QMessageBox()
