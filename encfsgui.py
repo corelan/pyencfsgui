@@ -707,6 +707,8 @@ if __name__ == "__main__":
     mainwindow.RefreshSettings()
     mainwindow.lbl_updatestate.setText("")
     
+    updateresult = 0
+
     if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
         updateresult = encfsgui_helper.autoUpdate()
         if updateresult == 0:
@@ -719,13 +721,25 @@ if __name__ == "__main__":
             boldfont = QFont()
             boldfont.setBold(True)
             mainwindow.lbl_updatestate.setFont(boldfont)
-            
 
     mainwindow.RefreshVolumes()
     mainwindow.AutoMount()
 
     if str(encfsgui_globals.g_Settings["starthidden"]).lower() == "false":
         mainwindow.show()
+
+
+    if updateresult == 1:
+        msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Information)
+        msgBox.setWindowTitle("Update found?")
+        msgBox.setText("An update has been found and downloaded via 'git pull'.\nPlease restart the application to run the updated code.\nWould you like to exit now?")
+        msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
+        msgBox.addButton(QtWidgets.QMessageBox.Yes)
+        msgBox.show()
+        msgBox.setFocus()
+        if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
+            mainwindow.QuitButtonClicked()
 
     app.setQuitOnLastWindowClosed(False)
     app.exec_()
