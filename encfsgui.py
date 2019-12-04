@@ -407,7 +407,7 @@ class CMainWindow(QtWidgets.QDialog):
         if volumename != "":
             if volumename in encfsgui_globals.g_Volumes:
                 EncVolumeObj =  encfsgui_globals.g_Volumes[volumename]
-                cmd = "%sctl -i '%s'" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path)
+                cmd = "%sctl info '%s'" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path)
                 cmdoutput = encfsgui_helper.execOSCmd(cmd)
                 infotext = "EncFS volume info for '%s'\n" % volumename
                 infotext += "Encrypted folder '%s'\n\n" % EncVolumeObj.enc_path
