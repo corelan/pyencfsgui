@@ -705,7 +705,8 @@ if __name__ == "__main__":
 
     mainwindow = CMainWindow()
     mainwindow.RefreshSettings()
-
+    mainwindow.lbl_updatestate.setText("")
+    
     if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
         updateresult = encfsgui_helper.autoUpdate()
         if updateresult == 0:
