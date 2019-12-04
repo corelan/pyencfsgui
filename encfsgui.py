@@ -453,6 +453,7 @@ class CMainWindow(QtWidgets.QDialog):
             frmpassword = CMountPassword()
             frmpassword.setEncPath(EncVolumeObj.enc_path)
             frmpassword.setMountPath(EncVolumeObj.mount_path)
+            frmpassword.setWindowTitle("Please enter password for volume '%s'" % volumename)
             frmpassword.show()
             frmpassword.setFocus()
             frmpassword.activateWindow()
