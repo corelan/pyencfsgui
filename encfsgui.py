@@ -694,12 +694,14 @@ if __name__ == "__main__":
 
     encfsgui_globals.appconfig = CConfig()
     encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
-
+        
     if str(encfsgui_globals.g_Settings["debugmode"]).lower() == "true":
         encfsgui_globals.debugmode = True
     else:
         encfsgui_globals.debugmode = False
 
+    if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
+        encfsgui_helper.autoUpdate()
 
     mainwindow = CMainWindow()
     mainwindow.RefreshSettings()

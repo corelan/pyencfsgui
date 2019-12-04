@@ -115,6 +115,8 @@ class CConfig():
         if not "debugmode" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["debugmode"] = "false"
             encfsgui_globals.debugmode = False
+        if not "autoupdate" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["autoupdate"] = "false"
 
         return
 
