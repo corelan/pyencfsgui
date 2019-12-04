@@ -620,7 +620,7 @@
     <rect>
      <x>10</x>
      <y>440</y>
-     <width>931</width>
+     <width>741</width>
      <height>16</height>
     </rect>
    </property>
@@ -631,13 +631,41 @@
     </font>
    </property>
    <property name="frameShape">
-    <enum>QFrame::NoFrame</enum>
+    <enum>QFrame::Panel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
+    <enum>QFrame::Sunken</enum>
    </property>
    <property name="text">
     <string>lbl_InfoLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_updatestate">
+   <property name="geometry">
+    <rect>
+     <x>759</x>
+     <y>440</y>
+     <width>201</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Jura</family>
+     <pointsize>11</pointsize>
+    </font>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Panel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Sunken</enum>
+   </property>
+   <property name="text">
+    <string>lbl_UpdateState</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
  </widget>

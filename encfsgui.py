@@ -102,6 +102,9 @@ class CMainWindow(QtWidgets.QDialog):
         self.unmountallbutton = self.findChild(QtWidgets.QToolButton, 'btn_unmountAll')
         self.unmountallbutton.clicked.connect(self.UnmountAllClicked)
 
+        self.lbl_updatestate = self.findChild(QtWidgets.QLabel, 'lbl_updatestate')
+        self.lbl_updatestate.setText("")
+
         # enable/disablebuttons as needed
         self.RefreshVolumes()
         self.EnableDisableButtons()
@@ -700,11 +703,22 @@ if __name__ == "__main__":
     else:
         encfsgui_globals.debugmode = False
 
-    if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
-        encfsgui_helper.autoUpdate()
-
     mainwindow = CMainWindow()
     mainwindow.RefreshSettings()
+
+    if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
+        updateresult = encfsgui_helper.autoUpdate()
+        if updateresult == 0:
+            appupdatestatus = "Up to date."
+        elif updateresult == 1:
+            appupdatestatus = '<span style="color:red">Update found, please restart.<span>'
+
+        mainwindow.lbl_updatestate.setText(appupdatestatus)
+        if updateresult == 1:
+            boldfont = QFont()
+            boldfont.setBold(True)
+            mainwindow.lbl_updatestate.setFont(boldfont)
+            
 
     mainwindow.RefreshVolumes()
     mainwindow.AutoMount()

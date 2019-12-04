@@ -92,14 +92,23 @@ def getKeyChainPassword(volumename):
     return password
 
 def autoUpdate():
+    updateresult = 0    # up to date
     print_debug("Start %s" % inspect.stack()[0][3])
     cmd = "git pull"
     gitoutput = execOSCmd(cmd)
     if (encfsgui_globals.debugmode):
         print_debug("Git output:")
-        for l in gitoutput:
+    updatefound = False
+    for l in gitoutput:
+        if (encfsgui_globals.debugmode):
             print_debug("  >> %s" % l)
-    return 
+        if ":" in l:
+            updatefound = True
+            break
+    
+    if updatefound:
+        updateresult = 1 # update found
+    return updateresult
 
 
 def getExpectScriptContents(insertbreak = False):
