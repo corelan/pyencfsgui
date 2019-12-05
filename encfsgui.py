@@ -768,4 +768,9 @@ if __name__ == "__main__":
 
     except Exception: 
         msg = traceback.format_exc()
-        encfsgui_helper.writefile(encfsgui_globals.logfile, [msg])
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Error")
+        msgBox.setText(msg)
+        msgBox.show()
+        msgBox.exec_()
+        #encfsgui_helper.writefile(encfsgui_globals.logfile, [msg])
