@@ -773,4 +773,3 @@ if __name__ == "__main__":
         msgBox.setText(msg)
         msgBox.show()
         msgBox.exec_()
-        #encfsgui_helper.writefile(encfsgui_globals.logfile, [msg])

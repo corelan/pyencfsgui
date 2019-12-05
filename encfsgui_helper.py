@@ -43,10 +43,10 @@ def createFile(filename):
 
 def print_debug(line):
     if encfsgui_globals.debugmode:
-        try:
-            print("%s - DEBUG : %s" % (getNow(), str(line)))
-        except Exception:
-            print(traceback.format_exc())
+        #try:
+        #    print("%s - DEBUG : %s" % (getNow(), str(line)))
+        #except Exception:
+        #    print(traceback.format_exc())
         writefile(encfsgui_globals.logfile, ["%s : %s" % (getNow(), str(line)) ] )
     return
 
