@@ -187,6 +187,7 @@ class CMainWindow(QtWidgets.QDialog):
 
         if doexit:
             self.AutoUnMount()
+            encfsgui_helper.print_debug("Application has exited.")
             sys.exit(0)
         return
 
@@ -765,6 +766,8 @@ if __name__ == "__main__":
 
         app.setQuitOnLastWindowClosed(False)
         app.exec_()
+
+        encfsgui_helper.print_debug("Application has exited.")
 
     except Exception: 
         msg = traceback.format_exc()
