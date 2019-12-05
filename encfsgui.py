@@ -767,4 +767,5 @@ if __name__ == "__main__":
         app.exec_()
 
     except Exception: 
-        traceback.print_exc(file=sys.stdout)
+        msg = traceback.format_exc()
+        encfsgui_helper.writefile(encfsgui_globals.logfile, [msg])

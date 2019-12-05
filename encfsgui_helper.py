@@ -5,6 +5,7 @@ import datetime
 import string
 import subprocess
 import inspect
+import traceback
 
 import encfsgui_globals
 from encfsgui_globals import *
@@ -42,7 +43,10 @@ def createFile(filename):
 
 def print_debug(line):
     if encfsgui_globals.debugmode:
-        print("%s - DEBUG : %s" % (getNow(), str(line)))
+        try:
+            print("%s - DEBUG : %s" % (getNow(), str(line)))
+        except Exception:
+            print(traceback.format_exc())
         writefile(encfsgui_globals.logfile, ["%s : %s" % (getNow(), str(line)) ] )
     return
 
