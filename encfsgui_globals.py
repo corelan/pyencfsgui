@@ -6,8 +6,10 @@ global appconfig
 global debugmode
 global settingsfile
 global volumesfile
+global logfile
 
 volumesfile = "encfsgui.volumes"
+logfile = "encfsgui.log"
 debugmode = False
 
 class CEncryptedVolume:

@@ -26,6 +26,7 @@ class CConfig():
         self.settingsfile = encfsgui_globals.settingsfile
         self.getSettings()
         self.getVolumes()
+
         return
 
     def getVolumes(self):

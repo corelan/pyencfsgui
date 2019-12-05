@@ -706,6 +706,8 @@ if __name__ == "__main__":
     else:
         encfsgui_globals.debugmode = False
 
+    encfsgui_helper.createFile(encfsgui_globals.logfile)
+
     mainwindow = CMainWindow()
     mainwindow.RefreshSettings()
     mainwindow.lbl_updatestate.setText("")
@@ -745,3 +747,4 @@ if __name__ == "__main__":
 
     app.setQuitOnLastWindowClosed(False)
     app.exec_()
+

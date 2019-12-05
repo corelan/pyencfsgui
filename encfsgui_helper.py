@@ -28,18 +28,22 @@ def readfile(filename):
     return contents
 
 def writefile(filename,contents):
-    print_debug("Start %s" % inspect.stack()[0][3])
-    print_debug("Creating %s" % filename)
-    f = open(filename,'w')
+    f = open(filename,'a')
     for l in contents:
         f.write("%s\n" % l)
     f.close()
-    print_debug("File created, wrote %d lines" % len(contents))
+    return
+
+def createFile(filename):
+    f = open(filename,'w+')
+    f.write("# file created at %s\n" % getNow())
+    f.close()
     return
 
 def print_debug(line):
     if encfsgui_globals.debugmode:
         print("%s - DEBUG : %s" % (getNow(), str(line)))
+        writefile(encfsgui_globals.logfile, ["%s : %s" % (getNow(), str(line)) ] )
     return
 
 def getEncFSVersion():

@@ -1,4 +1,5 @@
-encfs.settings
-encfs.volumes
+encfsgui.settings
+encfsgui.volumes
+encfsgui.log
 runpyencfsgui.sh
 old/
