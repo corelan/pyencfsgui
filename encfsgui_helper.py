@@ -62,7 +62,13 @@ def getEncFSVersion():
 
 def execOSCmd(cmd):
     print_debug("Start %s" % inspect.stack()[0][3])
-    print_debug("Executing '%s'" % cmd)
+    if not cmd.startswith("sh -c"):
+        print_debug("Executing '%s'" % cmd)
+    else:
+        print_debug("Note: A part of the command below will not shown because it might contain sensitive information (password)")
+        cmdparts = cmd.split("|")
+        if len(cmdparts) > 1:
+            print_debug("Executing '%s'" % cmdparts[1])
     p = subprocess.Popen('%s' % cmd,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT,
