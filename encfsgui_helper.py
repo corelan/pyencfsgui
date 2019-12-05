@@ -172,12 +172,13 @@ def determineFileNameEncodings():
     # run script file
     cmd = "expect '%s' '%s'" % (expectfilename, password)
     expectoutput = execOSCmd(cmd)
-
+    
     # parse output
     startfound = False
     endfound = False
     rawCaps = []
     for l in expectoutput:
+        print_debug(">>> %s" % l)
         if not startfound:
             if "filename encoding algorithms" in l and "available" in l:
                 startfound = True
@@ -197,7 +198,8 @@ def determineFileNameEncodings():
             thisencoding = capparts[1]
             encodings.append(thisencoding)
 
-    encfsgui_globals.g_Encodings = encodings
+    if len(encodings) > 0:
+        encfsgui_globals.g_Encodings = encodings
     # clean up again
 
     os.removedirs(tmpfolder_enc)
