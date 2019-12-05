@@ -7,6 +7,7 @@ import string
 import subprocess
 import configparser
 import inspect
+import traceback
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
@@ -711,56 +712,59 @@ class CMainWindow(QtWidgets.QDialog):
 
 
 if __name__ == "__main__":
+    try:
 
-    encfsgui_globals.settingsfile = 'encfsgui.settings'
+        encfsgui_globals.settingsfile = 'encfsgui.settings'
 
-    encfsgui_globals.appconfig = CConfig()
-    encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
+        encfsgui_globals.appconfig = CConfig()
+        encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
+            
+        if str(encfsgui_globals.g_Settings["debugmode"]).lower() == "true":
+            encfsgui_globals.debugmode = True
+        else:
+            encfsgui_globals.debugmode = False
+
+        encfsgui_helper.createFile(encfsgui_globals.logfile)
+
+        mainwindow = CMainWindow()
+        mainwindow.RefreshSettings()
+        mainwindow.lbl_updatestate.setText("")
         
-    if str(encfsgui_globals.g_Settings["debugmode"]).lower() == "true":
-        encfsgui_globals.debugmode = True
-    else:
-        encfsgui_globals.debugmode = False
+        updateresult = 0
 
-    encfsgui_helper.createFile(encfsgui_globals.logfile)
+        if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
+            updateresult = encfsgui_helper.autoUpdate()
+            if updateresult == 0:
+                appupdatestatus = "Up to date."
+            elif updateresult == 1:
+                appupdatestatus = '<span style="color:red">Update found, please restart.<span>'
 
-    mainwindow = CMainWindow()
-    mainwindow.RefreshSettings()
-    mainwindow.lbl_updatestate.setText("")
-    
-    updateresult = 0
+            mainwindow.lbl_updatestate.setText(appupdatestatus)
+            if updateresult == 1:
+                boldfont = QFont()
+                boldfont.setBold(True)
+                mainwindow.lbl_updatestate.setFont(boldfont)
 
-    if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
-        updateresult = encfsgui_helper.autoUpdate()
-        if updateresult == 0:
-            appupdatestatus = "Up to date."
-        elif updateresult == 1:
-            appupdatestatus = '<span style="color:red">Update found, please restart.<span>'
+        mainwindow.RefreshVolumes()
+        mainwindow.AutoMount()
 
-        mainwindow.lbl_updatestate.setText(appupdatestatus)
+        if str(encfsgui_globals.g_Settings["starthidden"]).lower() == "false":
+            mainwindow.show()
+
         if updateresult == 1:
-            boldfont = QFont()
-            boldfont.setBold(True)
-            mainwindow.lbl_updatestate.setFont(boldfont)
+            msgBox = QMessageBox()
+            msgBox.setIcon(QMessageBox.Information)
+            msgBox.setWindowTitle("Update found?")
+            msgBox.setText("An update has been found and downloaded via 'git pull'.\nPlease restart the application to run the updated code.\nWould you like to exit now?")
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
+            msgBox.addButton(QtWidgets.QMessageBox.Yes)
+            msgBox.show()
+            msgBox.setFocus()
+            if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
+                mainwindow.QuitButtonClicked()
 
-    mainwindow.RefreshVolumes()
-    mainwindow.AutoMount()
+        app.setQuitOnLastWindowClosed(False)
+        app.exec_()
 
-    if str(encfsgui_globals.g_Settings["starthidden"]).lower() == "false":
-        mainwindow.show()
-
-    if updateresult == 1:
-        msgBox = QMessageBox()
-        msgBox.setIcon(QMessageBox.Information)
-        msgBox.setWindowTitle("Update found?")
-        msgBox.setText("An update has been found and downloaded via 'git pull'.\nPlease restart the application to run the updated code.\nWould you like to exit now?")
-        msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
-        msgBox.addButton(QtWidgets.QMessageBox.Yes)
-        msgBox.show()
-        msgBox.setFocus()
-        if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
-            mainwindow.QuitButtonClicked()
-
-    app.setQuitOnLastWindowClosed(False)
-    app.exec_()
-
+    except Exception: 
+        traceback.print_exc(file=sys.stdout)
