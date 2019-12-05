@@ -545,30 +545,32 @@ class CMainWindow(QtWidgets.QDialog):
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             extra_osxfuse_opts = ""
             if (password != ""):
-                mountcmd = "%s '%s' '%s' %s" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path, EncVolumeObj.mount_path, EncVolumeObj.encfsmountoptions)
+                #mountcmd = "%s '%s' '%s' %s" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path, EncVolumeObj.mount_path, EncVolumeObj.encfsmountoptions)
                 if (EncVolumeObj.allowother):
                     extra_osxfuse_opts += "-o allow_other "
                 if (EncVolumeObj.mountaslocal):
                     extra_osxfuse_opts += "-o local "
-            # first, create mount point if necessary
-            createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
-            encfsgui_helper.execOSCmd(createfoldercmd)
+                # first, create mount point if necessary
+                createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
+                encfsgui_helper.execOSCmd(createfoldercmd)
 
-            encfsbin = encfsgui_globals.g_Settings["encfspath"]
-            encvol = EncVolumeObj.enc_path
-            mountvol = EncVolumeObj.mount_path
-            encfsmountoptions = ""
-            if not EncVolumeObj.encfsmountoptions == "":
-                encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
+                encfsbin = encfsgui_globals.g_Settings["encfspath"]
+                encvol = EncVolumeObj.enc_path
+                mountvol = EncVolumeObj.mount_path
+                encfsmountoptions = ""
+                if not EncVolumeObj.encfsmountoptions == "":
+                    encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
 
-            # do the actual mount
-            mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
-            #encfsgui_helper.print_debug("MOUNT: %s" % mountcmd)
-            encfsgui_helper.execOSCmd(mountcmd)
-            self.RefreshVolumes()
-            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-            if not EncVolumeObj.ismounted:
-                QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n" % volumename)
+                # do the actual mount
+                mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
+
+                encfsgui_helper.execOSCmd(mountcmd)
+                self.RefreshVolumes()
+                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                if not EncVolumeObj.ismounted:
+                    QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n" % volumename)
+            else:
+                encfsgui_helper.print_debug("Did not attempt to mount, empty password given")
         return
 
 
