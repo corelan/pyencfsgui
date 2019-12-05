@@ -126,9 +126,6 @@ class CConfig():
         if not "autoupdate" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["autoupdate"] = "false"
 
-        if len(encfsgui_globals.g_Encodings) == 0:
-            encfsgui_helper.determineFileNameEncodings()
-
         return
 
     def addVolume(self, volumename, EncVolumeObj):
