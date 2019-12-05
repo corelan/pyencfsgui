@@ -128,6 +128,8 @@ class CMainWindow(QtWidgets.QDialog):
         self.volumetable.customContextMenuRequested.connect(self.CreateVolumeMenu)
         # capture right click
         self.volumetable.viewport().installEventFilter(self)
+        # capture double click
+        self.volumetable.doubleClicked.connect(self.TableDoubleClicked)
 
     def eventFilter(self, source, event):
         if(event.type() == QtCore.QEvent.MouseButtonPress and
@@ -143,6 +145,18 @@ class CMainWindow(QtWidgets.QDialog):
                 #menu.exec_(event.globalPos())
         return super(CMainWindow, self).eventFilter(source, event)
 
+
+    # table double click
+    def TableDoubleClicked(self):
+        if encfsgui_globals.g_CurrentlySelected != "":
+            volumename = encfsgui_globals.g_CurrentlySelected
+            if volumename in encfsgui_globals.g_Volumes:
+                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                if EncVolumeObj.ismounted:
+                    self.UnmountVolumeClicked()
+                else:
+                    self.MountVolumeClicked()
+        return
 
     #methods linked to buttons
     def QuitButtonClicked(self):
