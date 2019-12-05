@@ -63,7 +63,6 @@ class CSettingsWindow(QtWidgets.QDialog):
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Select 'encfs' binary", self.txt_enfcsbinary.displayText(),"All Files (*)", options=options)
         if fileName:
-            
             self.txt_encfsbinary.setText("%s" % fileName)
         return
 

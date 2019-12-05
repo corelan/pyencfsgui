@@ -90,6 +90,8 @@ class CConfig():
         if "encodings" in appsettings:
             encodinglist = appsettings["encodings"]["filenameencodings"]
             encfsgui_globals.g_Encodings = encodinglist.split(",")
+            if len(encfsgui_globals.g_Encodings) == 0:
+                encfsgui_helper.determineFileNameEncodings()
 
         # in case the current settings file is incomplete, pick up additional settings
         self.populateDefaultSettings()
@@ -123,7 +125,6 @@ class CConfig():
             encfsgui_globals.debugmode = False
         if not "autoupdate" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["autoupdate"] = "false"
-
 
         if len(encfsgui_globals.g_Encodings) == 0:
             encfsgui_helper.determineFileNameEncodings()
