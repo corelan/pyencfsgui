@@ -751,7 +751,7 @@ if __name__ == "__main__":
         updateresult = 0
 
         if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
-            mainwindow.infolabel.setText("Checking for updates...")
+            mainwindow.lbl_infolabel.setText("Checking for updates...")
             updateresult = encfsgui_helper.autoUpdate()
             if updateresult == 0:
                 appupdatestatus = "Up to date."

@@ -5,3 +5,6 @@ runpyencfsgui.sh
 *_mnt
 *_enc
 old/
+.vscode/
+__pycache__/
+pyencfsgui.code-workspace
