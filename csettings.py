@@ -176,6 +176,9 @@ class CSettingsWindow(QtWidgets.QDialog):
         for settingkey in encfsgui_globals.g_Settings:
             config.set('config', settingkey, encfsgui_globals.g_Settings[settingkey])
 
+        config.add_section('encodings')
+        config.set('encodings','filenameencodings', ",".join(encfsgui_globals.g_Encodings))
+        
         # save file to disk
         with open(encfsgui_globals.settingsfile, 'w') as configfile:
             config.write(configfile)

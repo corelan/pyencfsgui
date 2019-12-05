@@ -10,6 +10,7 @@ import traceback
 import encfsgui_globals
 from encfsgui_globals import *
 
+
 #################################
 ### METHODS, HELPER FUNCTIONS ###
 #################################
@@ -126,86 +127,6 @@ def autoUpdate():
     if updatefound:
         updateresult = 1 # update found
     return updateresult
-
-def determineFileNameEncodings():
-    print_debug("Start %s" % inspect.stack()[0][3])
-    # create 2 new tmp folders
-    tmpname = getTmpName()
-    cwd = os.getcwd()
-    tmpfolder_enc = os.path.join(cwd, tmpname+"_enc")
-    tmpfolder_mnt = os.path.join(cwd, tmpname+"_mnt")
-    if os.path.exists(tmpfolder_enc):
-        os.removedirs(tmpfolder_enc)
-    if os.path.exists(tmpfolder_mnt):
-        os.removedirs(tmpfolder_mnt)
-    
-    os.mkdir(tmpfolder_enc)
-    os.mkdir(tmpfolder_mnt)
-
-    # try to create an encrypted volume, and parse output to determine the available fileencoding options
-    # argument True is needed to insert 'break' after getting the encoding options
-    scriptcontents = getExpectScriptContents(True)
-    password = "boguspassword"
-
-    # replace variables in the script
-    scriptcontents = scriptcontents.replace("$ENCFSBIN", encfsgui_globals.g_Settings["encfspath"])
-    scriptcontents = scriptcontents.replace("$ENCPATH", tmpfolder_enc)
-    scriptcontents = scriptcontents.replace("$MOUNTPATH", tmpfolder_mnt)
-    if getEncFSVersion().startswith("1.9."):
-        scriptcontents = scriptcontents.replace("$CIPHERALGO", "AES")
-    else:
-        scriptcontents = scriptcontents.replace("$CIPHERALGO", "1")
-    scriptcontents = scriptcontents.replace("$CIPHERKEYSIZE", "128")
-    scriptcontents = scriptcontents.replace("$BLOCKSIZE", "1024")
-    scriptcontents = scriptcontents.replace("$ENCODINGALGO", "1")
-    scriptcontents = scriptcontents.replace("$IVCHAINING","")
-    scriptcontents = scriptcontents.replace("$PERFILEIV","")
-    scriptcontents = scriptcontents.replace("$FILETOIVHEADERCHAINING","y")
-    scriptcontents = scriptcontents.replace("$BLOCKAUTHCODEHEADERS","")
-    scriptcontents = scriptcontents.replace("sleep x","expect eof")
-
-    expectfilename = "expect.encfsgui"
-    # write script to file
-    scriptfile = open(expectfilename, 'w')
-    scriptfile.write(scriptcontents)
-    scriptfile.close()
-    # run script file
-    cmd = "expect '%s' '%s'" % (expectfilename, password)
-    expectoutput = execOSCmd(cmd)
-    
-    # parse output
-    startfound = False
-    endfound = False
-    rawCaps = []
-    for l in expectoutput:
-        print_debug(">>> %s" % l)
-        if not startfound:
-            if "filename encoding algorithms" in l and "available" in l:
-                startfound = True
-        else:
-            if not "." in l:
-                endfound = True
-            else:
-                rawCaps.append(l)
-        if startfound and endfound:
-            break
-    
-    encodings = []
-
-    for l in rawCaps:
-        capparts = l.split(" ")
-        if len(capparts) > 1:
-            thisencoding = capparts[1]
-            encodings.append(thisencoding)
-
-    if len(encodings) > 0:
-        encfsgui_globals.g_Encodings = encodings
-    # clean up again
-
-    os.removedirs(tmpfolder_enc)
-    os.removedirs(tmpfolder_mnt)
-    os.remove(expectfilename)
-    return
 
 
 def getExpectScriptContents(insertbreak = False):
@@ -329,3 +250,101 @@ def getExpectScriptContents(insertbreak = False):
     scriptcontents += newline
     
     return scriptcontents
+
+
+def determineFileNameEncodings():
+        print_debug("Start %s" % inspect.stack()[0][3])
+
+        # create 2 new tmp folders
+        tmpname = getTmpName()
+        cwd = os.getcwd()
+        tmpfolder_enc = os.path.join(cwd, tmpname+"_enc")
+        tmpfolder_mnt = os.path.join(cwd, tmpname+"_mnt")
+        if os.path.exists(tmpfolder_enc):
+            os.removedirs(tmpfolder_enc)
+        if os.path.exists(tmpfolder_mnt):
+            os.removedirs(tmpfolder_mnt)
+        
+        os.mkdir(tmpfolder_enc)
+        os.mkdir(tmpfolder_mnt)
+
+        # try to create an encrypted volume, and parse output to determine the available fileencoding options
+        # argument True is needed to insert 'break' after getting the encoding options
+        scriptcontents = getExpectScriptContents(True)
+        password = "boguspassword"
+
+        # replace variables in the script
+        scriptcontents = scriptcontents.replace("$ENCFSBIN", encfsgui_globals.g_Settings["encfspath"])
+        scriptcontents = scriptcontents.replace("$ENCPATH", tmpfolder_enc)
+        scriptcontents = scriptcontents.replace("$MOUNTPATH", tmpfolder_mnt)
+        if getEncFSVersion().startswith("1.9."):
+            scriptcontents = scriptcontents.replace("$CIPHERALGO", "AES")
+        else:
+            scriptcontents = scriptcontents.replace("$CIPHERALGO", "1")
+        scriptcontents = scriptcontents.replace("$CIPHERKEYSIZE", "128")
+        scriptcontents = scriptcontents.replace("$BLOCKSIZE", "1024")
+        scriptcontents = scriptcontents.replace("$ENCODINGALGO", "1")
+        scriptcontents = scriptcontents.replace("$IVCHAINING","")
+        scriptcontents = scriptcontents.replace("$PERFILEIV","")
+        scriptcontents = scriptcontents.replace("$FILETOIVHEADERCHAINING","y")
+        scriptcontents = scriptcontents.replace("$BLOCKAUTHCODEHEADERS","")
+        scriptcontents = scriptcontents.replace("sleep x","expect eof")
+
+        expectfilename = "expect.encfsgui"
+        # write script to file
+        scriptfile = open(expectfilename, 'w')
+        scriptfile.write(scriptcontents)
+        scriptfile.close()
+        # run script file
+        cmd = "expect '%s' '%s'" % (expectfilename, password)
+        expectoutput = execOSCmd(cmd)
+        
+        # parse output
+        startfound = False
+        endfound = False
+        rawCaps = []
+        for l in expectoutput:
+            if not startfound:
+                if "filename encoding algorithms" in l and "available" in l:
+                    startfound = True
+            else:
+                if not "." in l:
+                    endfound = True
+                else:
+                    rawCaps.append(l)
+            if startfound and endfound:
+                break
+        
+        if not startfound:
+            rawCaps.clear()
+            endfound = False
+            # maybe encfs is in a different language, try in a different way
+            for l in expectoutput:
+                if not startfound:
+                    if "1. Block" in l:
+                        startfound = True
+                        rawCaps.append(l)
+                else:
+                    if not "." in l:
+                        endfound = True
+                    else:
+                        rawCaps.append(l)
+                if startfound and endfound:
+                    break
+
+        encodings = []
+        
+        for l in rawCaps:
+            capparts = l.split(" ")
+            if len(capparts) > 1:
+                thisencoding = capparts[1]
+                encodings.append(thisencoding)
+
+        if len(encodings) > 0:
+            encfsgui_globals.g_Encodings = encodings
+        # clean up again
+        os.removedirs(tmpfolder_enc)
+        os.removedirs(tmpfolder_mnt)
+        os.remove(expectfilename)
+
+        return

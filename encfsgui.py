@@ -41,7 +41,7 @@ from cconfig import *
 import encfsgui_helper
 from encfsgui_helper import *
 
-app = QApplication([])
+encfsgui_globals.app = QApplication([])
 
 
 # init globals
@@ -108,6 +108,9 @@ class CMainWindow(QtWidgets.QDialog):
 
         self.lbl_updatestate = self.findChild(QtWidgets.QLabel, 'lbl_updatestate')
         self.lbl_updatestate.setText("")
+
+        self.lbl_infolabel = self.findChild(QtWidgets.QLabel, 'lbl_InfoLabel')
+        self.lbl_infolabel.setText("")
 
         # enable/disablebuttons as needed
         self.RefreshVolumes()
@@ -223,6 +226,18 @@ class CMainWindow(QtWidgets.QDialog):
         msgBox.exec_()
         return
 
+    def checkFilenameEncodings(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        encfsgui_helper.print_debug("Encodings: %s" % encfsgui_globals.g_Encodings)
+        if len(encfsgui_globals.g_Encodings) == 0:
+            self.volumetable.setEnabled(False)
+            self.lbl_infolabel.setText("Getting filename encoding capabilities, hold on...")
+            encfsgui_helper.determineFileNameEncodings()
+            encfsgui_helper.print_debug("Encodings: %s" % encfsgui_globals.g_Encodings)
+            encfsgui_globals.appconfig.saveSettings()
+            self.volumetable.setEnabled(True)
+            self.SetInfoLabel()
+        return
 
     # context menu
     def CreateVolumeMenu(self):
@@ -365,8 +380,10 @@ class CMainWindow(QtWidgets.QDialog):
             volumename = actionname.lstrip("Unmount ").lstrip("'").rstrip("'")
         return volumename
 
+
     def CreateVolumeButtonClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        self.checkFilenameEncodings()
         createvolumewindow = CVolumeWindow()
         createvolumewindow.show()
         createvolumewindow.setRunMode(0)    # create
@@ -390,6 +407,7 @@ class CMainWindow(QtWidgets.QDialog):
 
     def EditVolumeButtonClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        self.checkFilenameEncodings()
         if encfsgui_globals.g_CurrentlySelected != "":
             editvolumewindow = CVolumeWindow()
             editvolumewindow.show()
@@ -676,9 +694,8 @@ class CMainWindow(QtWidgets.QDialog):
 
     def SetInfoLabel(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        self.infolabel = self.findChild(QtWidgets.QLabel, 'lbl_InfoLabel')
         encfsinfo = "encfs v%s" % (getEncFSVersion())
-        self.infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, len(encfsgui_globals.g_Volumes), encfsgui_globals.volumesfile ))
+        self.lbl_infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, len(encfsgui_globals.g_Volumes), encfsgui_globals.volumesfile ))
         return
 
     def EnableDisableButtons(self):
@@ -716,6 +733,7 @@ if __name__ == "__main__":
     try:
 
         encfsgui_globals.settingsfile = 'encfsgui.settings'
+        encfsgui_helper.createFile(encfsgui_globals.logfile)
 
         encfsgui_globals.appconfig = CConfig()
         encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
@@ -724,19 +742,16 @@ if __name__ == "__main__":
             encfsgui_globals.debugmode = True
         else:
             encfsgui_globals.debugmode = False
-
-        encfsgui_helper.createFile(encfsgui_globals.logfile)
-
-        if len(encfsgui_globals.g_Encodings) == 0:
-            encfsgui_helper.determineFileNameEncodings()
-
+        
+        encfsgui_helper.print_debug("Create main window")
         mainwindow = CMainWindow()
         mainwindow.RefreshSettings()
         mainwindow.lbl_updatestate.setText("")
-        
+
         updateresult = 0
 
         if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
+            mainwindow.infolabel.setText("Checking for updates...")
             updateresult = encfsgui_helper.autoUpdate()
             if updateresult == 0:
                 appupdatestatus = "Up to date."
@@ -767,10 +782,11 @@ if __name__ == "__main__":
             if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
                 mainwindow.QuitButtonClicked()
 
-        app.setQuitOnLastWindowClosed(False)
-        app.exec_()
+        encfsgui_globals.app.setQuitOnLastWindowClosed(False)
+        encfsgui_globals.app.exec_()
 
         encfsgui_helper.print_debug("Application has exited.")
+
 
     except Exception: 
         msg = traceback.format_exc()

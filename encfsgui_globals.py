@@ -8,6 +8,7 @@ global debugmode
 global settingsfile
 global volumesfile
 global logfile
+global app
 
 volumesfile = "encfsgui.volumes"
 logfile = "encfsgui.log"

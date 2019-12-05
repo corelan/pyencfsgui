@@ -85,13 +85,10 @@ class CConfig():
 
         for settingkey in appsettings["config"]:
             encfsgui_globals.g_Settings[settingkey] = appsettings["config"][settingkey].strip().replace("\n","")
-            #encfsgui_helper.print_debug("%s = %s" % (settingkey, encfsgui_globals.g_Settings[settingkey]))
-
+        
         if "encodings" in appsettings:
             encodinglist = appsettings["encodings"]["filenameencodings"]
             encfsgui_globals.g_Encodings = encodinglist.split(",")
-            if len(encfsgui_globals.g_Encodings) == 0:
-                encfsgui_helper.determineFileNameEncodings()
 
         # in case the current settings file is incomplete, pick up additional settings
         self.populateDefaultSettings()
@@ -100,7 +97,6 @@ class CConfig():
         encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
 
         return
-
 
     def populateDefaultSettings(self):
         #global encfsgui_globals.g_Settings
@@ -152,8 +148,9 @@ class CConfig():
         for settingkey in encfsgui_globals.g_Settings:
             config.set('config', settingkey, encfsgui_globals.g_Settings[settingkey])
 
-        config.add_section('encodings')
-        config.set('encodings','filenameencodings', ",".join(encfsgui_globals.g_Encodings))
+        if len(encfsgui_globals.g_Encodings) > 0:
+            config.add_section('encodings')
+            config.set('encodings','filenameencodings', ",".join(encfsgui_globals.g_Encodings))
 
         # save file to disk
         with open(self.settingsfile, 'w') as configfile:
