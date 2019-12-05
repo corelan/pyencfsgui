@@ -2,4 +2,6 @@ encfsgui.settings
 encfsgui.volumes
 encfsgui.log
 runpyencfsgui.sh
+*_mnt
+*_enc
 old/

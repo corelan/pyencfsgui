@@ -26,7 +26,6 @@ class CConfig():
         self.settingsfile = encfsgui_globals.settingsfile
         self.getSettings()
         self.getVolumes()
-
         return
 
     def getVolumes(self):
@@ -74,8 +73,8 @@ class CConfig():
 
         return
     
+
     def getSettings(self):
-        
         # if file does not exist, generate default file
         if not os.path.exists(self.settingsfile):
             self.populateDefaultSettings()
@@ -87,6 +86,11 @@ class CConfig():
         for settingkey in appsettings["config"]:
             encfsgui_globals.g_Settings[settingkey] = appsettings["config"][settingkey].strip().replace("\n","")
             #encfsgui_helper.print_debug("%s = %s" % (settingkey, encfsgui_globals.g_Settings[settingkey]))
+
+        if "encodings" in appsettings:
+            encodinglist = appsettings["encodings"]["filenameencodings"]
+            encfsgui_globals.g_Encodings = encodinglist.split(",")
+
         # in case the current settings file is incomplete, pick up additional settings
         self.populateDefaultSettings()
         self.saveSettings()
@@ -94,6 +98,7 @@ class CConfig():
         encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
 
         return
+
 
     def populateDefaultSettings(self):
         #global encfsgui_globals.g_Settings
@@ -118,6 +123,10 @@ class CConfig():
             encfsgui_globals.debugmode = False
         if not "autoupdate" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["autoupdate"] = "false"
+
+
+        if len(encfsgui_globals.g_Encodings) == 0:
+            encfsgui_helper.determineFileNameEncodings()
 
         return
 
@@ -144,6 +153,9 @@ class CConfig():
         config.add_section('config')
         for settingkey in encfsgui_globals.g_Settings:
             config.set('config', settingkey, encfsgui_globals.g_Settings[settingkey])
+
+        config.add_section('encodings')
+        config.set('encodings','filenameencodings', ",".join(encfsgui_globals.g_Encodings))
 
         # save file to disk
         with open(self.settingsfile, 'w') as configfile:

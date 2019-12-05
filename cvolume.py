@@ -100,10 +100,8 @@ class CVolumeWindow(QtWidgets.QDialog):
             blocksize += 16
 
         self.filenameencodingcombo.clear()
-        self.filenameencodingcombo.addItem("Stream")
-        self.filenameencodingcombo.addItem("Block")
-        self.filenameencodingcombo.addItem("Block32")
-        self.filenameencodingcombo.addItem("Null")
+        for encodingtype in encfsgui_globals.g_Encodings:
+            self.filenameencodingcombo.addItem(encodingtype)
 
         self.SelectProfileBalanced()
     
@@ -331,13 +329,15 @@ class CVolumeWindow(QtWidgets.QDialog):
         cipheralgos["AES"] = 1
         cipheralgos["Blowfish"] = 2
         cipheralgos["Camilla"] = 3
-        selectedalgo = str(cipheralgos[self.ciphercombo.currentText()])
-
+        if encfsgui_helper.getEncFSVersion().startswith("1.9."):
+            selectedalgo = str(cipheralgos[self.ciphercombo.currentText()])
+        else:
+            selectedalgo = "%s" % self.ciphercombo.currentText()
+        
         fileencodings = {}
-        fileencodings["Block"] = 1
-        fileencodings["Block32"] = 2
-        fileencodings["Null"] = 3
-        fileencodings["Stream"] = 4
+        encodingindex = 1
+        for encodingtype in encfsgui_globals.g_Encodings:
+            fileencodings[encodingtype] = encodingindex
         selectedfileencoding = str(fileencodings[self.filenameencodingcombo.currentText()])
 
         encfolderfound = False

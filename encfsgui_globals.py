@@ -1,6 +1,7 @@
 # globals and global classes
 global g_Volumes
 global g_Settings
+global g_Encodings
 global g_CurrentlySelected
 global appconfig
 global debugmode
@@ -11,6 +12,7 @@ global logfile
 volumesfile = "encfsgui.volumes"
 logfile = "encfsgui.log"
 debugmode = False
+g_Encodings = []
 
 class CEncryptedVolume:
     def __init__(self):

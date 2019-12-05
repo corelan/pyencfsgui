@@ -727,6 +727,9 @@ if __name__ == "__main__":
 
         encfsgui_helper.createFile(encfsgui_globals.logfile)
 
+        if len(encfsgui_globals.g_Encodings) == 0:
+            encfsgui_helper.determineFileNameEncodings()
+
         mainwindow = CMainWindow()
         mainwindow.RefreshSettings()
         mainwindow.lbl_updatestate.setText("")
@@ -771,6 +774,7 @@ if __name__ == "__main__":
 
     except Exception: 
         msg = traceback.format_exc()
+        print(msg)
         msgBox = QMessageBox()
         msgBox.setWindowTitle("Error")
         msgBox.setText(msg)
