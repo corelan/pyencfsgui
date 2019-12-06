@@ -234,6 +234,7 @@ class CMainWindow(QtWidgets.QDialog):
             self.lbl_infolabel.setText("Getting filename encoding capabilities, hold on...")
             self.lbl_infolabel.update()
             encfsgui_globals.app.processEvents()
+            self.update()
             encfsgui_helper.determineFileNameEncodings()
             encfsgui_helper.print_debug("Encodings: %s" % encfsgui_globals.g_Encodings)
             encfsgui_globals.appconfig.saveSettings()

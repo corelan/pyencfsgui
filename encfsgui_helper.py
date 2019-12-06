@@ -304,6 +304,7 @@ def determineFileNameEncodings():
         endfound = False
         rawCaps = []
         for l in expectoutput:
+            #print_debug(">>> %s" % l)
             if not startfound:
                 if "filename encoding algorithms" in l and "available" in l:
                     startfound = True
