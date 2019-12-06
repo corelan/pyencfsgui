@@ -332,7 +332,8 @@ class CVolumeWindow(QtWidgets.QDialog):
 
         encfsversion = encfsgui_helper.getEncFSVersion() 
         selectedalgo = 1
-        if encfsversion.startswith("1.9."):
+        if not encfsversion.startswith("1.9."):
+            # number selection
             selectedalgo = str(cipheralgos[self.ciphercombo.currentText()])
         else:
             selectedalgo = "%s" % self.ciphercombo.currentText()
@@ -343,7 +344,8 @@ class CVolumeWindow(QtWidgets.QDialog):
         for encodingtype in encfsgui_globals.g_Encodings:
             fileencodings[encodingtype] = encodingindex
             encodingindex += 1
-        if encfsversion.startswith("1.9."):
+        if not encfsversion.startswith("1.9."):
+            # number selection
             selectedfileencoding = str(fileencodings[self.filenameencodingcombo.currentText()])
         else:
             selectedfileencoding = "%s" % self.filenameencodingcombo.currentText()

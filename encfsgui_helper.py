@@ -277,10 +277,10 @@ def determineFileNameEncodings():
         scriptcontents = scriptcontents.replace("$ENCFSBIN", encfsgui_globals.g_Settings["encfspath"])
         scriptcontents = scriptcontents.replace("$ENCPATH", tmpfolder_enc)
         scriptcontents = scriptcontents.replace("$MOUNTPATH", tmpfolder_mnt)
-        if getEncFSVersion().startswith("1.9."):
-            scriptcontents = scriptcontents.replace("$CIPHERALGO", "AES")
-        else:
+        if not getEncFSVersion().startswith("1.9."):
             scriptcontents = scriptcontents.replace("$CIPHERALGO", "1")
+        else:
+            scriptcontents = scriptcontents.replace("$CIPHERALGO", "AES")
         scriptcontents = scriptcontents.replace("$CIPHERKEYSIZE", "128")
         scriptcontents = scriptcontents.replace("$BLOCKSIZE", "1024")
         scriptcontents = scriptcontents.replace("$ENCODINGALGO", "1")
