@@ -233,6 +233,7 @@ class CMainWindow(QtWidgets.QDialog):
             self.volumetable.setEnabled(False)
             self.lbl_infolabel.setText("Getting filename encoding capabilities, hold on...")
             self.lbl_infolabel.update()
+            encfsgui_globals.app.processEvents()
             encfsgui_helper.determineFileNameEncodings()
             encfsgui_helper.print_debug("Encodings: %s" % encfsgui_globals.g_Encodings)
             encfsgui_globals.appconfig.saveSettings()
@@ -698,6 +699,7 @@ class CMainWindow(QtWidgets.QDialog):
         encfsinfo = "encfs v%s" % (getEncFSVersion())
         self.lbl_infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, len(encfsgui_globals.g_Volumes), encfsgui_globals.volumesfile ))
         self.lbl_infolabel.update()
+        encfsgui_globals.app.processEvents()
         return
 
     def EnableDisableButtons(self):
