@@ -244,6 +244,7 @@ class CMainWindow(QtWidgets.QDialog):
 
     # context menu
     def CreateVolumeMenu(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.volumetablemenu.clear()
         volumename = encfsgui_globals.g_CurrentlySelected 
         if volumename != "":
@@ -331,11 +332,14 @@ class CMainWindow(QtWidgets.QDialog):
 
             if EncVolumeObj.ismounted:
                 self.volume_mount.setEnabled(False)
+                self.volume_mount.setVisible(False)
                 self.volume_unmount.setEnabled(True)
+                self.volume_unmount.setVisible(True)
             else:
                 self.volume_mount.setEnabled(True)
+                self.volume_mount.setVisible(True)
                 self.volume_unmount.setEnabled(False)
-
+                self.volume_unmount.setVisible(False)
         return
 
     def MenuMountVolume(self):
@@ -551,6 +555,10 @@ class CMainWindow(QtWidgets.QDialog):
                 EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
                 if EncVolumeObj.ismounted:
                     QtWidgets.QMessageBox.critical(None,"Error unmounting volume","Unable to unmount volume '%s'\nMake sure all files are closed and try again." % volumename)
+
+        # update context menu's
+        self.PopulateVolumeMenu()
+
         return
 
 
@@ -594,6 +602,9 @@ class CMainWindow(QtWidgets.QDialog):
                     QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n" % volumename)
             else:
                 encfsgui_helper.print_debug("Did not attempt to mount, empty password given")
+
+            # update context menu's
+            self.PopulateVolumeMenu()
         return
 
 
