@@ -346,11 +346,11 @@
        <bool>false</bool>
       </property>
       <property name="text">
-       <string>Mount &amp;&amp; expose</string>
+       <string>Mount</string>
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>bitmaps/mountfolder.png</normaloff>bitmaps/mountfolder.png</iconset>
+        <normaloff>bitmaps/icons8-warning-shield-32.png</normaloff>bitmaps/icons8-warning-shield-32.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -375,11 +375,11 @@
        </font>
       </property>
       <property name="text">
-       <string>Unmount &amp;&amp; lock</string>
+       <string>Unmount</string>
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>bitmaps/unmountfolder.png</normaloff>bitmaps/unmountfolder.png</iconset>
+        <normaloff>bitmaps/icons8-protect-32.png</normaloff>bitmaps/icons8-protect-32.png</iconset>
       </property>
       <property name="iconSize">
        <size>
