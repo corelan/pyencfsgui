@@ -121,6 +121,10 @@ class CConfig():
             encfsgui_globals.debugmode = False
         if not "autoupdate" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["autoupdate"] = "false"
+        if not "confirmforceunmountall" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["confirmforceunmountall"] = "false"
+        if not "doubleclickmount" in encfsgui_globals.g_Settings: 
+            encfsgui_globals.g_Settings["doubleclickmount"] = "false"
 
         return
 

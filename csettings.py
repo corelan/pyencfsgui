@@ -125,6 +125,8 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.chk_noconfirmationunmount = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationunmount')
         self.chk_noconfirmationexit = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationexit')
         self.chk_debugmode = self.findChild(QtWidgets.QCheckBox, 'chk_debugmode')
+        self.chk_confirmforceunmountall = self.findChild(QtWidgets.QCheckBox, 'chk_confirmforceunmountall')
+        self.chk_doubleclickmount = self.findChild(QtWidgets.QCheckBox, 'chk_doubleclickmount')
 
         if (encfsgui_globals.g_Settings["autounmount"].lower() == "true"):
             self.chk_autounmount.setChecked(True)
@@ -146,6 +148,12 @@ class CSettingsWindow(QtWidgets.QDialog):
         if (encfsgui_globals.g_Settings["autoupdate"].lower() == "true"):
             self.chk_autoupdate.setChecked(True)
 
+        if (encfsgui_globals.g_Settings["confirmforceunmountall"].lower() == "true"):
+            self.chk_confirmforceunmountall.setChecked(True)
+
+        if (encfsgui_globals.g_Settings["doubleclickmount"].lower() == "true"):
+            self.chk_doubleclickmount.setChecked(True)
+
         return
 
 
@@ -164,6 +172,8 @@ class CSettingsWindow(QtWidgets.QDialog):
         encfsgui_globals.g_Settings["starthidden"] = str(self.chk_starthidden.isChecked()).lower()
         encfsgui_globals.g_Settings["debugmode"] = str(self.chk_debugmode.isChecked()).lower()
         encfsgui_globals.g_Settings["autoupdate"] = str(self.chk_autoupdate.isChecked()).lower()
+        encfsgui_globals.g_Settings["confirmforceunmountall"] = str(self.chk_confirmforceunmountall.isChecked()).lower()
+        encfsgui_globals.g_Settings["doubleclickmount"] = str(self.chk_doubleclickmount.isChecked()).lower()
         if self.chk_debugmode.isChecked():
             encfsgui_globals.debugmode = True
             encfsgui_helper.print_debug("Enable debug mode")

@@ -152,14 +152,15 @@ class CMainWindow(QtWidgets.QDialog):
 
     # table double click
     def TableDoubleClicked(self):
-        if encfsgui_globals.g_CurrentlySelected != "":
-            volumename = encfsgui_globals.g_CurrentlySelected
-            if volumename in encfsgui_globals.g_Volumes:
-                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-                if EncVolumeObj.ismounted:
-                    self.UnmountVolumeClicked()
-                else:
-                    self.MountVolumeClicked()
+        if encfsgui_globals.g_Settings["doubleclickmount"].lower() == "true":
+            if encfsgui_globals.g_CurrentlySelected != "":
+                volumename = encfsgui_globals.g_CurrentlySelected
+                if volumename in encfsgui_globals.g_Volumes:
+                    EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                    if EncVolumeObj.ismounted:
+                        self.UnmountVolumeClicked()
+                    else:
+                        self.MountVolumeClicked()
         return
 
     #methods linked to buttons
@@ -520,8 +521,20 @@ class CMainWindow(QtWidgets.QDialog):
 
     def UnmountAllClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        for volumename in encfsgui_globals.g_Volumes:
-            self.UnmountVolume(volumename, True)
+        continueunmount = True
+        if  encfsgui_globals.g_Settings["confirmforceunmountall"].lower() == "true":
+            forcedmsgBox = QtWidgets.QMessageBox()
+            forcedmsgBox.setIcon(QMessageBox.Question)
+            forcedmsgBox.setWindowTitle("Are you sure?")
+            forcedmsgBox.setText("Are you sure you would like to forcibly unmount all volumes now?")
+            forcedmsgBox.setStandardButtons(QtWidgets.QMessageBox.Yes)
+            forcedmsgBox.addButton(QtWidgets.QMessageBox.No)
+            forcedmsgBox.show()
+            if (forcedmsgBox.exec_() == QtWidgets.QMessageBox.No):
+                continueunmount = False
+        if continueunmount:
+            for volumename in encfsgui_globals.g_Volumes:
+                self.UnmountVolume(volumename, True)
         self.RefreshVolumes()
         return
 
@@ -533,6 +546,7 @@ class CMainWindow(QtWidgets.QDialog):
         if "noconfirmationunmount" in encfsgui_globals.g_Settings:
             if encfsgui_globals.g_Settings["noconfirmationunmount"].lower() == "true":
                 askforconfirmation = False
+
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             if EncVolumeObj.ismounted:
