@@ -23,6 +23,10 @@ from encfsgui_helper import *
 import cconfig
 from cconfig import CConfig
 
+import cnewmasterkey
+from cnewmasterkey import CNewMasterKey
+
+
 class CSettingsWindow(QtWidgets.QDialog):
     def __init__(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
@@ -127,6 +131,8 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.chk_debugmode = self.findChild(QtWidgets.QCheckBox, 'chk_debugmode')
         self.chk_confirmforceunmountall = self.findChild(QtWidgets.QCheckBox, 'chk_confirmforceunmountall')
         self.chk_doubleclickmount = self.findChild(QtWidgets.QCheckBox, 'chk_doubleclickmount')
+        self.chk_encrypt = self.findChild(QtWidgets.QCheckBox, 'chk_encrypt')
+        self.chk_clearkeywhenhidden = self.findChild(QtWidgets.QCheckBox, 'chk_clearkeywhenhidden')
 
         if (encfsgui_globals.g_Settings["autounmount"].lower() == "true"):
             self.chk_autounmount.setChecked(True)
@@ -153,6 +159,12 @@ class CSettingsWindow(QtWidgets.QDialog):
 
         if (encfsgui_globals.g_Settings["doubleclickmount"].lower() == "true"):
             self.chk_doubleclickmount.setChecked(True)
+        
+        if (encfsgui_globals.g_Settings["encrypt"].lower() == "true"):
+            self.chk_encrypt.setChecked(True)
+
+        if (encfsgui_globals.g_Settings["clearkeywhenhidden"].lower() == "true"):
+            self.chk_clearkeywhenhidden.setChecked(True)
 
         return
 
@@ -174,12 +186,63 @@ class CSettingsWindow(QtWidgets.QDialog):
         encfsgui_globals.g_Settings["autoupdate"] = str(self.chk_autoupdate.isChecked()).lower()
         encfsgui_globals.g_Settings["confirmforceunmountall"] = str(self.chk_confirmforceunmountall.isChecked()).lower()
         encfsgui_globals.g_Settings["doubleclickmount"] = str(self.chk_doubleclickmount.isChecked()).lower()
+        encfsgui_globals.g_Settings["clearkeywhenhidden"] = str(self.chk_clearkeywhenhidden.isChecked()).lower()
         if self.chk_debugmode.isChecked():
             encfsgui_globals.debugmode = True
             encfsgui_helper.print_debug("Enable debug mode")
         else:
             encfsgui_helper.print_debug("Disable debug mode")
             encfsgui_globals.debugmode = False
+
+        # encryption?
+        if (self.chk_encrypt.isChecked() and str(encfsgui_globals.g_Settings["encrypt"]).lower() == "false"):
+            # ask for master password
+            encryptionpassword = ""
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle("Enable encryption/master password?")
+            msgBox.setText("You are about to enable encryption of the encfsgui.volumes file.\n\nYour 'masterkey' password will NOT be stored and cannot be recovered.\nIf you forget the master password, you will not be able to recover/decrypt the contents of the encfsgui.volumes file.\n\nAre you sure?")
+            msgBox.setIcon(QMessageBox.Question)
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes)
+            msgBox.addButton(QtWidgets.QMessageBox.No)
+            msgBox.show()
+            if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
+                # ask for the password
+                masterpwwindow = CNewMasterKey()
+                masterpwwindow.setWindowTitle("Please enter master password")
+                masterpwwindow.show()
+                masterpwwindow.exec_()
+                encryptionpassword = masterpwwindow.getPassword()
+            # no password = no encryption
+            if encryptionpassword != "":
+                encfsgui_globals.masterkey = encryptionpassword
+                encfsgui_globals.g_Settings["encrypt"] = "true"
+                # make sure to encrypt the volumes file - simply request volumes file to be written to disk
+                # encryption is handled by the saveVolumes method
+                encfsgui_globals.appconfig.saveVolumes()
+            else:
+                encfsgui_globals.g_Settings["encrypt"] = "false"
+
+
+        if (not self.chk_encrypt.isChecked()) and str(encfsgui_globals.g_Settings["encrypt"]).lower() == "true":
+            # ask to confirm to remove encryption?
+            removeencryption = False
+
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle("Disable encryption/master password?")
+            msgBox.setText("You are about to disable encryption of the encfsgui.volumes file.\n\nThis will decrypt the contents of the file and remove the need to use a master password.\n\nAre you sure?")
+            msgBox.setIcon(QMessageBox.Question)
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
+            msgBox.addButton(QtWidgets.QMessageBox.Yes)
+            msgBox.show()
+            if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
+                removeencryption = True
+            if removeencryption:
+                encfsgui_globals.g_Settings["encrypt"] = "false"
+                encfsgui_globals.masterkey = ""
+            else:
+                # leave encryption active
+                encfsgui_globals.g_Settings["encrypt"] = "true"
+
         # and write to file
         config = configparser.RawConfigParser()
         config.add_section('config')
@@ -192,4 +255,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         # save file to disk
         with open(encfsgui_globals.settingsfile, 'w') as configfile:
             config.write(configfile)
+
+        # save volumes (to make sure it gets encrypted or decrypted)
+        encfsgui_globals.appconfig.saveVolumes()
         return

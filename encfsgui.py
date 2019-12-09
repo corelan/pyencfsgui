@@ -199,7 +199,13 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.show_action.setEnabled(False)
         self.hide_action.setEnabled(True)
+        encfsgui_globals.ishidden = False
         self.show()
+        # force reload of modules and update window
+        self.volumetable.clearContents()
+        encfsgui_globals.appconfig.getVolumes()
+        self.RefreshVolumes()
+        self.SetInfoLabel() 
         self.setFocus()
         return
 
@@ -207,6 +213,9 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.show_action.setEnabled(True)
         self.hide_action.setEnabled(False)
+        if encfsgui_globals.g_Settings["clearkeywhenhidden"] == "true":
+            encfsgui_globals.masterkey = ""
+        encfsgui_globals.ishidden = True
         self.hide()
         return
 
@@ -800,6 +809,9 @@ if __name__ == "__main__":
 
         if str(encfsgui_globals.g_Settings["starthidden"]).lower() == "false":
             mainwindow.show()
+            encfsgui_globals.ishidden = False
+        else:
+            encfsgui_globals.ishidden = True      
 
         if updateresult == 1:
             msgBox = QMessageBox()

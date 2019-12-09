@@ -40,6 +40,7 @@ class CConfig():
 
         for volumename in volumeconfig.sections():
             EncVolume = CEncryptedVolume()
+            
             if "enc_path" in volumeconfig[volumename]:
                 EncVolume.enc_path = volumeconfig[volumename]["enc_path"]
             if "mount_path" in volumeconfig[volumename]:
@@ -57,6 +58,22 @@ class CConfig():
             if "passwordsaved" in  volumeconfig[volumename]:
                 EncVolume.passwordsaved = volumeconfig[volumename]["passwordsaved"]
 
+            # do we need to decrypt ?
+            # if encryption is enabled, decrypt strings in memory using master password
+            if encfsgui_globals.g_Settings["encrypt"] == "true":
+                # do we have the master key?
+                if (encfsgui_globals.masterkey == ""):
+                    # ask for masterkey
+                    encfsgui_globals.masterkey = encfsgui_helper.getMasterKey()
+
+                if (encfsgui_globals.masterkey != ""):
+                    try:
+                        EncVolume.enc_path = encfsgui_helper.decrypt(EncVolume.enc_path).decode()
+                        EncVolume.mount_path = encfsgui_helper.decrypt(EncVolume.mount_path).decode()
+                    except:
+                        QtWidgets.QMessageBox.critical(None,"Error","Error decrypting information.\n\nTry again later.")
+                        sys.exit(1)
+
             EncVolume.ismounted = False
             encfsgui_helper.print_debug("Check if volume %s is mounted" % volumename)
             if EncVolume.mount_path != "":
@@ -71,8 +88,15 @@ class CConfig():
                     encfsgui_helper.print_debug("Volume is not mounted")
             encfsgui_globals.g_Volumes[volumename] = EncVolume
 
+        self.clearMasterKeyIfNeeded()
         return
     
+
+    def clearMasterKeyIfNeeded(self):
+        if encfsgui_globals.ishidden:
+            if encfsgui_globals.g_Settings["clearkeywhenhidden"].lower() == "true":
+                encfsgui_globals.masterkey = ""
+        return
 
     def getSettings(self):
         # if file does not exist, generate default file
@@ -125,7 +149,10 @@ class CConfig():
             encfsgui_globals.g_Settings["confirmforceunmountall"] = "false"
         if not "doubleclickmount" in encfsgui_globals.g_Settings: 
             encfsgui_globals.g_Settings["doubleclickmount"] = "false"
-
+        if not "encrypt" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["encrypt"] = "false"
+        if not "clearkeywhenhidden" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["clearkeywhenhidden"] = "false"
         return
 
     def addVolume(self, volumename, EncVolumeObj):
@@ -170,8 +197,18 @@ class CConfig():
         for volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             config.add_section(volumename)
-            config.set(volumename, 'enc_path' , EncVolumeObj.enc_path)
-            config.set(volumename, 'mount_path', EncVolumeObj.mount_path)
+            str_enc_path = EncVolumeObj.enc_path
+            str_mount_path = EncVolumeObj.mount_path
+            # if encryption is enabled, encrypt the strings first using the master password
+            if encfsgui_globals.g_Settings["encrypt"] == "true":
+                if encfsgui_globals.masterkey == "":
+                    # ask for masterkey
+                    encfsgui_helper.getMasterKey()
+                if encfsgui_globals.masterkey != "":
+                    str_enc_path = encfsgui_helper.encrypt(EncVolumeObj.enc_path)
+                    str_mount_path = encfsgui_helper.encrypt(EncVolumeObj.mount_path)
+            config.set(volumename, 'enc_path' , str_enc_path)
+            config.set(volumename, 'mount_path', str_mount_path)
             config.set(volumename, 'automount',  EncVolumeObj.automount)
             config.set(volumename, 'preventautounmount',  EncVolumeObj.preventautounmount)
             config.set(volumename, 'allowother',  EncVolumeObj.allowother)
@@ -181,5 +218,7 @@ class CConfig():
 
         with open(encfsgui_globals.volumesfile, 'w') as configfile:
             config.write(configfile)
+
+        self.clearMasterKeyIfNeeded()
 
         return

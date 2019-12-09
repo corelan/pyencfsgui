@@ -9,11 +9,15 @@ global settingsfile
 global volumesfile
 global logfile
 global app
+global masterkey
+global ishidden
 
 volumesfile = "encfsgui.volumes"
 logfile = "encfsgui.log"
 debugmode = False
 g_Encodings = []
+masterkey = ""
+ishidden = False
 
 class CEncryptedVolume:
     def __init__(self):

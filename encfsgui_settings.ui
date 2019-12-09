@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>588</width>
-    <height>500</height>
+    <height>560</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,13 +22,13 @@
   <property name="minimumSize">
    <size>
     <width>588</width>
-    <height>500</height>
+    <height>560</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>588</width>
-    <height>500</height>
+    <height>560</height>
    </size>
   </property>
   <property name="baseSize">
@@ -50,7 +50,7 @@
    <property name="geometry">
     <rect>
      <x>340</x>
-     <y>460</y>
+     <y>520</y>
      <width>113</width>
      <height>32</height>
     </rect>
@@ -63,7 +63,7 @@
    <property name="geometry">
     <rect>
      <x>460</x>
-     <y>460</y>
+     <y>520</y>
      <width>113</width>
      <height>32</height>
     </rect>
@@ -226,7 +226,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>460</y>
+     <y>520</y>
      <width>291</width>
      <height>20</height>
     </rect>
@@ -246,6 +246,9 @@
    </property>
    <property name="title">
     <string>Startup &amp;&amp; exit</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
    </property>
    <widget class="QCheckBox" name="chk_autoupdate">
     <property name="geometry">
@@ -304,7 +307,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>340</y>
+     <y>330</y>
      <width>551</width>
      <height>101</height>
     </rect>
@@ -349,6 +352,45 @@
     </property>
     <property name="text">
      <string>Allow double-click in table to mount &amp;&amp; unmount</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_3">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>430</y>
+     <width>551</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Security &amp;&amp; Privacy</string>
+   </property>
+   <widget class="QCheckBox" name="chk_encrypt">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>451</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Protect/encrypt 'volume' configuration file with a master password</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_clearkeywhenhidden">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>451</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clear key when application is hidden</string>
     </property>
    </widget>
   </widget>

@@ -7,8 +7,27 @@ import subprocess
 import inspect
 import traceback
 
+from PyQt5 import uic
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
+
+
+try:
+    import base64
+    import hashlib
+    from Crypto import Random
+    from Crypto.Cipher import AES
+except:
+    oops = QApplication([])
+    QtWidgets.QMessageBox.critical(None,"Error loading pycrypto library","This version of pyencfsgui requires the 'pycrypto' library.\n\nPlease install using\n'python3 -m pip install pycrypto --user'\n")
+    sys.exit(1)
+
 import encfsgui_globals
 from encfsgui_globals import *
+
+import cgetmasterkey
+from cgetmasterkey import CMasterKey
 
 
 #################################
@@ -347,5 +366,42 @@ def determineFileNameEncodings():
         os.removedirs(tmpfolder_enc)
         os.removedirs(tmpfolder_mnt)
         os.remove(expectfilename)
-
         return
+
+def getMasterKey():
+    frmpassword = CMasterKey()
+    frmpassword.setWindowTitle("Please enter master key")
+    frmpassword.show()
+    frmpassword.setFocus()
+    frmpassword.activateWindow()
+    frmpassword.exec_()
+    thispassword = frmpassword.getPassword()
+    return thispassword
+
+def encrypt(cleartext):
+    ciphertext = ""
+    obj = AES.new(encfsgui_globals.masterkey, AES.MODE_CBC, '!IVNotSoSecret!!')
+    while (len(cleartext) % 16 != 0):
+        # add spaces at the end, we can remove them later
+        cleartext = cleartext + " "
+    ciphertext=base64.b64encode(obj.encrypt(cleartext))
+    return ciphertext.decode()
+
+def decrypt(ciphertext):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    cleartext = ""
+    print_debug("Requested to decrypt '%s'" % ciphertext)
+    print_debug("Base64 decoded: %s" % base64.b64decode(ciphertext))
+    obj = AES.new(encfsgui_globals.masterkey, AES.MODE_CBC, '!IVNotSoSecret!!')
+    cleartext = obj.decrypt(base64.b64decode(ciphertext))
+    #remove spaces from the end again
+    cleartext = cleartext.rstrip()
+    return cleartext
+
+def makePW32(key):
+    pw = key[0:31]
+    ccode = 1
+    while len(pw) < 32:
+        pw += chr(ccode)
+        ccode += 1
+    return pw
