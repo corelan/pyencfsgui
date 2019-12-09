@@ -19,10 +19,10 @@ from encfsgui_globals import *
 import encfsgui_helper
 from encfsgui_helper import *
 
-class CNewMasterKey(QtWidgets.QDialog):
+class CNewMasterKeyWindow(QtWidgets.QDialog):
     def __init__(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        super(CNewMasterKey, self).__init__()
+        super(CNewMasterKeyWindow, self).__init__()
         uic.loadUi('encfsgui_newmasterkey.ui', self)
         # disable/remove buttons
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint)

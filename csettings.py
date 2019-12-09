@@ -24,12 +24,12 @@ import cconfig
 from cconfig import CConfig
 
 import cnewmasterkey
-from cnewmasterkey import CNewMasterKey
+from cnewmasterkey import CNewMasterKeyWindow
 
 
 class CSettingsWindow(QtWidgets.QDialog):
     def __init__(self):
-        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        encfsgui_helper.print_debug("Start CSettingsWindow %s" % inspect.stack()[0][3])
         super(CSettingsWindow, self).__init__()
         uic.loadUi('encfsgui_settings.ui', self)
 
@@ -207,7 +207,7 @@ class CSettingsWindow(QtWidgets.QDialog):
             msgBox.show()
             if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
                 # ask for the password
-                masterpwwindow = CNewMasterKey()
+                masterpwwindow = CNewMasterKeyWindow()
                 masterpwwindow.setWindowTitle("Please enter master password")
                 masterpwwindow.show()
                 masterpwwindow.exec_()

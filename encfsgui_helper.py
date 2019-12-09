@@ -27,7 +27,7 @@ import encfsgui_globals
 from encfsgui_globals import *
 
 import cgetmasterkey
-from cgetmasterkey import CMasterKey
+from cgetmasterkey import CMasterKeyWindow
 
 
 #################################
@@ -370,18 +370,25 @@ def determineFileNameEncodings():
 
 def getMasterKey():
     print_debug("Start %s" % inspect.stack()[0][3])
-    frmpassword = CMasterKey()
-    frmpassword.setWindowTitle("Please enter master key")
-    frmpassword.show()
-    frmpassword.setFocus()
-    frmpassword.activateWindow()
-    frmpassword.exec_()
-    thispassword = frmpassword.getPassword()
-    return thispassword
+    curframe = inspect.currentframe()
+    calframe = inspect.getouterframes(curframe, 2)
+    print_debug("getMasterKey() Called from: %s()" % calframe[1][3])    
+    print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
+    if len(encfsgui_globals.masterkey) != 32:
+        frmpassword = CMasterKeyWindow()
+        frmpassword.setWindowTitle("Please enter master key")
+        frmpassword.show()
+        frmpassword.setFocus()
+        frmpassword.activateWindow()
+        frmpassword.exec_()
+        encfsgui_globals.masterkey = frmpassword.getPassword()
+        print_debug("New length of masterkey: %d" % len(encfsgui_globals.masterkey ))
+    return
 
 def encrypt(cleartext):
     print_debug("Start %s" % inspect.stack()[0][3])
     ciphertext = ""
+    print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
     obj = AES.new(encfsgui_globals.masterkey, AES.MODE_CBC, '!IVNotSoSecret!!')
     while (len(cleartext) % 16 != 0):
         # add spaces at the end, we can remove them later
@@ -391,6 +398,7 @@ def encrypt(cleartext):
 
 def decrypt(ciphertext):
     print_debug("Start %s" % inspect.stack()[0][3])
+    print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
     cleartext = ""
     print_debug("Requested to decrypt '%s'" % ciphertext)
     print_debug("Base64 decoded: %s" % base64.b64decode(ciphertext))

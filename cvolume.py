@@ -21,7 +21,7 @@ from encfsgui_helper import *
 
 class CVolumeWindow(QtWidgets.QDialog):
     def __init__(self):
-        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        encfsgui_helper.print_debug("Start CVolumeWindow %s" % inspect.stack()[0][3])
         super(CVolumeWindow, self).__init__()
         uic.loadUi('encfsgui_volume.ui', self)
 

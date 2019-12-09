@@ -16,7 +16,6 @@ volumesfile = "encfsgui.volumes"
 logfile = "encfsgui.log"
 debugmode = False
 g_Encodings = []
-masterkey = ""
 ishidden = False
 
 class CEncryptedVolume:

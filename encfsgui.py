@@ -25,7 +25,7 @@ import cvolume
 from cvolume import CVolumeWindow
 
 import cmountpassword
-from cmountpassword import CMountPassword
+from cmountpassword import CMountPasswordWindow
 
 # globals
 import encfsgui_globals
@@ -212,6 +212,7 @@ class CMainWindow(QtWidgets.QDialog):
         self.show_action.setEnabled(True)
         self.hide_action.setEnabled(False)
         if encfsgui_globals.g_Settings["clearkeywhenhidden"] == "true":
+            print_debug("Hiding window, clearing masterkey")
             encfsgui_globals.masterkey = ""
         encfsgui_globals.ishidden = True
         self.hide()
@@ -508,7 +509,7 @@ class CMainWindow(QtWidgets.QDialog):
         thispassword = ""
         EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
         if str(EncVolumeObj.passwordsaved) == "0":
-            frmpassword = CMountPassword()
+            frmpassword = CMountPasswordWindow()
             frmpassword.setEncPath(EncVolumeObj.enc_path)
             frmpassword.setMountPath(EncVolumeObj.mount_path)
             frmpassword.setWindowTitle("Please enter password for volume '%s'" % volumename)
@@ -771,7 +772,7 @@ class CMainWindow(QtWidgets.QDialog):
 
 if __name__ == "__main__":
     try:
-
+        encfsgui_globals.masterkey = ""
         encfsgui_globals.settingsfile = 'encfsgui.settings'
         encfsgui_helper.createFile(encfsgui_globals.logfile)
 
@@ -805,7 +806,7 @@ if __name__ == "__main__":
                 mainwindow.lbl_updatestate.setFont(boldfont)
 
         if encfsgui_globals.g_Settings["encrypt"].lower() == "true":
-            encfsgui_globals.masterkey = encfsgui_helper.getMasterKey()
+            encfsgui_helper.getMasterKey()
 
         mainwindow.RefreshVolumes()
         mainwindow.AutoMount()

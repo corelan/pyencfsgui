@@ -64,8 +64,8 @@ class CConfig():
                 # do we have the master key?
                 if (encfsgui_globals.masterkey == ""):
                     # ask for masterkey
-                    encfsgui_globals.masterkey = encfsgui_helper.getMasterKey()
-
+                    encfsgui_helper.getMasterKey()
+                    print_debug("Obtained masterkey, length %d" % len(encfsgui_globals.masterkey))
                 if (encfsgui_globals.masterkey != ""):
                     try:
                         EncVolume.enc_path = encfsgui_helper.decrypt(EncVolume.enc_path).decode()
@@ -84,7 +84,7 @@ class CConfig():
                 path_to_check = "%s " % EncVolume.mount_path
                 for item in mountlist:        
                     if "encfs" in str(item) and path_to_check in str(item):
-                        encfsgui_helper.print_debug("Volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item)))
+                        encfsgui_helper.print_debug("Volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
                         EncVolume.ismounted = True
                         break
                 if not EncVolume.ismounted:
@@ -100,6 +100,7 @@ class CConfig():
         if encfsgui_globals.ishidden:
             if encfsgui_globals.g_Settings["clearkeywhenhidden"].lower() == "true":
                 encfsgui_globals.masterkey = ""
+                encfsgui_helper.print_debug("Cleared masterkey")
         return
 
     def getSettings(self):
@@ -207,7 +208,7 @@ class CConfig():
             if encfsgui_globals.g_Settings["encrypt"] == "true":
                 if encfsgui_globals.masterkey == "":
                     # ask for masterkey
-                    encfsgui_helper.getMasterKey()
+                    encfsgui_globals.masterkey = encfsgui_helper.getMasterKey()
                 if encfsgui_globals.masterkey != "":
                     str_enc_path = encfsgui_helper.encrypt(EncVolumeObj.enc_path)
                     str_mount_path = encfsgui_helper.encrypt(EncVolumeObj.mount_path)
