@@ -369,6 +369,7 @@ def determineFileNameEncodings():
         return
 
 def getMasterKey():
+    print_debug("Start %s" % inspect.stack()[0][3])
     frmpassword = CMasterKey()
     frmpassword.setWindowTitle("Please enter master key")
     frmpassword.show()
@@ -379,6 +380,7 @@ def getMasterKey():
     return thispassword
 
 def encrypt(cleartext):
+    print_debug("Start %s" % inspect.stack()[0][3])
     ciphertext = ""
     obj = AES.new(encfsgui_globals.masterkey, AES.MODE_CBC, '!IVNotSoSecret!!')
     while (len(cleartext) % 16 != 0):
@@ -399,6 +401,7 @@ def decrypt(ciphertext):
     return cleartext
 
 def makePW32(key):
+    print_debug("Start %s" % inspect.stack()[0][3])
     pw = key[0:31]
     ccode = 1
     while len(pw) < 32:

@@ -219,14 +219,13 @@ class CSettingsWindow(QtWidgets.QDialog):
                 # make sure to encrypt the volumes file - simply request volumes file to be written to disk
                 # encryption is handled by the saveVolumes method
                 encfsgui_globals.appconfig.saveVolumes()
+                QtWidgets.QMessageBox.information(None,"Encryption enabled","Encryption enabled.")
             else:
                 encfsgui_globals.g_Settings["encrypt"] = "false"
 
-
+        removeencryption = False
         if (not self.chk_encrypt.isChecked()) and str(encfsgui_globals.g_Settings["encrypt"]).lower() == "true":
             # ask to confirm to remove encryption?
-            removeencryption = False
-
             msgBox = QtWidgets.QMessageBox()
             msgBox.setWindowTitle("Disable encryption/master password?")
             msgBox.setText("You are about to disable encryption of the encfsgui.volumes file.\n\nThis will decrypt the contents of the file and remove the need to use a master password.\n\nAre you sure?")
@@ -258,4 +257,7 @@ class CSettingsWindow(QtWidgets.QDialog):
 
         # save volumes (to make sure it gets encrypted or decrypted)
         encfsgui_globals.appconfig.saveVolumes()
+        
+        if removeencryption:
+            QtWidgets.QMessageBox.information(None,"Encryption disabled","Encryption disabled.")
         return

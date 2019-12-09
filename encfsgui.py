@@ -43,13 +43,11 @@ from encfsgui_helper import *
 
 encfsgui_globals.app = QApplication([])
 
-
 # init globals
 
 encfsgui_globals.g_Volumes = { }
 encfsgui_globals.g_Settings = { }
 encfsgui_globals.g_CurrentlySelected = ""
-
 
 
 #################
@@ -409,6 +407,7 @@ class CMainWindow(QtWidgets.QDialog):
         createvolumewindow.activateWindow()
         createvolumewindow.exec_()
         self.RefreshVolumes()
+        self.PopulateVolumeMenu()
         return
 
 
@@ -421,6 +420,7 @@ class CMainWindow(QtWidgets.QDialog):
         addvolumewindow.activateWindow()
         addvolumewindow.exec_()
         self.RefreshVolumes()
+        self.PopulateVolumeMenu()
         return       
 
     def EditVolumeButtonClicked(self):
@@ -803,6 +803,9 @@ if __name__ == "__main__":
                 boldfont = QFont()
                 boldfont.setBold(True)
                 mainwindow.lbl_updatestate.setFont(boldfont)
+
+        if encfsgui_globals.g_Settings["encrypt"].lower() == "true":
+            encfsgui_globals.masterkey = encfsgui_helper.getMasterKey()
 
         mainwindow.RefreshVolumes()
         mainwindow.AutoMount()

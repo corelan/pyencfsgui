@@ -70,7 +70,10 @@ class CConfig():
                     try:
                         EncVolume.enc_path = encfsgui_helper.decrypt(EncVolume.enc_path).decode()
                         EncVolume.mount_path = encfsgui_helper.decrypt(EncVolume.mount_path).decode()
-                    except:
+                    except Exception: 
+                        msg = traceback.format_exc()
+                        print(msg)
+                        encfsgui_helper.print_debug(msg)
                         QtWidgets.QMessageBox.critical(None,"Error","Error decrypting information.\n\nTry again later.")
                         sys.exit(1)
 
@@ -93,6 +96,7 @@ class CConfig():
     
 
     def clearMasterKeyIfNeeded(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         if encfsgui_globals.ishidden:
             if encfsgui_globals.g_Settings["clearkeywhenhidden"].lower() == "true":
                 encfsgui_globals.masterkey = ""
