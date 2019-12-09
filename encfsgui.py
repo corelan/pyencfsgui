@@ -815,7 +815,8 @@ if __name__ == "__main__":
             mainwindow.show()
             encfsgui_globals.ishidden = False
         else:
-            encfsgui_globals.ishidden = True      
+            encfsgui_globals.ishidden = True 
+            encfsgui_globals.appconfig.clearMasterKeyIfNeeded()
 
         if updateresult == 1:
             msgBox = QMessageBox()
