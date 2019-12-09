@@ -13,7 +13,8 @@ pyencfsgui was developed and tested on OSX High Sierra, Mojave and OSX Catalina,
 
 In order to use pyencfsgui, you need to install the following dependencies:
 
-- python3 (+ PyQT5 and pycrypto libraries)
+- python3
+- python3 libraries: PyQT5, pycrypto
 - OSXFuse
 - encfs (1.9.x)
 
@@ -72,7 +73,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
   python3 -m pip install PyQt5 --user
   ```
 
-#### 5. Install pycrypto
+#### 6. Install pycrypto
   ```
   python3 -m pip install pycrypto --user
   ```
