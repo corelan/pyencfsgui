@@ -805,6 +805,18 @@ if __name__ == "__main__":
                 boldfont.setBold(True)
                 mainwindow.lbl_updatestate.setFont(boldfont)
 
+        if updateresult == 1:
+            msgBox = QMessageBox()
+            msgBox.setIcon(QMessageBox.Information)
+            msgBox.setWindowTitle("Update found?")
+            msgBox.setText("An update has been found and downloaded via 'git pull'.\nPlease restart the application to run the updated code.\nWould you like to exit now?")
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
+            msgBox.addButton(QtWidgets.QMessageBox.Yes)
+            msgBox.show()
+            msgBox.setFocus()
+            if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
+                mainwindow.QuitButtonClicked()
+
         if encfsgui_globals.g_Settings["encrypt"].lower() == "true":
             encfsgui_helper.getMasterKey()
 
@@ -817,18 +829,6 @@ if __name__ == "__main__":
         else:
             encfsgui_globals.ishidden = True 
             encfsgui_globals.appconfig.clearMasterKeyIfNeeded()
-
-        if updateresult == 1:
-            msgBox = QMessageBox()
-            msgBox.setIcon(QMessageBox.Information)
-            msgBox.setWindowTitle("Update found?")
-            msgBox.setText("An update has been found and downloaded via 'git pull'.\nPlease restart the application to run the updated code.\nWould you like to exit now?")
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
-            msgBox.addButton(QtWidgets.QMessageBox.Yes)
-            msgBox.show()
-            msgBox.setFocus()
-            if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
-                mainwindow.QuitButtonClicked()
 
         encfsgui_globals.app.setQuitOnLastWindowClosed(False)
         encfsgui_globals.app.exec_()
