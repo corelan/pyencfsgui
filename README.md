@@ -2,12 +2,12 @@
 
 ## What is pyencfsgui?
 
-pyencfsgui is a Qt based GUI/wrapper around encfs, encfsctl and mount, written in python3, and relies on OSXFuse to provide a filesystem.<br>
-In other words, it relies entirely on those utilities, the ability to interact with those tools and to capture the output from those tools.<br>
+pyencfsgui is a Qt based GUI/wrapper around `encfs`, `encfsctl`, `mount` and `umount`, written in python3, and relies on OSXFuse to provide a filesystem.<br>
+In other words, it relies entirely on those utilities, the ability to interact with those tools and to capture & parse the output from those tools.<br>
 As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
 The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
-pyencfsgui was developed and tested on OSX High Sierra, Mojave and OSX Catalina, using encfs version 1.9.x. <br>
-(It can open existing volumes that have been created with older versions of encfs too)
+pyencfsgui was developed and tested on OSX High Sierra, Mojave and OSX Catalina, using encfs versions 1.8.x and 1.9.x. <br>
+(It can open existing volumes that have been created with older versions of encfs too)<br>
 
 ## Dependencies
 
@@ -104,7 +104,7 @@ Sure!  Simply follow these steps:
 - Open Finder, go to the folder that contains the repository, and drag the .app file into your dock
 - In Terminal, rename the file back to .sh
     ```
-    mv pyencfsgui.app pyencfsgui.bash
+    mv pyencfsgui.app pyencfsgui.sh
     ```
 - Open Finder, go to the folder that contains the repository, select the pyencfsgui.sh script, right-click and choose "Get Info"
 - Make sure the script will open with "Terminal"
