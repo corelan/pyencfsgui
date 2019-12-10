@@ -200,7 +200,9 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_globals.ishidden = False
         self.show()
         # force reload of modules and update window
+        self.lbl_infolabel.setText("")
         self.volumetable.clearContents()
+        self.volumetable.setRowCount(0)
         encfsgui_globals.appconfig.getVolumes()
         self.RefreshVolumes()
         self.SetInfoLabel() 
