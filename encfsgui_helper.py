@@ -381,13 +381,14 @@ def getMasterKey():
         frmpassword.setFocus()
         frmpassword.activateWindow()
         frmpassword.exec_()
-        encfsgui_globals.masterkey = frmpassword.getPassword()
+        encfsgui_globals.masterkey = str(frmpassword.getPassword())
         print_debug("New length of masterkey: %d" % len(encfsgui_globals.masterkey ))
     return
 
 def encrypt(cleartext):
     print_debug("Start %s" % inspect.stack()[0][3])
     ciphertext = ""
+    encfsgui_globals.masterkey = str(encfsgui_globals.masterkey)
     print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
     obj = AES.new(encfsgui_globals.masterkey, AES.MODE_CBC, '!IVNotSoSecret!!')
     while (len(cleartext) % 16 != 0):
@@ -398,6 +399,7 @@ def encrypt(cleartext):
 
 def decrypt(ciphertext):
     print_debug("Start %s" % inspect.stack()[0][3])
+    encfsgui_globals.masterkey = str(encfsgui_globals.masterkey)
     print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
     cleartext = ""
     print_debug("Requested to decrypt '%s'" % ciphertext)

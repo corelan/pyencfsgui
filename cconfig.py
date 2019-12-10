@@ -208,8 +208,8 @@ class CConfig():
             if encfsgui_globals.g_Settings["encrypt"] == "true":
                 if encfsgui_globals.masterkey == "":
                     # ask for masterkey
-                    encfsgui_globals.masterkey = encfsgui_helper.getMasterKey()
-                if encfsgui_globals.masterkey != "":
+                    encfsgui_helper.getMasterKey()
+                if len(encfsgui_globals.masterkey) == 32:
                     str_enc_path = encfsgui_helper.encrypt(EncVolumeObj.enc_path)
                     str_mount_path = encfsgui_helper.encrypt(EncVolumeObj.mount_path)
             config.set(volumename, 'enc_path' , str_enc_path)

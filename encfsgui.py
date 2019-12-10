@@ -839,8 +839,13 @@ if __name__ == "__main__":
     except Exception: 
         msg = traceback.format_exc()
         print(msg)
+        try:
+            encfsgui_helper.print_debug(msg)
+        except:
+            pass
         msgBox = QMessageBox()
         msgBox.setWindowTitle("Error")
         msgBox.setText(msg)
         msgBox.show()
         msgBox.exec_()
+        
