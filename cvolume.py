@@ -212,7 +212,7 @@ class CVolumeWindow(QtWidgets.QDialog):
              if (self.runmode == 0):
                 # encfs folder must be empty
                 if (os.listdir(self.txt_encfsfolder.text())):
-                    QtWidgets.QMessageBox.warning(None,"Error checking encfs folder","Please make sure the new encfs is empty at this point."  )
+                    QtWidgets.QMessageBox.warning(None,"Error checking encfs folder","Please make sure the new encfs folder is empty at this point."  )
                     errorfound = True
             
         if (self.txt_mountfolder.text().replace(" ","") == ""):
@@ -345,12 +345,14 @@ class CVolumeWindow(QtWidgets.QDialog):
         for encodingtype in encfsgui_globals.g_Encodings:
             fileencodings[encodingtype] = encodingindex
             encodingindex += 1
+        encfsgui_helper.print_debug("File encodings: %s" % fileencodings)
         if not encfsversion.startswith("1.9."):
             # number selection
             selectedfileencoding = str(fileencodings[self.filenameencodingcombo.currentText()])
         else:
-            selectedfileencoding = "%s" % self.filenameencodingcombo.currentText()
-
+            selectedfileencoding = str(fileencodings[self.filenameencodingcombo.currentText()])
+            #selectedfileencoding = "%s" % self.filenameencodingcombo.currentText()
+        encfsgui_helper.print_debug("Encoding selected: %s" % selectedfileencoding)
         encfolderfound = False
 
         if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
