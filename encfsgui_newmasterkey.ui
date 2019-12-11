@@ -34,6 +34,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -57,7 +60,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Verify password:</string>
+    <string>Verify master password:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="txt_password1">

@@ -34,6 +34,9 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -52,7 +55,7 @@
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>311</width>
+     <width>321</width>
      <height>21</height>
     </rect>
    </property>
