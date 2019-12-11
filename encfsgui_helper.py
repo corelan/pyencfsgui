@@ -296,10 +296,10 @@ def determineFileNameEncodings():
         scriptcontents = scriptcontents.replace("$ENCFSBIN", encfsgui_globals.g_Settings["encfspath"])
         scriptcontents = scriptcontents.replace("$ENCPATH", tmpfolder_enc)
         scriptcontents = scriptcontents.replace("$MOUNTPATH", tmpfolder_mnt)
-        if not getEncFSVersion().startswith("1.9."):
+        if not str(getEncFSVersion()).startswith("1.9."):
             scriptcontents = scriptcontents.replace("$CIPHERALGO", "1")
         else:
-            scriptcontents = scriptcontents.replace("$CIPHERALGO", "AES")
+            scriptcontents = scriptcontents.replace("$CIPHERALGO", "1")
         scriptcontents = scriptcontents.replace("$CIPHERKEYSIZE", "128")
         scriptcontents = scriptcontents.replace("$BLOCKSIZE", "1024")
         scriptcontents = scriptcontents.replace("$ENCODINGALGO", "1")
@@ -362,6 +362,10 @@ def determineFileNameEncodings():
 
         if len(encodings) > 0:
             encfsgui_globals.g_Encodings = encodings
+        else:
+            print_debug("Unable to get filename encodings")
+            for l in expectoutput:
+                print_debug("%s" % l)
         # clean up again
         os.removedirs(tmpfolder_enc)
         os.removedirs(tmpfolder_mnt)

@@ -336,7 +336,8 @@ class CVolumeWindow(QtWidgets.QDialog):
             # number selection
             selectedalgo = str(cipheralgos[self.ciphercombo.currentText()])
         else:
-            selectedalgo = "%s" % self.ciphercombo.currentText()
+            # selectedalgo = "%s" % self.ciphercombo.currentText()
+            selectedalgo = str(cipheralgos[self.ciphercombo.currentText()])
         
         fileencodings = {}
         encodingindex = 1
