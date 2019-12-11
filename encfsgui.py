@@ -779,6 +779,8 @@ if __name__ == "__main__":
         encfsgui_helper.createFile(encfsgui_globals.logfile)
 
         encfsgui_globals.appconfig = CConfig()
+        encfsgui_globals.appconfig.getSettings()
+
         encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
             
         if str(encfsgui_globals.g_Settings["debugmode"]).lower() == "true":
@@ -821,6 +823,8 @@ if __name__ == "__main__":
 
         if encfsgui_globals.g_Settings["encrypt"].lower() == "true":
             encfsgui_helper.getMasterKey()
+
+        encfsgui_globals.appconfig.getVolumes()
 
         mainwindow.RefreshVolumes()
         mainwindow.AutoMount()

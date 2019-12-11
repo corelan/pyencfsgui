@@ -24,8 +24,6 @@ from encfsgui_helper import *
 class CConfig():
     def __init__(self):
         self.settingsfile = encfsgui_globals.settingsfile
-        self.getSettings()
-        self.getVolumes()
         return
 
     def getVolumes(self):
