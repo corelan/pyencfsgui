@@ -493,8 +493,10 @@ class CMainWindow(QtWidgets.QDialog):
         settingswindow.exec_()
         # when dialog closes, refresh settings (in case user made a change)
         self.RefreshSettings()
-        self.RefreshVolumes()
-        self.SetInfoLabel()
+        # don't refresh gui if gui is hidden, otherwise app might ask for master key
+        if not encfsgui_globals.ishidden:
+            self.RefreshVolumes()
+            self.SetInfoLabel()
         return
 
     def MountVolumeClicked(self):
@@ -730,7 +732,8 @@ class CMainWindow(QtWidgets.QDialog):
     def RefreshSettings(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         encfsgui_globals.appconfig.getSettings()
-        self.SetInfoLabel()
+        if not encfsgui_globals.ishidden:
+            self.SetInfoLabel()
         return
 
     def SetInfoLabel(self):

@@ -87,7 +87,6 @@ class CSettingsWindow(QtWidgets.QDialog):
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Select 'umount' binary", self.txt_umountbinary.displayText(),"All Files (*)", options=options)
         if fileName:
-            
             self.txt_umountbinary.setText("%s" % fileName)
         return
 
