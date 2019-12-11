@@ -110,11 +110,14 @@ class CMainWindow(QtWidgets.QDialog):
         self.lbl_infolabel = self.findChild(QtWidgets.QLabel, 'lbl_InfoLabel')
         self.lbl_infolabel.setText("")
 
+
+    def initMainWindow(self):
+        # only call this after checking for update
         # enable/disablebuttons as needed
+        self.RefreshSettings()
         self.RefreshVolumes()
         self.EnableDisableButtons()
-        self.SetInfoLabel()
-
+        
         # system tray menu
         self.tray_icon = QSystemTrayIcon(self)
         #self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_DriveHDIcon))
@@ -132,6 +135,7 @@ class CMainWindow(QtWidgets.QDialog):
         self.volumetable.viewport().installEventFilter(self)
         # capture double click
         self.volumetable.doubleClicked.connect(self.TableDoubleClicked)
+
 
     def eventFilter(self, source, event):
         if(event.type() == QtCore.QEvent.MouseButtonPress and
@@ -205,7 +209,6 @@ class CMainWindow(QtWidgets.QDialog):
         self.volumetable.setRowCount(0)
         encfsgui_globals.appconfig.getVolumes()
         self.RefreshVolumes()
-        self.SetInfoLabel() 
         self.setFocus()
         return
 
@@ -459,7 +462,6 @@ class CMainWindow(QtWidgets.QDialog):
                     encfsgui_globals.appconfig.delVolume(volumename)
                     encfsgui_globals.appconfig.getVolumes()
                     self.RefreshVolumes()
-                    self.SetInfoLabel()
         return
 
     def ShowVolumeInfoClicked(self):
@@ -496,7 +498,6 @@ class CMainWindow(QtWidgets.QDialog):
         # don't refresh gui if gui is hidden, otherwise app might ask for master key
         if not encfsgui_globals.ishidden:
             self.RefreshVolumes()
-            self.SetInfoLabel()
         return
 
     def MountVolumeClicked(self):
@@ -654,6 +655,9 @@ class CMainWindow(QtWidgets.QDialog):
 
     def RefreshVolumes(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        curframe = inspect.currentframe()
+        calframe = inspect.getouterframes(curframe, 2)
+        encfsgui_helper.print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))          
         # get volumes from config file
         encfsgui_globals.appconfig.getVolumes()
         # show volumes in the table
@@ -732,8 +736,8 @@ class CMainWindow(QtWidgets.QDialog):
     def RefreshSettings(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         encfsgui_globals.appconfig.getSettings()
-        if not encfsgui_globals.ishidden:
-            self.SetInfoLabel()
+        #if not encfsgui_globals.ishidden:
+        #    self.SetInfoLabel()
         return
 
     def SetInfoLabel(self):
@@ -794,10 +798,10 @@ if __name__ == "__main__":
         encfsgui_helper.print_debug("Create main window")
         mainwindow = CMainWindow()
         mainwindow.RefreshSettings()
-        mainwindow.lbl_updatestate.setText("")
 
         updateresult = 0
 
+        encfsgui_helper.print_debug("Check for updates? %s" % str(encfsgui_globals.g_Settings["autoupdate"]).lower())
         if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
             mainwindow.lbl_infolabel.setText("Checking for updates...")
             updateresult = encfsgui_helper.autoUpdate()
@@ -823,6 +827,9 @@ if __name__ == "__main__":
             msgBox.setFocus()
             if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
                 mainwindow.QuitButtonClicked()
+
+        mainwindow.lbl_updatestate.setText("")
+        mainwindow.initMainWindow()
 
         if encfsgui_globals.g_Settings["encrypt"].lower() == "true":
             encfsgui_helper.getMasterKey()

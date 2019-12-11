@@ -28,6 +28,9 @@ class CConfig():
         return
 
     def getVolumes(self):
+        curframe = inspect.currentframe()
+        calframe = inspect.getouterframes(curframe, 2)
+        encfsgui_helper.print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))          
         encfsgui_globals.g_Volumes.clear()
         
         volumeconfig = configparser.ConfigParser()
