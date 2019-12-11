@@ -40,10 +40,10 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>70</x>
      <y>10</y>
-     <width>311</width>
-     <height>16</height>
+     <width>241</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="text">
@@ -53,9 +53,9 @@
   <widget class="QLineEdit" name="txt_password">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>70</x>
      <y>30</y>
-     <width>321</width>
+     <width>271</width>
      <height>21</height>
     </rect>
    </property>
@@ -87,6 +87,40 @@
    </property>
    <property name="text">
     <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="image">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>51</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>32</width>
+     <height>32</height>
+    </size>
+   </property>
+   <property name="baseSize">
+    <size>
+     <width>32</width>
+     <height>32</height>
+    </size>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>bitmaps/encfsgui.ico</pixmap>
    </property>
   </widget>
  </widget>
