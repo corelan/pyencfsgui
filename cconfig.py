@@ -72,13 +72,16 @@ class CConfig():
                     try:
                         EncVolume.enc_path = encfsgui_helper.decrypt(EncVolume.enc_path).decode()
                         EncVolume.mount_path = encfsgui_helper.decrypt(EncVolume.mount_path).decode()
+                        encfsgui_globals.timeswrong = 0
                     except Exception: 
                         msg = traceback.format_exc()
                         print(msg)
                         encfsgui_helper.print_debug(msg)
                         QtWidgets.QMessageBox.critical(None,"Error","Error decrypting information.\n\nTry again later.")
                         encfsgui_globals.masterkey = ""
-                        #sys.exit(1)
+                        encfsgui_globals.timeswrong += 1
+                        if encfsgui_globals.timeswrong > 3:
+                            sys.exit(1)
 
             EncVolume.ismounted = False
             encfsgui_helper.print_debug("Check if volume '%s' is mounted" % volumename)
