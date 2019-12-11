@@ -8,6 +8,7 @@ import time
 import datetime
 import string
 import configparser
+import inspect
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
@@ -96,6 +97,9 @@ class CConfig():
 
     def clearMasterKeyIfNeeded(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        curframe = inspect.currentframe()
+        calframe = inspect.getouterframes(curframe, 2)
+        encfsgui_helper.print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))   
         if encfsgui_globals.ishidden:
             if encfsgui_globals.g_Settings["clearkeywhenhidden"].lower() == "true":
                 encfsgui_globals.masterkey = ""
@@ -103,6 +107,10 @@ class CConfig():
         return
 
     def getSettings(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        curframe = inspect.currentframe()
+        calframe = inspect.getouterframes(curframe, 2)
+        encfsgui_helper.print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))           
         # if file does not exist, generate default file
         if not os.path.exists(self.settingsfile):
             self.populateDefaultSettings()

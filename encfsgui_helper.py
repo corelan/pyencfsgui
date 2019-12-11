@@ -372,7 +372,7 @@ def getMasterKey():
     print_debug("Start %s" % inspect.stack()[0][3])
     curframe = inspect.currentframe()
     calframe = inspect.getouterframes(curframe, 2)
-    print_debug("getMasterKey() Called from: %s()" % calframe[1][3])    
+    print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))   
     print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
     if len(encfsgui_globals.masterkey) != 32:
         frmpassword = CMasterKeyWindow()
@@ -387,6 +387,9 @@ def getMasterKey():
 
 def encrypt(cleartext):
     print_debug("Start %s" % inspect.stack()[0][3])
+    curframe = inspect.currentframe()
+    calframe = inspect.getouterframes(curframe, 2)
+    print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))   
     ciphertext = ""
     encfsgui_globals.masterkey = str(encfsgui_globals.masterkey)
     #print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
@@ -399,6 +402,9 @@ def encrypt(cleartext):
 
 def decrypt(ciphertext):
     print_debug("Start %s" % inspect.stack()[0][3])
+    curframe = inspect.currentframe()
+    calframe = inspect.getouterframes(curframe, 2)
+    print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))       
     encfsgui_globals.masterkey = str(encfsgui_globals.masterkey)
     #print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
     cleartext = ""
