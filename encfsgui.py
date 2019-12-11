@@ -209,6 +209,7 @@ class CMainWindow(QtWidgets.QDialog):
         self.volumetable.setRowCount(0)
         encfsgui_globals.appconfig.getVolumes()
         self.RefreshVolumes()
+        self.PopulateVolumeMenu()
         self.setFocus()
         return
 
@@ -220,6 +221,7 @@ class CMainWindow(QtWidgets.QDialog):
             print_debug("Hiding window, clearing masterkey")
             encfsgui_globals.masterkey = ""
         encfsgui_globals.ishidden = True
+        self.PopulateVolumeMenu()   # will disable menu if needed
         self.hide()
         return
 
@@ -286,7 +288,6 @@ class CMainWindow(QtWidgets.QDialog):
 
 
     # system tray menu
-
     def CreateTrayMenu(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.show_action = QAction("Show", self)
@@ -294,7 +295,6 @@ class CMainWindow(QtWidgets.QDialog):
         self.settings_action = QAction("Settings", self)
         self.about_action = QAction("About", self)
         self.quit_action = QAction("Quit", self)
-        
         
         self.show_action.triggered.connect(self.ShowButtonClicked)
         self.hide_action.triggered.connect(self.HideButtonClicked)
@@ -331,30 +331,45 @@ class CMainWindow(QtWidgets.QDialog):
     def PopulateVolumeMenu(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.volume_menu.clear()
-
-        for volumename in encfsgui_globals.g_Volumes:
-            EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-
-            self.volume_mount = QAction(QIcon("./bitmaps/icons8-warning-shield-24.png"),  "Mount '%s'" % volumename, self)
-            self.volume_mount.triggered.connect(self.MenuMountVolume)
-            self.volume_menu.addAction(self.volume_mount)
-            
-            self.volume_unmount = QAction(QIcon("./bitmaps/icons8-protect-24.png"), "Unmount '%s'" % volumename, self)
-            self.volume_unmount.triggered.connect(self.MenuUnmountVolume)
-            self.volume_menu.addAction(self.volume_unmount)
-
-            self.volume_menu.addSeparator()
-
-            if EncVolumeObj.ismounted:
-                self.volume_mount.setEnabled(False)
-                self.volume_mount.setVisible(False)
-                self.volume_unmount.setEnabled(True)
-                self.volume_unmount.setVisible(True)
+        buildmenu = False
+        # only build menu in certain cases
+        encfsgui_helper.print_debug("Main window hidden? %s" % str(encfsgui_globals.ishidden))
+        encfsgui_helper.print_debug("Encrypt? %s" % encfsgui_globals.g_Settings["encrypt"].lower() )
+        encfsgui_helper.print_debug("Clear Key? %s" % encfsgui_globals.g_Settings["clearkeywhenhidden"].lower())
+        if not encfsgui_globals.ishidden:
+            buildmenu = True
+        else:
+            if encfsgui_globals.g_Settings["encrypt"].lower() == "true" and encfsgui_globals.g_Settings["clearkeywhenhidden"].lower() == "true": 
+                buildmenu = False
             else:
-                self.volume_mount.setEnabled(True)
-                self.volume_mount.setVisible(True)
-                self.volume_unmount.setEnabled(False)
-                self.volume_unmount.setVisible(False)
+                buildmenu = True
+        if buildmenu: 
+            self.volume_menu.setEnabled(True)
+            for volumename in encfsgui_globals.g_Volumes:
+                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+
+                self.volume_mount = QAction(QIcon("./bitmaps/icons8-warning-shield-24.png"),  "Mount '%s'" % volumename, self)
+                self.volume_mount.triggered.connect(self.MenuMountVolume)
+                self.volume_menu.addAction(self.volume_mount)
+                
+                self.volume_unmount = QAction(QIcon("./bitmaps/icons8-protect-24.png"), "Unmount '%s'" % volumename, self)
+                self.volume_unmount.triggered.connect(self.MenuUnmountVolume)
+                self.volume_menu.addAction(self.volume_unmount)
+
+                self.volume_menu.addSeparator()
+
+                if EncVolumeObj.ismounted:
+                    self.volume_mount.setEnabled(False)
+                    self.volume_mount.setVisible(False)
+                    self.volume_unmount.setEnabled(True)
+                    self.volume_unmount.setVisible(True)
+                else:
+                    self.volume_mount.setEnabled(True)
+                    self.volume_mount.setVisible(True)
+                    self.volume_unmount.setEnabled(False)
+                    self.volume_unmount.setVisible(False)
+        else:
+            self.volume_menu.setEnabled(False)
         return
 
     def MenuMountVolume(self):
@@ -498,6 +513,7 @@ class CMainWindow(QtWidgets.QDialog):
         # don't refresh gui if gui is hidden, otherwise app might ask for master key
         if not encfsgui_globals.ishidden:
             self.RefreshVolumes()
+        self.PopulateVolumeMenu()
         return
 
     def MountVolumeClicked(self):
@@ -655,9 +671,12 @@ class CMainWindow(QtWidgets.QDialog):
 
     def RefreshVolumes(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        # don't reload if main window is hidden, prevent masterkey to be required
         curframe = inspect.currentframe()
         calframe = inspect.getouterframes(curframe, 2)
         encfsgui_helper.print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))          
+    
+
         # get volumes from config file
         encfsgui_globals.appconfig.getVolumes()
         # show volumes in the table
@@ -708,7 +727,7 @@ class CMainWindow(QtWidgets.QDialog):
             self.volumetable.setRowHeight(volumeindex,12)
 
             volumeindex += 1
-            
+                
         self.SetInfoLabel()
         return
 
@@ -843,7 +862,8 @@ if __name__ == "__main__":
             mainwindow.show()
             encfsgui_globals.ishidden = False
         else:
-            encfsgui_globals.ishidden = True 
+            encfsgui_globals.ishidden = True
+            mainwindow.PopulateVolumeMenu()
             encfsgui_globals.appconfig.clearMasterKeyIfNeeded()
 
         encfsgui_globals.app.setQuitOnLastWindowClosed(False)

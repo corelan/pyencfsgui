@@ -81,7 +81,7 @@ class CConfig():
                         #sys.exit(1)
 
             EncVolume.ismounted = False
-            encfsgui_helper.print_debug("Check if volume %s is mounted" % volumename)
+            encfsgui_helper.print_debug("Check if volume '%s' is mounted" % volumename)
             if EncVolume.mount_path != "":
                 # the extra space is important !
                 path_to_check = "%s " % EncVolume.mount_path
