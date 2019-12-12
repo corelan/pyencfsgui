@@ -693,8 +693,11 @@ class CMainWindow(QtWidgets.QDialog):
         self.volumetable.setColumnWidth(3,320)
         self.volumetable.setColumnWidth(4,90)
 
+        # sort 
+        sorted_volumes = {k: encfsgui_globals.g_Volumes[k] for k in sorted(encfsgui_globals.g_Volumes)}
+
         volumeindex = 0
-        for volumekey in encfsgui_globals.g_Volumes:
+        for volumekey in sorted_volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumekey]
             mountedtext = "NO"
             if EncVolumeObj.ismounted:
