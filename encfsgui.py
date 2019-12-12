@@ -345,7 +345,8 @@ class CMainWindow(QtWidgets.QDialog):
                 buildmenu = True
         if buildmenu: 
             self.volume_menu.setEnabled(True)
-            for volumename in encfsgui_globals.g_Volumes:
+            sorted_volumes = {k: encfsgui_globals.g_Volumes[k] for k in sorted(encfsgui_globals.g_Volumes)}
+            for volumename in sorted_volumes:
                 EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
 
                 self.volume_mount = QAction(QIcon("./bitmaps/icons8-warning-shield-24.png"),  "Mount '%s'" % volumename, self)
