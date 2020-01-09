@@ -350,7 +350,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>bitmaps/icons8-warning-shield-32.png</normaloff>bitmaps/icons8-warning-shield-32.png</iconset>
+        <normaloff>bitmaps/icons8-unlock-32.png</normaloff>bitmaps/icons8-unlock-32.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -379,7 +379,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>bitmaps/icons8-protect-32.png</normaloff>bitmaps/icons8-protect-32.png</iconset>
+        <normaloff>bitmaps/icons8-lock-32.png</normaloff>bitmaps/icons8-lock-32.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -408,7 +408,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>bitmaps/unmountfolder_all.png</normaloff>bitmaps/unmountfolder_all.png</iconset>
+        <normaloff>bitmaps/icons8-protect-32.png</normaloff>bitmaps/icons8-protect-32.png</iconset>
       </property>
       <property name="iconSize">
        <size>

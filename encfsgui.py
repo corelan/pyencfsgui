@@ -231,7 +231,7 @@ class CMainWindow(QtWidgets.QDialog):
         abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina\n"
         abouttext += "It may work on older systems and older versions of encfs, but you'll have to try and see for yourself\n\n"
         abouttext += "pyencfsgui was written in 2019 by Peter 'corelanc0d3r' Van Eeckhoutte\n"
-        abouttext += "Corelan Consulting bvba - www.corelan-consulting.com | www.corelan-training.com\n\n"
+        abouttext += "Corelan Consulting bv - www.corelan-consulting.com | www.corelan-training.com\n\n"
         abouttext += "Project repository: https://github.com/corelan/pyencfsgui\n\n"
         abouttext +=  "You are running encfs version %s\n\n" % getEncFSVersion()
         abouttext +=  "This application uses icons from https://icons8.com\n"
@@ -271,14 +271,14 @@ class CMainWindow(QtWidgets.QDialog):
                 self.volumetablemenu.addAction(self.volumemenuheader)
                 self.volumetablemenu.addSeparator()
                 if not EncVolumeObj.ismounted:
-                    self.volumemountaction = QAction(QIcon("./bitmaps/icons8-warning-shield-24.png"),"Mount volume", self) 
+                    self.volumemountaction = QAction(QIcon("./bitmaps/icons8-unlock-24.png"),"Mount volume", self) 
                     self.volumetablemenu.addAction(self.volumemountaction)
                     self.volumemountaction.triggered.connect(self.TableMenuMountVolume)
                     self.volumeeditaction = QAction("Edit volume", self)
                     self.volumetablemenu.addAction(self.volumeeditaction)
                     self.volumeeditaction.triggered.connect(self.EditVolumeButtonClicked)
                 else:
-                    self.volumeunmountaction = QAction(QIcon("./bitmaps/icons8-protect-24.png"), "Unmount volume", self)
+                    self.volumeunmountaction = QAction(QIcon("./bitmaps/icons8-lock-24.png"), "Unmount volume", self)
                     self.volumetablemenu.addAction(self.volumeunmountaction)
                     self.volumeunmountaction.triggered.connect(self.TableMenuUnmountVolume)
                 self.volumeinfoaction = QAction("Show info", self)
@@ -349,11 +349,11 @@ class CMainWindow(QtWidgets.QDialog):
             for volumename in sorted_volumes:
                 EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
 
-                self.volume_mount = QAction(QIcon("./bitmaps/icons8-warning-shield-24.png"),  "Mount '%s'" % volumename, self)
+                self.volume_mount = QAction(QIcon("./bitmaps/icons8-unlock-24.png"),  "Mount '%s'" % volumename, self)
                 self.volume_mount.triggered.connect(self.MenuMountVolume)
                 self.volume_menu.addAction(self.volume_mount)
                 
-                self.volume_unmount = QAction(QIcon("./bitmaps/icons8-protect-24.png"), "Unmount '%s'" % volumename, self)
+                self.volume_unmount = QAction(QIcon("./bitmaps/icons8-lock-24.png"), "Unmount '%s'" % volumename, self)
                 self.volume_unmount.triggered.connect(self.MenuUnmountVolume)
                 self.volume_menu.addAction(self.volume_unmount)
 
