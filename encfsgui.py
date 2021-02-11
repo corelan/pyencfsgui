@@ -756,7 +756,7 @@ class CMainWindow(QtWidgets.QDialog):
 
                 self.volumetable.setRowHeight(volumeindex,12)
 
-            volumeindex += 1
+                volumeindex += 1
                 
         self.SetInfoLabel()
         return

@@ -83,7 +83,9 @@ class CConfig():
                         if encfsgui_globals.timeswrong > 3:
                             sys.exit(1)
 
+            encfsgui_helper.print_debug("Check if path '%s' exists" % EncVolume.enc_path)
             EncVolume.enc_path_exists = os.path.exists(EncVolume.enc_path)
+            encfsgui_helper.print_debug(">> %s" % str(EncVolume.enc_path_exists))
 
             EncVolume.ismounted = False
             encfsgui_helper.print_debug("Check if volume '%s' is mounted" % volumename)
