@@ -699,6 +699,7 @@ class CMainWindow(QtWidgets.QDialog):
         self.volumetable.setColumnCount(5)
         
         #self.volumetable.setRowCount(len(encfsgui_globals.g_Volumes))
+        self.volumetable.setRowCount(0)
 
         columnheaders = ['Mounted?', 'Volume Name', 'EncFS path', 'Mount at', 'Automount?']
         self.volumetable.setHorizontalHeaderLabels(columnheaders)
