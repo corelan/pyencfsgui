@@ -333,6 +333,51 @@
      </spacer>
     </item>
     <item>
+     <widget class="QToolButton" name="btn_refreshVolumes">
+      <property name="font">
+       <font>
+        <family>Trebuchet MS</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Refresh</string>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>bitmaps/refresh.png</normaloff>bitmaps/refresh.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>32</width>
+        <height>32</height>
+       </size>
+      </property>
+      <property name="toolButtonStyle">
+       <enum>Qt::ToolButtonTextUnderIcon</enum>
+      </property>
+      <property name="autoRaise">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
      <widget class="QToolButton" name="btn_mountVolume">
       <property name="font">
        <font>

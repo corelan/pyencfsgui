@@ -83,6 +83,8 @@ class CConfig():
                         if encfsgui_globals.timeswrong > 3:
                             sys.exit(1)
 
+            EncVolume.enc_path_exists = os.path.exists(EncVolume.enc_path)
+
             EncVolume.ismounted = False
             encfsgui_helper.print_debug("Check if volume '%s' is mounted" % volumename)
             if EncVolume.mount_path != "":
@@ -171,6 +173,8 @@ class CConfig():
             encfsgui_globals.g_Settings["encrypt"] = "false"
         if not "clearkeywhenhidden" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["clearkeywhenhidden"] = "false"
+        if not "hidevolumenotfound" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["hidevolumenotfound"] = "false"            
         return
 
     def addVolume(self, volumename, EncVolumeObj):

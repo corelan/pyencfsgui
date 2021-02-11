@@ -32,4 +32,5 @@ class CEncryptedVolume:
         self.allowother = 0
         self.mountaslocal=0
         self.ismounted = False
+        self.enc_path_exists = True
     

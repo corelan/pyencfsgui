@@ -94,6 +94,9 @@ class CMainWindow(QtWidgets.QDialog):
 
         self.infovolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_infoVolume')
         self.infovolumebutton.clicked.connect(self.ShowVolumeInfoClicked)
+
+        self.refreshbutton = self.findChild(QtWidgets.QToolButton, 'btn_refreshVolumes')
+        self.refreshbutton.clicked.connect(self.RefreshVolumesClicked)
         
         self.mountvolumebutton = self.findChild(QtWidgets.QToolButton, 'btn_mountVolume')
         self.mountvolumebutton.clicked.connect(self.MountVolumeClicked)
@@ -217,7 +220,7 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         self.show_action.setEnabled(True)
         self.hide_action.setEnabled(False)
-        if encfsgui_globals.g_Settings["clearkeywhenhidden"] == "true":
+        if encfsgui_globals.g_Settings["clearkeywhenhidden"].lower() == "true":
             print_debug("Hiding window, clearing masterkey")
             encfsgui_globals.masterkey = ""
         encfsgui_globals.ishidden = True
@@ -228,9 +231,9 @@ class CMainWindow(QtWidgets.QDialog):
     def AboutClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         abouttext = "pyencfsgui is a python3/PyQT5 based GUI wrapper around encfs.\n\n"
-        abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina\n"
+        abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina and Big Sur\n"
         abouttext += "It may work on older systems and older versions of encfs, but you'll have to try and see for yourself\n\n"
-        abouttext += "pyencfsgui was written in 2019 by Peter 'corelanc0d3r' Van Eeckhoutte\n"
+        abouttext += "pyencfsgui development started in 2019. The utility was written by Peter 'corelanc0d3r' Van Eeckhoutte\n"
         abouttext += "Corelan Consulting bv - www.corelan-consulting.com | www.corelan-training.com\n\n"
         abouttext += "Project repository: https://github.com/corelan/pyencfsgui\n\n"
         abouttext +=  "You are running encfs version %s\n\n" % getEncFSVersion()
@@ -295,17 +298,21 @@ class CMainWindow(QtWidgets.QDialog):
         self.settings_action = QAction("Settings", self)
         self.about_action = QAction("About", self)
         self.quit_action = QAction("Quit", self)
+        self.refresh_action = QAction("Refresh", self)
         
         self.show_action.triggered.connect(self.ShowButtonClicked)
         self.hide_action.triggered.connect(self.HideButtonClicked)
         self.settings_action.triggered.connect(self.SetttingsButtonClicked)
         self.about_action.triggered.connect(self.AboutClicked)
         self.quit_action.triggered.connect(self.QuitButtonClicked)
+        self.refresh_action.triggered.connect(self.RefreshVolumesClicked)
 
         self.PopulateVolumeMenu()
 
         self.tray_menu.addAction(self.show_action)
         self.tray_menu.addAction(self.hide_action)
+        self.tray_menu.addSeparator()
+        self.tray_menu.addAction(self.refresh_action)
         self.tray_menu.addSeparator()
         self.tray_menu.addAction(self.settings_action)
         self.tray_menu.addSeparator()
@@ -349,26 +356,32 @@ class CMainWindow(QtWidgets.QDialog):
             for volumename in sorted_volumes:
                 EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
 
-                self.volume_mount = QAction(QIcon("./bitmaps/icons8-unlock-24.png"),  "Mount '%s'" % volumename, self)
-                self.volume_mount.triggered.connect(self.MenuMountVolume)
-                self.volume_menu.addAction(self.volume_mount)
-                
-                self.volume_unmount = QAction(QIcon("./bitmaps/icons8-lock-24.png"), "Unmount '%s'" % volumename, self)
-                self.volume_unmount.triggered.connect(self.MenuUnmountVolume)
-                self.volume_menu.addAction(self.volume_unmount)
+                addtolist = True
 
-                self.volume_menu.addSeparator()
+                if encfsgui_globals.g_Settings["hidevolumenotfound"].lower() == "true":
+                    addtolist = EncVolumeObj.enc_path_exists
 
-                if EncVolumeObj.ismounted:
-                    self.volume_mount.setEnabled(False)
-                    self.volume_mount.setVisible(False)
-                    self.volume_unmount.setEnabled(True)
-                    self.volume_unmount.setVisible(True)
-                else:
-                    self.volume_mount.setEnabled(True)
-                    self.volume_mount.setVisible(True)
-                    self.volume_unmount.setEnabled(False)
-                    self.volume_unmount.setVisible(False)
+                if addtolist:
+                    self.volume_mount = QAction(QIcon("./bitmaps/icons8-unlock-24.png"),  "Mount '%s'" % volumename, self)
+                    self.volume_mount.triggered.connect(self.MenuMountVolume)
+                    self.volume_menu.addAction(self.volume_mount)
+                    
+                    self.volume_unmount = QAction(QIcon("./bitmaps/icons8-lock-24.png"), "Unmount '%s'" % volumename, self)
+                    self.volume_unmount.triggered.connect(self.MenuUnmountVolume)
+                    self.volume_menu.addAction(self.volume_unmount)
+
+                    self.volume_menu.addSeparator()
+
+                    if EncVolumeObj.ismounted:
+                        self.volume_mount.setEnabled(False)
+                        self.volume_mount.setVisible(False)
+                        self.volume_unmount.setEnabled(True)
+                        self.volume_unmount.setVisible(True)
+                    else:
+                        self.volume_mount.setEnabled(True)
+                        self.volume_mount.setVisible(True)
+                        self.volume_unmount.setEnabled(False)
+                        self.volume_unmount.setVisible(False)
         else:
             self.volume_menu.setEnabled(False)
         return
@@ -392,7 +405,6 @@ class CMainWindow(QtWidgets.QDialog):
         self.PopulateVolumeMenu()
         return
 
-
     def MenuUnmountVolume(self, action):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         actionname = self.sender().text()
@@ -407,7 +419,6 @@ class CMainWindow(QtWidgets.QDialog):
         self.UnmountVolume(volumename)
         self.PopulateVolumeMenu()
         return
-
 
     def getVolumeNameFromAction(self, actionname):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
@@ -499,6 +510,10 @@ class CMainWindow(QtWidgets.QDialog):
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.show()
                 msgBox.exec_()
+        return
+
+    def RefreshVolumesClicked(self): 
+        self.RefreshVolumes()
         return
 
     def SetttingsButtonClicked(self):
@@ -677,13 +692,13 @@ class CMainWindow(QtWidgets.QDialog):
         calframe = inspect.getouterframes(curframe, 2)
         encfsgui_helper.print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))          
     
-
         # get volumes from config file
         encfsgui_globals.appconfig.getVolumes()
         # show volumes in the table
         self.volumetable.clearContents()
         self.volumetable.setColumnCount(5)
-        self.volumetable.setRowCount(len(encfsgui_globals.g_Volumes))
+        
+        #self.volumetable.setRowCount(len(encfsgui_globals.g_Volumes))
 
         columnheaders = ['Mounted?', 'Volume Name', 'EncFS path', 'Mount at', 'Automount?']
         self.volumetable.setHorizontalHeaderLabels(columnheaders)
@@ -698,37 +713,47 @@ class CMainWindow(QtWidgets.QDialog):
         sorted_volumes = {k: encfsgui_globals.g_Volumes[k] for k in sorted(encfsgui_globals.g_Volumes)}
 
         volumeindex = 0
+        volumesfoundsofar = 0
         for volumekey in sorted_volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumekey]
-            mountedtext = "NO"
-            if EncVolumeObj.ismounted:
-                mountedtext = "YES"
-            
-            automounttext = "NO"
-            if str(EncVolumeObj.automount) == "1":
-                automounttext = "YES"
+            addtolist = True
 
-            boldfont = QFont()
-            boldfont.setBold(True)
+            if encfsgui_globals.g_Settings["hidevolumenotfound"].lower() == "true":
+                addtolist = EncVolumeObj.enc_path_exists
 
-            regularfont = QFont()
-            regularfont.setBold(False)
-            mountstate = QTableWidgetItem(mountedtext)
-            
-            if EncVolumeObj.ismounted:    
-                mountstate.setFont(boldfont)
-                mountstate.setForeground(QColor(255,0,0))
-            else:
-                mountstate.setFont(regularfont)
-                mountstate.setForeground(QColor(0,255,0))
+            if addtolist:
+                volumesfoundsofar += 1
+                self.volumetable.setRowCount(volumesfoundsofar)
 
-            self.volumetable.setItem(volumeindex,0, mountstate)
-            self.volumetable.setItem(volumeindex,1, QTableWidgetItem(volumekey))
-            self.volumetable.setItem(volumeindex,2, QTableWidgetItem(EncVolumeObj.enc_path))
-            self.volumetable.setItem(volumeindex,3, QTableWidgetItem(EncVolumeObj.mount_path))
-            self.volumetable.setItem(volumeindex,4, QTableWidgetItem(automounttext))
+                mountedtext = "NO"
+                if EncVolumeObj.ismounted:
+                    mountedtext = "YES"
+                
+                automounttext = "NO"
+                if str(EncVolumeObj.automount) == "1":
+                    automounttext = "YES"
 
-            self.volumetable.setRowHeight(volumeindex,12)
+                boldfont = QFont()
+                boldfont.setBold(True)
+
+                regularfont = QFont()
+                regularfont.setBold(False)
+                mountstate = QTableWidgetItem(mountedtext)
+                
+                if EncVolumeObj.ismounted:    
+                    mountstate.setFont(boldfont)
+                    mountstate.setForeground(QColor(255,0,0))
+                else:
+                    mountstate.setFont(regularfont)
+                    mountstate.setForeground(QColor(0,255,0))
+
+                self.volumetable.setItem(volumeindex,0, mountstate)
+                self.volumetable.setItem(volumeindex,1, QTableWidgetItem(volumekey))
+                self.volumetable.setItem(volumeindex,2, QTableWidgetItem(EncVolumeObj.enc_path))
+                self.volumetable.setItem(volumeindex,3, QTableWidgetItem(EncVolumeObj.mount_path))
+                self.volumetable.setItem(volumeindex,4, QTableWidgetItem(automounttext))
+
+                self.volumetable.setRowHeight(volumeindex,12)
 
             volumeindex += 1
                 
@@ -766,7 +791,7 @@ class CMainWindow(QtWidgets.QDialog):
     def SetInfoLabel(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         encfsinfo = "encfs v%s" % (getEncFSVersion())
-        self.lbl_infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, len(encfsgui_globals.g_Volumes), encfsgui_globals.volumesfile ))
+        self.lbl_infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, self.volumetable.rowCount(), encfsgui_globals.volumesfile ))
         self.lbl_infolabel.update()
         encfsgui_globals.app.processEvents()
         return

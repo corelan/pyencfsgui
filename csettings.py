@@ -132,6 +132,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.chk_doubleclickmount = self.findChild(QtWidgets.QCheckBox, 'chk_doubleclickmount')
         self.chk_encrypt = self.findChild(QtWidgets.QCheckBox, 'chk_encrypt')
         self.chk_clearkeywhenhidden = self.findChild(QtWidgets.QCheckBox, 'chk_clearkeywhenhidden')
+        self.chk_hidevolumenotfound = self.findChild(QtWidgets.QCheckBox, 'chk_hidevolumenotfound')
 
         if (encfsgui_globals.g_Settings["autounmount"].lower() == "true"):
             self.chk_autounmount.setChecked(True)
@@ -165,6 +166,9 @@ class CSettingsWindow(QtWidgets.QDialog):
         if (encfsgui_globals.g_Settings["clearkeywhenhidden"].lower() == "true"):
             self.chk_clearkeywhenhidden.setChecked(True)
 
+        if (encfsgui_globals.g_Settings["hidevolumenotfound"].lower() == "true"):
+            self.chk_hidevolumenotfound.setChecked(True)
+
         return
 
 
@@ -186,6 +190,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         encfsgui_globals.g_Settings["confirmforceunmountall"] = str(self.chk_confirmforceunmountall.isChecked()).lower()
         encfsgui_globals.g_Settings["doubleclickmount"] = str(self.chk_doubleclickmount.isChecked()).lower()
         encfsgui_globals.g_Settings["clearkeywhenhidden"] = str(self.chk_clearkeywhenhidden.isChecked()).lower()
+        encfsgui_globals.g_Settings["hidevolumenotfound"] = str(self.chk_hidevolumenotfound.isChecked()).lower()
         if self.chk_debugmode.isChecked():
             encfsgui_globals.debugmode = True
             encfsgui_helper.print_debug("Enable debug mode")
