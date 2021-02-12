@@ -17,7 +17,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
 - python3 libraries: PyQT5, pycrypto
 - OSXFuse
 - encfs (1.9.x)
-
+- Developer Command Line Tools
 
 
 ### Installing dependencies on OSX
@@ -79,6 +79,12 @@ Next,
 #### 6. Install pycrypto
   ```
   python3 -m pip install pycrypto --user
+  ```
+  
+  If the installer fails, you may have to install the macOS Developer Command Line Tools first:
+
+  ```
+  xcode-select --install
   ```
 
 
