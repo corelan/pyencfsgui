@@ -6,7 +6,7 @@ pyencfsgui is a Qt based GUI/wrapper around `encfs`, `encfsctl`, `mount` and `um
 In other words, it relies entirely on those utilities, the ability to interact with those tools and to capture & parse the output from those tools.<br>
 As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
 The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
-pyencfsgui was developed and tested on OSX High Sierra, Mojave and OSX Catalina, using encfs versions 1.8.x and 1.9.x. <br>
+pyencfsgui was developed and tested on OSX High Sierra (and all newer macOS versions), using encfs versions 1.8.x and 1.9.x. <br>
 (It can open existing volumes that have been created with older versions of encfs too)<br>
 
 ## Dependencies
@@ -116,3 +116,10 @@ Bonus: if you would like to use the encfsgui icon for the shortcut in Dock, foll
 - Use Cmd+A to select the image, and then Cmd+C to copy it to clipboard
 - Launch finder, open the folder that contains the pyencfsgui.sh script. Select the file, right-click and choose "Get Info"
 - Select the icon in the upper left corner of the Info window.  Then press Cmd+V to paste the image.
+
+
+## Known issues
+
+### Character limitations for passwords
+
+You're not supposed to use a single-tick (') or exclamation mark (!) in the password for new volumes.  It may cause the 'expect' script to fail, and/or might end up setting a different password on the volume. If you insist on using a single-tick or exclamation mark, simply create the volume with encfs yourself, and then add the volume to the app (as opposed to creating it in the app itself)
