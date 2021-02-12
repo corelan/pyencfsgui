@@ -34,15 +34,18 @@ In order to use pyencfsgui, you need to install the following dependencies:
 
   Download the latest dmg installer image from https://osxfuse.github.io/ and run the installer.
 
-  If you're running Catalina (or any OSX version that doesn't have a working OSXFuse installer yet), you'll have to install osxfuse using brew:
+  If you're running Catalina (or any newer macOS version that doesn't have a working OSXFuse installer yet), you'll have to install osxfuse using brew:
 
   ```
   brew tap homebrew/cask
   brew cask install osxfuse
   ```
 
-  Make sure to enable the kernel extension in System Preferences → Security & Privacy → General  if/as requested
-  Reboot for osxfuse to work correctly.
+Next,
+
+- Make sure to enable the kernel extension in System Preferences → Security & Privacy → General  if/as requested
+- Reboot for osxfuse to work correctly.
+
 
 #### 3. Install encfs
 

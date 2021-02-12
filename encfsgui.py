@@ -232,12 +232,12 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         abouttext = "pyencfsgui is a python3/PyQT5 based GUI wrapper around encfs.\n\n"
         abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina (and newer macOS versions). \n"
-        abouttext += "It may work on older systems and older versions of encfs, but you'll have to try and see for yourself\n\n"
-        abouttext += "pyencfsgui development started in 2019. The utility was written by Peter 'corelanc0d3r' Van Eeckhoutte\n"
+        abouttext += "It may work on older systems and older versions of encfs, but you'll have to try and see for yourself.\n\n"
+        abouttext += "pyencfsgui development started in 2019. The utility was written by Peter 'corelanc0d3r' Van Eeckhoutte.\n"
         abouttext += "Corelan Consulting bv - www.corelan-consulting.com | www.corelan-training.com\n\n"
         abouttext += "Project repository: https://github.com/corelan/pyencfsgui\n\n"
-        abouttext +=  "You are running encfs version %s\n\n" % getEncFSVersion()
-        abouttext +=  "This application uses icons from https://icons8.com\n"
+        abouttext +=  "You are running encfs version %s.\n\n" % getEncFSVersion()
+        abouttext +=  "This application uses icons from https://icons8.com.\n"
 
         msgBox = QMessageBox()
         msgBox.setWindowTitle("About pyencfsgui")
