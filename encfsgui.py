@@ -851,6 +851,7 @@ if __name__ == "__main__":
         updateresult = 0
 
         encfsgui_helper.print_debug("Check for updates? %s" % str(encfsgui_globals.g_Settings["autoupdate"]).lower())
+
         if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
             mainwindow.lbl_infolabel.setText("Checking for updates...")
             updateresult, gitoutput = encfsgui_helper.autoUpdate()
@@ -860,7 +861,7 @@ if __name__ == "__main__":
             elif updateresult == 1:
                 appupdatestatus = '<span style="color:red">Update found, please restart.<span>'
             elif updateresult == -1:
-                appupdatestatus = '<span style="color:red">Possible error while running "git update"<span>'
+                appupdatestatus = '<span style="color:red">Possible error while running "git pull"<span>'
 
             mainwindow.lbl_updatestate.setText(appupdatestatus)
             if not updateresult == 0:
