@@ -886,7 +886,7 @@ if __name__ == "__main__":
             msgBox.setWindowTitle("Error while running 'git pull'")
             msgtext = "An error may have occurred while running 'git pull'.\nOutput:\n\n"
             for l in gitoutput:
-                msgtext += ">> %s\n"
+                msgtext += ">> %s\n" % l
             msgBox.setText(msgtext)
             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msgBox.show()
