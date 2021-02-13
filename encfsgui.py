@@ -853,14 +853,17 @@ if __name__ == "__main__":
         encfsgui_helper.print_debug("Check for updates? %s" % str(encfsgui_globals.g_Settings["autoupdate"]).lower())
         if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
             mainwindow.lbl_infolabel.setText("Checking for updates...")
-            updateresult = encfsgui_helper.autoUpdate()
+            updateresult, gitoutput = encfsgui_helper.autoUpdate()
+
             if updateresult == 0:
                 appupdatestatus = "Up to date."
             elif updateresult == 1:
                 appupdatestatus = '<span style="color:red">Update found, please restart.<span>'
+            elif updateresult == -1:
+                appupdatestatus = '<span style="color:red">Possible error while running "git update"<span>'
 
             mainwindow.lbl_updatestate.setText(appupdatestatus)
-            if updateresult == 1:
+            if not updateresult == 0:
                 boldfont = QFont()
                 boldfont.setBold(True)
                 mainwindow.lbl_updatestate.setFont(boldfont)
@@ -876,6 +879,17 @@ if __name__ == "__main__":
             msgBox.setFocus()
             if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
                 mainwindow.QuitButtonClicked()
+        elif updateresult == -1:
+            msgBox = QMessageBox()
+            msgBox.setIcon(QMessageBox.Information)
+            msgBox.setWindowTitle("Error while running 'git pull'")
+            msgtext = "An error may have occurred while running 'git pull'.\nOutput:\n\n"
+            for l in gitoutput:
+                msgtext += ">> %s\n"
+            msgBox.setText(msgtext)
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.show()
+            msgBox.setFocus()
 
         mainwindow.lbl_updatestate.setText("")
         mainwindow.initMainWindow()

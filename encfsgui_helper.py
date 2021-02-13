@@ -108,6 +108,20 @@ def execOSCmd(cmd):
     return outputlines
 
 
+def execOSCmdRetVal(cmdarray):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    print_debug("Executing %s" % cmdarray)
+    returncode = 0
+    outputlines = []
+    p = subprocess.run(cmdarray, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) 
+    returncode = p.returncode
+    outputobj = p.stdout.split('\n')
+    for thisline in outputobj:
+        outputlines.append(thisline.replace('\\n','').replace("'",""))
+    print_debug("Return code: %s" % str(returncode))
+    return outputlines, returncode
+
+
 def execOScmdAsync(cmdarray):
     print_debug("Start %s" % inspect.stack()[0][3])
     print_debug("Executing %s" % cmdarray)
@@ -129,23 +143,36 @@ def getKeyChainPassword(volumename):
     return password
 
 def autoUpdate():
+    #return values:
+    # -1 = error
+    # 0 = ok, no update
+    # 1 = update found
+
     updateresult = 0    # up to date
+
     print_debug("Start %s" % inspect.stack()[0][3])
-    cmd = "git pull"
-    gitoutput = execOSCmd(cmd)
+    cmdarr = ["git","pull"]
+    gitoutput, gitretval = execOSCmdRetVal(cmdarr)
+
     if (encfsgui_globals.debugmode):
         print_debug("Git output:")
-    updatefound = False
-    for l in gitoutput:
-        if (encfsgui_globals.debugmode):
-            print_debug("  >> %s" % l)
-        if ":" in l and not "fatal" in l:
-            updatefound = True
-            break
+
+    if gitretval != 0:
+        updateresult = -1
+    else:
+
+        updatefound = False
+        for l in gitoutput:
+            if (encfsgui_globals.debugmode):
+                print_debug("  >> %s" % l)
+            if ":" in l and not "fatal" in l and not "not staged" in l:
+                updatefound = True
+                break
     
-    if updatefound:
-        updateresult = 1 # update found
-    return updateresult
+        if updatefound:
+            updateresult = 1 # update found
+
+    return updateresult, gitoutput
 
 
 def getExpectScriptContents(insertbreak = False):
