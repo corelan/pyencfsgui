@@ -853,7 +853,9 @@ if __name__ == "__main__":
         encfsgui_helper.print_debug("Check for updates? %s" % str(encfsgui_globals.g_Settings["autoupdate"]).lower())
 
         if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
+            
             mainwindow.lbl_infolabel.setText("Checking for updates...")
+
             updateresult, gitoutput = encfsgui_helper.autoUpdate()
 
             if updateresult == 0:
