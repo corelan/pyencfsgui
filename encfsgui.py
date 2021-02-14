@@ -9,6 +9,21 @@ import configparser
 import inspect
 import traceback
 
+try:
+    import PyQt5
+    from Crypto import Random
+except:
+    print("*** Oops, some dependencies may be missing: ***")
+    print("\t- PyQt5")
+    print("\t- pycrypto")
+    print("")
+    print("You can install the missing depencies using the following commands:")
+    print("\tpip3 install PyQt5")
+    print("\tpython3 -m pip install pycrypto --user")
+    print("\nNote: installing pycrypto will require macOS Developer Commandline tools to be installed first.  ('xcode-select --install')")
+    print("")
+    exit(1)
+
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
