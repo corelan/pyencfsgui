@@ -411,7 +411,7 @@ class CVolumeWindow(QtWidgets.QDialog):
                 else:
                     time.sleep(1)
                     secondswaited += 1
-                if (secondswaited > 20):
+                if (secondswaited > 10):
                     break
             self.setEnabled(True)
 
@@ -421,11 +421,14 @@ class CVolumeWindow(QtWidgets.QDialog):
             
             if encfolderfound:
                 QtWidgets.QMessageBox.information(None,"EncFS volume created successfully","EncFS volume was created successfully")
+                #delete script file again
+                os.remove(expectfilename)  
             else:
                 QtWidgets.QMessageBox.information(None,"Error creating volume","Error while creating EncFS volume")
-      
-            #delete script file again
-            os.remove(expectfilename)          
+                # keep the expect file for debugging purposes in case debug mode is active
+                if not encfsgui_globals.debugmode:
+                    os.remove(expectfilename)
+                    
 
         return encfolderfound
 
