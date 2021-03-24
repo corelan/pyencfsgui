@@ -13,7 +13,7 @@ pyencfsgui was developed and tested on OSX High Sierra (and all newer macOS vers
 
 In order to use pyencfsgui, you need to install the following dependencies:
 
-- python3
+- python3 (3.9.x or higher)
 - python3 libraries: PyQT5, pycrypto
 - OSXFuse
 - encfs (1.9.x)
@@ -69,6 +69,7 @@ Next,
   ```
   brew install python3
   ```
+  (Make sure you're running a recent version of python3. Version 3.9.x or higher should work)
 
 #### 5. Install PyQt5
   ```
