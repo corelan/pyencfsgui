@@ -18,7 +18,7 @@ except:
     print("\t- pycrypto")
     print("")
     print("You can install the missing depencies using the following commands:")
-    print("\tpip3 install PyQt5")
+    print("\tpython3 -m pip install PyQt5 --user")
     print("\tpython3 -m pip install pycrypto --user")
     print("\nNote: installing pycrypto will require macOS Developer Commandline tools to be installed first.  ('xcode-select --install')")
     print("")

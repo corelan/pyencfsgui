@@ -38,7 +38,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
 
   ```
   brew tap homebrew/cask
-  brew cask install osxfuse
+  brew install osxfuse
   ```
 
 Next,
