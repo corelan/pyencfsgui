@@ -159,7 +159,9 @@ class CConfig():
         if not "encfspath" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["encfspath"] = "/usr/local/bin/encfs"
         if not "gocryptfspath" in encfsgui_globals.g_Settings:
-            encfsgui_globals.g_Settings["gocryptfspath"] = "/opt/homebrew/bin/gocryptfs"            
+            encfsgui_globals.g_Settings["gocryptfspath"] = "/usr/local/bin/gocryptfs"
+            if os.path.exists("/opt/homebrew/bin/gocryptfs"):
+                encfsgui_globals.g_Settings["gocryptfspath"] = "/opt/homebrew/bin/gocryptfs"
         if not "mountpath" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["mountpath"] = "/sbin/mount"
         if not "umountpath" in encfsgui_globals.g_Settings:
