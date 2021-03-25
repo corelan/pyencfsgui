@@ -245,13 +245,24 @@ class CMainWindow(QtWidgets.QDialog):
 
     def AboutClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        abouttext = "pyencfsgui is a python3/PyQT5 based GUI wrapper around encfs.\n\n"
-        abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina (and newer macOS versions). \n"
-        abouttext += "It may work on older systems and older versions of encfs, but you'll have to try and see for yourself.\n\n"
+        abouttext = "pyencfsgui is a python3/PyQT5 based GUI wrapper around encfs and/or gocryptfs.\n\n"
+        abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina (and newer macOS versions), \n"
+        abouttext += "and with gocryptfs 1.8.x on OSX Big Sur (and newer macOS versions). \n"
+        abouttext += "It may work on older systems and older versions of encfs/gocryptfs, but you'll have to try and see for yourself.\n\n"
         abouttext += "pyencfsgui development started in 2019. The utility was written by Peter 'corelanc0d3r' Van Eeckhoutte.\n"
         abouttext += "Corelan Consulting bv - www.corelan-consulting.com | www.corelan-training.com\n\n"
         abouttext += "Project repository: https://github.com/corelan/pyencfsgui\n\n"
-        abouttext +=  "You are running encfs version %s.\n\n" % getEncFSVersion()
+        abouttext += "\nVersion info:\n"
+        if os.path.exists(encfsgui_globals.g_Settings["encfspath"]):
+            abouttext +=  "You are running encfs version %s.\n" % getEncFSVersion()
+        else:
+            abouttext +=  "Encfs not found.\n"
+        
+        if os.path.exists(encfsgui_globals.g_Settings["gocryptfspath"]):
+            abouttext +=  "You are running gocryptfs version %s.\n\n" % getGoCryptFSVersion()
+        else:
+            abouttext +=  "Gocryptfs not found.\n\n"
+        
         abouttext +=  "This application uses icons from https://icons8.com.\n"
 
         msgBox = QMessageBox()
@@ -512,19 +523,32 @@ class CMainWindow(QtWidgets.QDialog):
         if volumename != "":
             if volumename in encfsgui_globals.g_Volumes:
                 EncVolumeObj =  encfsgui_globals.g_Volumes[volumename]
-                cmd = "%sctl info '%s'" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path)
-                cmdoutput = encfsgui_helper.execOSCmd(cmd)
-                infotext = "EncFS volume info for '%s'\n" % volumename
-                infotext += "Encrypted folder '%s'\n\n" % EncVolumeObj.enc_path
-                for l in cmdoutput:
-                    infotext = infotext + l + "\n"
-                msgBox = QtWidgets.QMessageBox()
-                msgBox.setIcon(QtWidgets.QMessageBox.Information)
-                msgBox.setWindowTitle("EncFS Volume info")
-                msgBox.setText(infotext)
-                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
-                msgBox.show()
-                msgBox.exec_()
+                infotext = ""
+                if EncVolumeObj.type == "encfs":
+                    if os.path.exists(encfsgui_globals.g_Settings["encfspath"]):
+                        cmd = "%sctl info '%s'" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path)
+                        cmdoutput = encfsgui_helper.execOSCmd(cmd)
+                        infotext = "EncFS volume info for '%s'\n" % volumename
+                        infotext += "Encrypted folder '%s'\n\n" % EncVolumeObj.enc_path
+                        for l in cmdoutput:
+                            infotext = infotext + l + "\n"
+
+                if EncVolumeObj.type == "gocryptfs":
+                    if os.path.exists(encfsgui_globals.g_Settings["gocryptfspath"]):
+                        cmd = "%s -info '%s'" % (encfsgui_globals.g_Settings["gocryptfspath"], EncVolumeObj.enc_path)
+                        cmdoutput = encfsgui_helper.execOSCmd(cmd)
+                        infotext = "GoCryptFS volume info for '%s'\n" % volumename
+                        infotext += "Encrypted folder '%s'\n\n" % EncVolumeObj.enc_path
+                        for l in cmdoutput:
+                            infotext = infotext + l + "\n"
+                if not infotext == "":
+                    msgBox = QtWidgets.QMessageBox()
+                    msgBox.setIcon(QtWidgets.QMessageBox.Information)
+                    msgBox.setWindowTitle("Encrypted Volume info (%s)" % EncVolumeObj.type)
+                    msgBox.setText(infotext)
+                    msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                    msgBox.show()
+                    msgBox.exec_()
         return
 
     def RefreshVolumesClicked(self): 
@@ -651,28 +675,57 @@ class CMainWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-            extra_osxfuse_opts = ""
             if (password != ""):
-                #mountcmd = "%s '%s' '%s' %s" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path, EncVolumeObj.mount_path, EncVolumeObj.encfsmountoptions)
-                if (EncVolumeObj.allowother):
-                    extra_osxfuse_opts += "-o allow_other "
-                if (EncVolumeObj.mountaslocal):
-                    extra_osxfuse_opts += "-o local "
-                # first, create mount point if necessary
-                createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
-                encfsgui_helper.execOSCmd(createfoldercmd)
 
-                encfsbin = encfsgui_globals.g_Settings["encfspath"]
-                encvol = EncVolumeObj.enc_path
-                mountvol = EncVolumeObj.mount_path
-                encfsmountoptions = ""
-                if not EncVolumeObj.encfsmountoptions == "":
-                    encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
+                # if volume is encfs:
+                if EncVolumeObj.type == "encfs":
+                    extra_osxfuse_opts = ""
+                    #mountcmd = "%s '%s' '%s' %s" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path, EncVolumeObj.mount_path, EncVolumeObj.encfsmountoptions)
+                    if (str(EncVolumeObj.allowother) == "1"):
+                        extra_osxfuse_opts += "-o allow_other "
+                    if (str(EncVolumeObj.mountaslocal) == "1"):
+                        extra_osxfuse_opts += "-o local "
+                    # first, create mount point if necessary
+                    createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
+                    encfsgui_helper.execOSCmd(createfoldercmd)
 
-                # do the actual mount
-                mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
+                    encfsbin = encfsgui_globals.g_Settings["encfspath"]
+                    encvol = EncVolumeObj.enc_path
+                    mountvol = EncVolumeObj.mount_path
+                    encfsmountoptions = ""
+                    if not EncVolumeObj.encfsmountoptions == "":
+                        encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
 
-                encfsgui_helper.execOSCmd(mountcmd)
+                    # do the actual mount
+                    mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
+
+                    encfsgui_helper.execOSCmd(mountcmd)
+
+                # if volume is gocryptfs:
+                if EncVolumeObj.type == "gocryptfs":
+                    extra_osxfuse_opts = ""
+                    extra_gocryptfs_opts = ""
+                    if (str(EncVolumeObj.allowother) == "1"):
+                        extra_gocryptfs_opts += "-allow_other "
+                    #if (EncVolumeObj.mountaslocal):
+                    #    extra_osxfuse_opts += "-o local "
+                    # first, create mount point if necessary
+                    createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
+                    encfsgui_helper.execOSCmd(createfoldercmd)
+
+                    gocryptfsbin = encfsgui_globals.g_Settings["gocryptfspath"]
+                    encvol = EncVolumeObj.enc_path
+                    mountvol = EncVolumeObj.mount_path
+                    if not EncVolumeObj.encfsmountoptions == "":
+                        extra_gocryptfs_opts += "'%s'" % EncVolumeObj.encfsmountoptions
+
+                    # do the actual mount
+                    #mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), gocryptfsbin, extra_osxfuse_opts, gocryptfsmountoptions, volumename, encvol, mountvol)
+                    mountcmd = "sh -c \"echo '%s' | '%s' %s '%s' '%s'\"" % (str(password), gocryptfsbin, extra_gocryptfs_opts, encvol, mountvol)
+
+                    encfsgui_helper.execOSCmd(mountcmd)
+
+
                 self.RefreshVolumes()
                 EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
                 if not EncVolumeObj.ismounted:
@@ -806,8 +859,18 @@ class CMainWindow(QtWidgets.QDialog):
 
     def SetInfoLabel(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        encfsinfo = "encfs v%s" % (getEncFSVersion())
-        self.lbl_infolabel.setText("%s  |  Nr of volumes: %d  |  %s" % (encfsinfo, self.volumetable.rowCount(), encfsgui_globals.volumesfile ))
+        encfspath = encfsgui_globals.g_Settings["encfspath"]
+        gocryptfspath = encfsgui_globals.g_Settings["gocryptfspath"]
+        encfsinfo = "encfs not found"
+
+        if os.path.exists(encfspath):
+            encfsinfo = "encfs v%s" % (getEncFSVersion())
+        gocryptfsinfo = "gocryptfs not found"
+
+        if os.path.exists(gocryptfspath):
+            gocryptfsinfo = "gocryptfs %s" % (getGoCryptFSVersion())
+
+        self.lbl_infolabel.setText(" %s  | %s  |  Nr of volumes: %d  |  %s" % (encfsinfo, gocryptfsinfo, self.volumetable.rowCount(), encfsgui_globals.volumesfile ))
         self.lbl_infolabel.update()
         encfsgui_globals.app.processEvents()
         return

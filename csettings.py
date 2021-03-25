@@ -48,6 +48,9 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.selectencfsbutton = self.findChild(QtWidgets.QPushButton, 'btn_selectencfs')
         self.selectencfsbutton.clicked.connect(self.SelectEncfsButtonClicked)
 
+        self.selectgocryptfsbutton = self.findChild(QtWidgets.QPushButton, 'btn_selectgocryptfs')
+        self.selectgocryptfsbutton.clicked.connect(self.SelectGocryptfsButtonClicked)
+
         self.selectmountbutton = self.findChild(QtWidgets.QPushButton, 'btn_selectmount')
         self.selectmountbutton.clicked.connect(self.SelectMountButtonClicked)
 
@@ -68,6 +71,16 @@ class CSettingsWindow(QtWidgets.QDialog):
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Select 'encfs' binary", self.txt_enfcsbinary.displayText(),"All Files (*)", options=options)
         if fileName:
             self.txt_encfsbinary.setText("%s" % fileName)
+        return
+
+    def SelectGocryptfsButtonClicked(self):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        self.txt_gocryptfsbinary = self.findChild(QtWidgets.QLineEdit, 'txt_gocryptfsbinary')
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Select 'gocryptfs' binary", self.txt_gocryptfsbinary.displayText(),"All Files (*)", options=options)
+        if fileName:
+            self.txt_gocryptfsbinary.setText("%s" % fileName)
         return
 
     def SelectMountButtonClicked(self):
@@ -116,6 +129,8 @@ class CSettingsWindow(QtWidgets.QDialog):
         # populate fields
         self.txt_enfcsbinary = self.findChild(QtWidgets.QLineEdit, 'txt_encfsbinary')
         self.txt_enfcsbinary.setText("%s" % encfsgui_globals.g_Settings["encfspath"])
+        self.txt_gocryptfsbinary = self.findChild(QtWidgets.QLineEdit, 'txt_gocryptfsbinary')
+        self.txt_gocryptfsbinary.setText("%s" % encfsgui_globals.g_Settings["gocryptfspath"])        
         self.txt_mountbinary = self.findChild(QtWidgets.QLineEdit, 'txt_mountbinary')
         self.txt_mountbinary.setText("%s" % encfsgui_globals.g_Settings["mountpath"])
         self.txt_umountbinary = self.findChild(QtWidgets.QLineEdit, 'txt_umountbinary')
@@ -176,6 +191,7 @@ class CSettingsWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         # update global settings
         encfsgui_globals.g_Settings["encfspath"] = str(self.txt_enfcsbinary.displayText().strip())
+        encfsgui_globals.g_Settings["gocryptfspath"] = str(self.txt_gocryptfsbinary.displayText().strip())
         encfsgui_globals.g_Settings["mountpath"] = str(self.txt_mountbinary.displayText().strip())
         encfsgui_globals.g_Settings["umountpath"] = str(self.txt_umountbinary.displayText().strip())
         if (self.txt_workingfolder.displayText().strip().replace(" ","") == ""):

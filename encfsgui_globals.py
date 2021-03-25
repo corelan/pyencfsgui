@@ -33,4 +33,5 @@ class CEncryptedVolume:
         self.mountaslocal=0
         self.ismounted = False
         self.enc_path_exists = True
+        self.type = "encfs"
     

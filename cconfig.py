@@ -59,6 +59,10 @@ class CConfig():
                 EncVolume.encfsmountoptions = volumeconfig[volumename]["encfsmountoptions"]
             if "passwordsaved" in  volumeconfig[volumename]:
                 EncVolume.passwordsaved = volumeconfig[volumename]["passwordsaved"]
+            if "type" in volumeconfig[volumename]:
+                EncVolume.type = volumeconfig[volumename]["type"]
+            else:
+                EncVolume.type = "encfs"
 
             # do we need to decrypt ?
             # if encryption is enabled, decrypt strings in memory using master password
@@ -92,11 +96,17 @@ class CConfig():
             if EncVolume.mount_path != "":
                 # the extra space is important !
                 path_to_check = "%s " % EncVolume.mount_path
-                for item in mountlist:        
-                    if "encfs" in str(item) and path_to_check in str(item):
-                        encfsgui_helper.print_debug("Volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
-                        EncVolume.ismounted = True
-                        break
+                for item in mountlist:
+                    if EncVolume.type == "encfs":  
+                        if "encfs" in str(item) and path_to_check in str(item):
+                            encfsgui_helper.print_debug("EncFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
+                            EncVolume.ismounted = True
+                            break
+                    elif EncVolume.type == "gocryptfs":
+                        if "osxfuse" in str(item) and path_to_check in str(item) and not "encfs" in str(item):
+                            encfsgui_helper.print_debug("GoCryptFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
+                            EncVolume.ismounted = True
+                            break                            
                 if not EncVolume.ismounted:
                     encfsgui_helper.print_debug("Volume is not mounted")
             encfsgui_globals.g_Volumes[volumename] = EncVolume
@@ -148,6 +158,8 @@ class CConfig():
         #global encfsgui_globals.g_Settings
         if not "encfspath" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["encfspath"] = "/usr/local/bin/encfs"
+        if not "gocryptfspath" in encfsgui_globals.g_Settings:
+            encfsgui_globals.g_Settings["gocryptfspath"] = "/opt/homebrew/bin/gocryptfs"            
         if not "mountpath" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["mountpath"] = "/sbin/mount"
         if not "umountpath" in encfsgui_globals.g_Settings:
@@ -239,6 +251,7 @@ class CConfig():
             config.set(volumename, 'mountaslocal',  EncVolumeObj.mountaslocal)
             config.set(volumename, 'encfsmountoptions',  EncVolumeObj.encfsmountoptions)
             config.set(volumename, 'passwordsaved',  EncVolumeObj.passwordsaved)
+            config.set(volumename, 'type', EncVolumeObj.type)
 
         with open(encfsgui_globals.volumesfile, 'w') as configfile:
             config.write(configfile)

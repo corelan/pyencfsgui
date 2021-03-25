@@ -2,12 +2,11 @@
 
 ## What is pyencfsgui?
 
-pyencfsgui is a Qt based GUI/wrapper around `encfs`, `encfsctl`, `mount` and `umount`, written in python3, and relies on OSXFuse to provide a filesystem.<br>
-In other words, it relies entirely on those utilities, the ability to interact with those tools and to capture & parse the output from those tools.<br>
+pyencfsgui is a Qt based GUI/wrapper around EncFS (`encfs`, `encfsctl`) and GoCryptFS (`gocryptfs`), `mount` and `umount`. It is written in python3, and relies on OSXFuse to provide a filesystem.<br>
+In other words, it simply provides a GUI that uses the aformentioned utilities, and relies on the ability to launch these binaries, to interact with them and to capture & parse the output from those tools.<br>
 As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
 The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
-pyencfsgui was developed and tested on OSX High Sierra (and all newer macOS versions), using encfs versions 1.8.x and 1.9.x. <br>
-(It can open existing volumes that have been created with older versions of encfs too)<br>
+pyencfsgui was developed and tested on OSX High Sierra (and all newer macOS versions), using encfs versions 1.8.x and 1.9.x., and gocryptfs version 1.8.x <br>
 
 ## Dependencies
 
@@ -16,7 +15,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
 - python3 (3.9.x or higher)
 - python3 libraries: PyQT5, pycrypto
 - OSXFuse
-- encfs (1.9.x)
+- encfs (1.9.x) and/or gocryptfs (1.8.x)
 - Developer Command Line Tools
 
 
@@ -30,7 +29,7 @@ In order to use pyencfsgui, you need to install the following dependencies:
   brew doctor
   ```
 
-#### 2. Install OSXFuse
+#### 2. Install OSXFuse/MacFuse
 
   Download the latest dmg installer image from https://osxfuse.github.io/ and run the installer.
 
@@ -46,14 +45,23 @@ Next,
 - Make sure to enable the kernel extension in System Preferences → Security & Privacy → General  if/as requested
 - Reboot for osxfuse to work correctly.
 
+Note: on recent Mac devices (with M1 processor) running Big Sur or later, you may have to allow Kernel Extensions using the Startup Security Utility:
 
-#### 3. Install encfs
+- Shutdown 
+- Press & hold Touch ID & power button.  Boot into recovery mode
+- Launch Startup Security Utility
+- Allow third party "kernel extensions" by changing the "Security Policy" to "Reduced Security"
+
+
+#### 3. Install encfs / gocryptfs 
+
+##### 3.1 Encfs
 
   ```
   brew update
   ``` 
 
- Check if everything is ok and install encfs
+  Check if everything is ok and install encfs
 
   ```
   brew doctor
@@ -65,6 +73,26 @@ Next,
   encfs    
   ```
 
+##### 3.2 GoCryptFS
+
+  ```
+  brew update
+  ``` 
+
+  Check if everything is ok and install encfs
+
+  ```
+  brew doctor
+  brew install gocryptfs
+  ```
+
+  Check if encfs works:
+  ```
+  gocryptfs    
+  ```
+
+
+
 #### 4. Install python3
   ```
   brew install python3
@@ -75,6 +103,12 @@ Next,
   ```
   pip3 install --upgrade pip --user
   python3 -m pip install PyQt5 --user
+  ```
+
+Note: On my 2020 MacBook Air (M1 processor), I had to install PyQT5 using the following command instead:
+
+  ```
+  brew install PyQt5
   ```
 
 #### 6. Install pycrypto
@@ -133,3 +167,15 @@ Bonus: if you would like to use the encfsgui icon for the shortcut in Dock, foll
 ### Character limitations for passwords
 
 You're not supposed to use a single-tick (') or exclamation mark (!) in the password for new volumes.  It may cause the 'expect' script to fail, and/or might end up setting a different password on the volume. If you insist on using a single-tick or exclamation mark, simply create the volume with encfs yourself, and then add the volume to the app (as opposed to creating it in the app itself)
+
+
+### GoCryptFS limitations
+
+#### Custom volumename for GoCryptFS folders
+
+GoCryptFS doesn't seem to support the ability to mount folders, specifying a custom volume name.  As a result, the mounted volume will simply have the name of the folder it is mounted at.
+(Choose your folder names wisely!) 
+
+#### Mount as local volume
+
+This feature does not seem to be supported by gocryptfs.

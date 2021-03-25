@@ -83,19 +83,39 @@ def getEncFSVersion():
     for line in cmdoutput:
         if line.startswith("encfs "):
             outputline = line
+            break
     outputparts = outputline.split(" ")
     encfsversion = outputparts[-1].replace('\n','')
     return encfsversion
 
+
+def getGoCryptFSVersion():
+    print_debug("Start %s" % inspect.stack()[0][3])
+    encfsversion = ""
+    oscmd = encfsgui_globals.g_Settings["gocryptfspath"]
+    cmdargs = '--version'
+    cmdoutput = execOSCmd("%s %s" % (oscmd,cmdargs ))
+    outputline = cmdoutput[0]
+    for line in cmdoutput:
+        if line.startswith("gocryptfs "):
+            outputline = line
+            break
+    outputparts = outputline.split(";")
+    gocryptfspart = outputparts[0]
+    versionparts = gocryptfspart.split(" ")
+    gocryptfsversion = versionparts[-1].replace('\n','')
+    return gocryptfsversion
+
+
 def execOSCmd(cmd):
     print_debug("Start %s" % inspect.stack()[0][3])
     if not cmd.startswith("sh -c"):
-        print_debug("Executing '%s'" % cmd)
+        print_debug("Executing [ %s ]" % cmd)
     else:
         print_debug("Note: A part of the command below will not shown because it might contain sensitive information (password)")
         cmdparts = cmd.split("|")
         if len(cmdparts) > 1:
-            print_debug("Executing '%s'" % cmdparts[1])
+            print_debug("Executing [ %s ]" % cmdparts[1])
     p = subprocess.Popen('%s' % cmd,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT,
@@ -175,148 +195,183 @@ def autoUpdate():
     return updateresult, gitoutput
 
 
-def getExpectScriptContents(insertbreak = False):
+def getExpectScriptContents(scripttype, insertbreak = False):
     print_debug("Start %s" % inspect.stack()[0][3])
     scriptcontents = ""
-    # header
-    newline = "#!/usr/bin/env expect\n"
-    scriptcontents += newline
+    if scripttype == "encfs":
+        # header
+        newline = "#!/usr/bin/env expect\n"
+        scriptcontents += newline
 
-    newline = "set passwd [lindex $argv 0]\n"
-    scriptcontents += newline
+        newline = "set passwd [lindex $argv 0]\n"
+        scriptcontents += newline
 
-    newline = "set timeout 10\n"
-    scriptcontents += newline
+        newline = "set timeout 10\n"
+        scriptcontents += newline
 
-    # launch encfs
-    newline = "spawn \"$ENCFSBIN\" -v \"$ENCPATH\" \"$MOUNTPATH\"\n"
-    scriptcontents += newline
+        # launch encfs
+        newline = "spawn \"$ENCFSBIN\" -v \"$ENCPATH\" \"$MOUNTPATH\"\n"
+        scriptcontents += newline
 
-    # activate expert mode
-    newline = "expect \"Please choose from one of the following options:\"\n"
-    scriptcontents += newline
-    newline = "expect \"?>\"\n"
-    scriptcontents += newline
-    newline = "send \"x\\n\"\n"
-    scriptcontents += newline
+        # activate expert mode
+        newline = "expect \"Please choose from one of the following options:\"\n"
+        scriptcontents += newline
+        newline = "expect \"?>\"\n"
+        scriptcontents += newline
+        newline = "send \"x\\n\"\n"
+        scriptcontents += newline
 
-    # set cipher algorithm
-    newline = "expect \"Enter the number corresponding to your choice: \"\n"
-    scriptcontents += newline
-    newline = "send \"$CIPHERALGO\\n\"\n"
-    scriptcontents += newline
+        # set cipher algorithm
+        newline = "expect \"Enter the number corresponding to your choice: \"\n"
+        scriptcontents += newline
+        newline = "send \"$CIPHERALGO\\n\"\n"
+        scriptcontents += newline
 
-    # select cipher keysize
-    newline = "expect \"Selected key size:\"\n"
-    scriptcontents += newline
-    newline = "send \"$CIPHERKEYSIZE\\n\"\n"
-    scriptcontents += newline
+        # select cipher keysize
+        newline = "expect \"Selected key size:\"\n"
+        scriptcontents += newline
+        newline = "send \"$CIPHERKEYSIZE\\n\"\n"
+        scriptcontents += newline
 
-    # select filesystem block size
-    newline = "expect \"filesystem block size:\"\n"
-    scriptcontents += newline
-    newline = "send \"$BLOCKSIZE\\n\"\n"
-    scriptcontents += newline
+        # select filesystem block size
+        newline = "expect \"filesystem block size:\"\n"
+        scriptcontents += newline
+        newline = "send \"$BLOCKSIZE\\n\"\n"
+        scriptcontents += newline
 
-    # select encoding algo
-    newline = "expect \"Enter the number corresponding to your choice: \"\n"
-    scriptcontents += newline
-    newline = "send \"$ENCODINGALGO\\n\"\n"
-    scriptcontents += newline
+        # select encoding algo
+        newline = "expect \"Enter the number corresponding to your choice: \"\n"
+        scriptcontents += newline
+        newline = "send \"$ENCODINGALGO\\n\"\n"
+        scriptcontents += newline
 
-    if (insertbreak):
-        newline = "break\n"
+        if (insertbreak):
+            newline = "break\n"
+            scriptcontents += newline        
+
+        # filename IV chaining
+        newline = "expect \"Enable filename initialization vector chaining?\"\n"
+        scriptcontents += newline
+        newline = "send \"$IVCHAINING\\n\"\n"
+        scriptcontents += newline
+
+        # per filename IV
+        newline = "expect \"Enable per-file initialization vectors?\"\n"
+        scriptcontents += newline
+        newline = "send \"$PERFILEIV\\n\"\n"
+        scriptcontents += newline
+
+        # file to IV header chaining can only be used when both previous options are enabled
+        # which means it might slide to the next option right away
+        newline = "expect {\n"
+        scriptcontents += newline
+        newline = "\t\"Enable filename to IV header chaining?\" {\n"
+        scriptcontents += newline
+        newline = "\t\tsend \"$FILETOIVHEADERCHAINING\\n\"\n"
+        scriptcontents += newline
+        newline = "\t\texpect \"Enable block authentication code headers\"\n"
+        scriptcontents += newline
+        newline = "\t\tsend \"$BLOCKAUTHCODEHEADERS\\n\"\n"
+        scriptcontents += newline
+        newline = "\t\t}\n"
+        scriptcontents += newline
+        newline = "\t\"Enable block authentication code headers\" {\n"  #space matters
+        scriptcontents += newline
+        newline = "\t\tsend \"$BLOCKAUTHCODEHEADERS\\n\"\n"
+        scriptcontents += newline   
+        newline = "\t\t}\n"
+        scriptcontents += newline   
+        newline = "\t}\n"
+        scriptcontents += newline    
+
+        # add random bytes to each block header
+        newline = "expect \"Select a number of bytes, from 0 (no random bytes) to 8: \"\n"
+        scriptcontents += newline
+        newline = "send \"0\\n\"\n"
+        scriptcontents += newline
+
+        # file-hole pass-through
+        newline = "expect \"Enable file-hole pass-through?\"\n"
+        scriptcontents += newline
+        newline = "send \"\\n\"\n"
         scriptcontents += newline        
 
-    # filename IV chaining
-    newline = "expect \"Enable filename initialization vector chaining?\"\n"
-    scriptcontents += newline
-    newline = "send \"$IVCHAINING\\n\"\n"
-    scriptcontents += newline
+        # password
+        newline = "expect \"New Encfs Password: \"\n"
+        scriptcontents += newline
+        newline = "send \"$passwd\\n\"\n"
+        scriptcontents += newline    
 
-    # per filename IV
-    newline = "expect \"Enable per-file initialization vectors?\"\n"
-    scriptcontents += newline
-    newline = "send \"$PERFILEIV\\n\"\n"
-    scriptcontents += newline
+        newline = "expect \"Verify Encfs Password: \"\n"
+        scriptcontents += newline
+        newline = "send \"$passwd\\n\"\n"
+        scriptcontents += newline    
 
-    # file to IV header chaining can only be used when both previous options are enabled
-    # which means it might slide to the next option right away
-    newline = "expect {\n"
-    scriptcontents += newline
-    newline = "\t\"Enable filename to IV header chaining?\" {\n"
-    scriptcontents += newline
-    newline = "\t\tsend \"$FILETOIVHEADERCHAINING\\n\"\n"
-    scriptcontents += newline
-    newline = "\t\texpect \"Enable block authentication code headers\"\n"
-    scriptcontents += newline
-    newline = "\t\tsend \"$BLOCKAUTHCODEHEADERS\\n\"\n"
-    scriptcontents += newline
-    newline = "\t\t}\n"
-    scriptcontents += newline
-    newline = "\t\"Enable block authentication code headers\" {\n"  #space matters
-    scriptcontents += newline
-    newline = "\t\tsend \"$BLOCKAUTHCODEHEADERS\\n\"\n"
-    scriptcontents += newline   
-    newline = "\t\t}\n"
-    scriptcontents += newline   
-    newline = "\t}\n"
-    scriptcontents += newline    
+        newline = "puts \"\\nDone.\\n\"\n"
+        scriptcontents += newline
 
-    # add random bytes to each block header
-    newline = "expect \"Select a number of bytes, from 0 (no random bytes) to 8: \"\n"
-    scriptcontents += newline
-    newline = "send \"0\\n\"\n"
-    scriptcontents += newline
-
-    # file-hole pass-through
-    newline = "expect \"Enable file-hole pass-through?\"\n"
-    scriptcontents += newline
-    newline = "send \"\\n\"\n"
-    scriptcontents += newline        
-
-    # password
-    newline = "expect \"New Encfs Password: \"\n"
-    scriptcontents += newline
-    newline = "send \"$passwd\\n\"\n"
-    scriptcontents += newline    
-
-    newline = "expect \"Verify Encfs Password: \"\n"
-    scriptcontents += newline
-    newline = "send \"$passwd\\n\"\n"
-    scriptcontents += newline    
-
-    newline = "puts \"\\nDone.\\n\"\n"
-    scriptcontents += newline
-
-    newline = "expect \"\\n\"\n"
-    scriptcontents += newline    
+        newline = "expect \"\\n\"\n"
+        scriptcontents += newline    
+        
+        newline = "sleep x\n"  
+        scriptcontents += newline
     
-    newline = "sleep x\n"  
-    scriptcontents += newline
-    
+    if scripttype == "gocryptfs":
+        # header
+        newline = "#!/usr/bin/env expect\n"
+        scriptcontents += newline
+
+        newline = "set passwd [lindex $argv 0]\n"
+        scriptcontents += newline
+
+        newline = "set timeout 10\n"
+        scriptcontents += newline
+
+        # launch encfs
+        newline = "spawn \"$GOCRYPTFSBIN\" $EXTRAOPTS -init \"$ENCPATH\" \n"
+        scriptcontents += newline
+
+        # password
+        newline = "expect \"Password:\"\n"
+        scriptcontents += newline
+        newline = "send \"$passwd\\n\"\n"
+        scriptcontents += newline    
+
+        newline = "expect \"Repeat:\"\n"
+        scriptcontents += newline
+        newline = "send \"$passwd\\n\"\n"
+        scriptcontents += newline    
+
+        newline = "expect \"\\n\"\n"
+        scriptcontents += newline    
+        
+        newline = "sleep x\n"  
+        scriptcontents += newline
+
+
     return scriptcontents
 
-
 def determineFileNameEncodings():
-        print_debug("Start %s" % inspect.stack()[0][3])
+    print_debug("Start %s" % inspect.stack()[0][3])
+    encodings = []
+    # create 2 new tmp folders
+    tmpname = getTmpName()
+    cwd = os.getcwd()
+    tmpfolder_enc = os.path.join(cwd, tmpname+"_enc")
+    tmpfolder_mnt = os.path.join(cwd, tmpname+"_mnt")
+    if os.path.exists(tmpfolder_enc):
+        os.removedirs(tmpfolder_enc)
+    if os.path.exists(tmpfolder_mnt):
+        os.removedirs(tmpfolder_mnt)
+    
+    os.mkdir(tmpfolder_enc)
+    os.mkdir(tmpfolder_mnt)
 
-        # create 2 new tmp folders
-        tmpname = getTmpName()
-        cwd = os.getcwd()
-        tmpfolder_enc = os.path.join(cwd, tmpname+"_enc")
-        tmpfolder_mnt = os.path.join(cwd, tmpname+"_mnt")
-        if os.path.exists(tmpfolder_enc):
-            os.removedirs(tmpfolder_enc)
-        if os.path.exists(tmpfolder_mnt):
-            os.removedirs(tmpfolder_mnt)
-        
-        os.mkdir(tmpfolder_enc)
-        os.mkdir(tmpfolder_mnt)
+    if os.path.exists(encfsgui_globals.g_Settings["encfspath"]):
 
         # try to create an encrypted volume, and parse output to determine the available fileencoding options
         # argument True is needed to insert 'break' after getting the encoding options
-        scriptcontents = getExpectScriptContents(True)
+        scriptcontents = getExpectScriptContents("encfs",True)
         password = "boguspassword"
 
         # replace variables in the script
@@ -378,8 +433,6 @@ def determineFileNameEncodings():
                         rawCaps.append(l)
                 if startfound and endfound:
                     break
-
-        encodings = []
         
         for l in rawCaps:
             capparts = l.split(" ")
@@ -387,17 +440,23 @@ def determineFileNameEncodings():
                 thisencoding = capparts[1]
                 encodings.append(thisencoding)
 
-        if len(encodings) > 0:
-            encfsgui_globals.g_Encodings = encodings
-        else:
-            print_debug("Unable to get filename encodings")
-            for l in expectoutput:
-                print_debug("%s" % l)
-        # clean up again
-        os.removedirs(tmpfolder_enc)
-        os.removedirs(tmpfolder_mnt)
-        os.remove(expectfilename)
-        return
+    else:
+        print_debug("No encfs binary found at %s" % encfsgui_globals.g_Settings["encfspath"])
+
+
+    if len(encodings) > 0:
+        encfsgui_globals.g_Encodings = encodings
+    else:
+        print_debug("Unable to get filename encodings")
+        for l in expectoutput:
+            print_debug("%s" % l)
+    
+    # clean up again
+    os.removedirs(tmpfolder_enc)
+    os.removedirs(tmpfolder_mnt)
+    os.remove(expectfilename)
+
+    return
 
 def getMasterKey():
     print_debug("Start %s" % inspect.stack()[0][3])
