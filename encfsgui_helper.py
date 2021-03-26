@@ -88,10 +88,19 @@ def getEncFSVersion():
     encfsversion = outputparts[-1].replace('\n','')
     return encfsversion
 
+def ifExists(encfsapp="encfs"):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    encbinfound = False
+    dictkey = "%spath" % encfsapp
+    if dictkey in encfsgui_globals.g_Settings:
+        encbinpath = encfsgui_globals.g_Settings[dictkey]
+        if os.path.exists(encbinpath):
+            encbinfound = True
+    return encbinfound
 
 def getGoCryptFSVersion():
     print_debug("Start %s" % inspect.stack()[0][3])
-    encfsversion = ""
+    gocryptfsversion = ""
     oscmd = encfsgui_globals.g_Settings["gocryptfspath"]
     cmdargs = '--version'
     cmdoutput = execOSCmd("%s %s" % (oscmd,cmdargs ))

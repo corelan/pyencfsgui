@@ -677,59 +677,62 @@ class CMainWindow(QtWidgets.QDialog):
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             if (password != ""):
 
-                # if volume is encfs:
-                if EncVolumeObj.type == "encfs":
-                    extra_osxfuse_opts = ""
-                    #mountcmd = "%s '%s' '%s' %s" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path, EncVolumeObj.mount_path, EncVolumeObj.encfsmountoptions)
-                    if (str(EncVolumeObj.allowother) == "1"):
-                        extra_osxfuse_opts += "-o allow_other "
-                    if (str(EncVolumeObj.mountaslocal) == "1"):
-                        extra_osxfuse_opts += "-o local "
-                    # first, create mount point if necessary
-                    createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
-                    encfsgui_helper.execOSCmd(createfoldercmd)
+                if not encfsgui_helper.ifExists(EncVolumeObj.type):
+                    QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s', '%s' binary not found\n" % ( volumename, EncVolumeObj.type))
+                else:
+                    # if volume is encfs:
+                    if EncVolumeObj.type == "encfs":
+                        extra_osxfuse_opts = ""
+                        #mountcmd = "%s '%s' '%s' %s" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path, EncVolumeObj.mount_path, EncVolumeObj.encfsmountoptions)
+                        if (str(EncVolumeObj.allowother) == "1"):
+                            extra_osxfuse_opts += "-o allow_other "
+                        if (str(EncVolumeObj.mountaslocal) == "1"):
+                            extra_osxfuse_opts += "-o local "
+                        # first, create mount point if necessary
+                        createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
+                        encfsgui_helper.execOSCmd(createfoldercmd)
 
-                    encfsbin = encfsgui_globals.g_Settings["encfspath"]
-                    encvol = EncVolumeObj.enc_path
-                    mountvol = EncVolumeObj.mount_path
-                    encfsmountoptions = ""
-                    if not EncVolumeObj.encfsmountoptions == "":
-                        encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
+                        encfsbin = encfsgui_globals.g_Settings["encfspath"]
+                        encvol = EncVolumeObj.enc_path
+                        mountvol = EncVolumeObj.mount_path
+                        encfsmountoptions = ""
+                        if not EncVolumeObj.encfsmountoptions == "":
+                            encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
 
-                    # do the actual mount
-                    mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
+                        # do the actual mount
+                        mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
 
-                    encfsgui_helper.execOSCmd(mountcmd)
+                        encfsgui_helper.execOSCmd(mountcmd)
 
-                # if volume is gocryptfs:
-                if EncVolumeObj.type == "gocryptfs":
-                    extra_osxfuse_opts = ""
-                    extra_gocryptfs_opts = ""
-                    if (str(EncVolumeObj.allowother) == "1"):
-                        extra_gocryptfs_opts += "-allow_other "
-                    if (str(EncVolumeObj.mountaslocal) == "1"):
-                        extra_osxfuse_opts += "-ko local "
-                    # first, create mount point if necessary
-                    createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
-                    encfsgui_helper.execOSCmd(createfoldercmd)
+                    # if volume is gocryptfs:
+                    if EncVolumeObj.type == "gocryptfs":
+                        extra_osxfuse_opts = ""
+                        extra_gocryptfs_opts = ""
+                        if (str(EncVolumeObj.allowother) == "1"):
+                            extra_gocryptfs_opts += "-allow_other "
+                        if (str(EncVolumeObj.mountaslocal) == "1"):
+                            extra_osxfuse_opts += "-ko local "
+                        # first, create mount point if necessary
+                        createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
+                        encfsgui_helper.execOSCmd(createfoldercmd)
 
-                    gocryptfsbin = encfsgui_globals.g_Settings["gocryptfspath"]
-                    encvol = EncVolumeObj.enc_path
-                    mountvol = EncVolumeObj.mount_path
-                    if not EncVolumeObj.encfsmountoptions == "":
-                        extra_gocryptfs_opts += "'%s'" % EncVolumeObj.encfsmountoptions
+                        gocryptfsbin = encfsgui_globals.g_Settings["gocryptfspath"]
+                        encvol = EncVolumeObj.enc_path
+                        mountvol = EncVolumeObj.mount_path
+                        if not EncVolumeObj.encfsmountoptions == "":
+                            extra_gocryptfs_opts += "'%s'" % EncVolumeObj.encfsmountoptions
 
-                    # do the actual mount
-                    #mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), gocryptfsbin, extra_osxfuse_opts, gocryptfsmountoptions, volumename, encvol, mountvol)
-                    mountcmd = "sh -c \"echo '%s' | '%s' -ko fsname='%s' %s %s '%s' '%s'\"" % (str(password), gocryptfsbin, volumename,extra_osxfuse_opts, extra_gocryptfs_opts, encvol, mountvol)
+                        # do the actual mount
+                        #mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), gocryptfsbin, extra_osxfuse_opts, gocryptfsmountoptions, volumename, encvol, mountvol)
+                        mountcmd = "sh -c \"echo '%s' | '%s' -ko volname='%s' -ko fsname='%s' %s %s '%s' '%s'\"" % (str(password), gocryptfsbin, volumename, volumename, extra_osxfuse_opts, extra_gocryptfs_opts, encvol, mountvol)
 
-                    encfsgui_helper.execOSCmd(mountcmd)
+                        encfsgui_helper.execOSCmd(mountcmd)
 
 
-                self.RefreshVolumes()
-                EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
-                if not EncVolumeObj.ismounted:
-                    QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n" % volumename)
+                    self.RefreshVolumes()
+                    EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
+                    if not EncVolumeObj.ismounted:
+                        QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n" % volumename)
             else:
                 encfsgui_helper.print_debug("Did not attempt to mount, empty password given")
 
