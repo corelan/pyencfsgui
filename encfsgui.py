@@ -707,8 +707,8 @@ class CMainWindow(QtWidgets.QDialog):
                     extra_gocryptfs_opts = ""
                     if (str(EncVolumeObj.allowother) == "1"):
                         extra_gocryptfs_opts += "-allow_other "
-                    #if (EncVolumeObj.mountaslocal):
-                    #    extra_osxfuse_opts += "-o local "
+                    if (str(EncVolumeObj.mountaslocal) == "1"):
+                        extra_osxfuse_opts += "-ko local "
                     # first, create mount point if necessary
                     createfoldercmd = "mkdir -p '%s'" % EncVolumeObj.mount_path
                     encfsgui_helper.execOSCmd(createfoldercmd)
@@ -721,7 +721,7 @@ class CMainWindow(QtWidgets.QDialog):
 
                     # do the actual mount
                     #mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), gocryptfsbin, extra_osxfuse_opts, gocryptfsmountoptions, volumename, encvol, mountvol)
-                    mountcmd = "sh -c \"echo '%s' | '%s' %s '%s' '%s'\"" % (str(password), gocryptfsbin, extra_gocryptfs_opts, encvol, mountvol)
+                    mountcmd = "sh -c \"echo '%s' | '%s' -ko fsname='%s' %s %s '%s' '%s'\"" % (str(password), gocryptfsbin, volumename,extra_osxfuse_opts, extra_gocryptfs_opts, encvol, mountvol)
 
                     encfsgui_helper.execOSCmd(mountcmd)
 

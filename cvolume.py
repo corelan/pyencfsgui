@@ -148,7 +148,7 @@ class CVolumeWindow(QtWidgets.QDialog):
             self.tab_gocryptfs_options.setEnabled(False)
             self.tab_volumetypes.setCurrentWidget(self.tab_encfs_options)  
             self.tab_encfs_options.show()
-        self.chk_mountaslocal.setEnabled(True)
+        #self.chk_mountaslocal.setEnabled(True)
 
         return
 
@@ -163,7 +163,7 @@ class CVolumeWindow(QtWidgets.QDialog):
             self.tab_gocryptfs_options.setEnabled(True)
             self.tab_volumetypes.setCurrentWidget(self.tab_gocryptfs_options)  
             self.tab_gocryptfs_options.show()
-        self.chk_mountaslocal.setEnabled(False)
+        #self.chk_mountaslocal.setEnabled(False)
         return
 
     def SelectProfileCustom(self):
@@ -319,10 +319,6 @@ class CVolumeWindow(QtWidgets.QDialog):
             if (self.chk_mountaslocal.isChecked()):
                 EncVolumeObj.mountaslocal = "1"
             else:
-                EncVolumeObj.mountaslocal = "0"
-
-            # unsupported by gocryptfs
-            if EncVolumeObj.type == "gocryptfs":
                 EncVolumeObj.mountaslocal = "0"
 
             if (self.chk_saveinkeychain.isChecked()):
@@ -634,8 +630,7 @@ class CVolumeWindow(QtWidgets.QDialog):
             if str(EncVolumeObj.type) == "gocryptfs":
                 self.radio_volumetype_gocryptfs.setChecked(True)
                 self.tab_volumetypes.setCurrentWidget(self.tab_gocryptfs_options)
-                self.chk_mountaslocal.setChecked(False)
-                self.chk_mountaslocal.setEnabled(False) 
+                #self.chk_mountaslocal.setEnabled(False) 
         return
 
 
