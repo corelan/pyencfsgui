@@ -523,3 +523,17 @@ def makePW32(key):
         pw += chr(ccode)
         ccode += 1
     return pw
+
+def SavePasswordInKeyChain(volumename, password):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    cmd = "sh -c \"security add-generic-password -U -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' -w '%s' login.keychain\"" % (volumename, volumename, str(password))
+    print_debug(cmd)
+    setpwoutput = execOSCmd(cmd)
+    return
+
+def RemovePasswordFromKeyChain(volumename):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    cmd = "sh -c \"security delete-generic-password -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' login.keychain\"" % (volumename, volumename)
+    print_debug(cmd)
+    setpwoutput = execOSCmd(cmd)
+    return      

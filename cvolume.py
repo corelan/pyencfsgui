@@ -362,17 +362,17 @@ class CVolumeWindow(QtWidgets.QDialog):
             # and add new one
             if (self.runmode == 2):
                 encfsgui_globals.appconfig.delVolume(self.origvolumename)
-                self.RemovePasswordFromKeyChain(self.origvolumename)
+                encfsgui_helper.RemovePasswordFromKeyChain(self.origvolumename)
 
                 encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
 
             # remove old password
             if not self.chk_saveinkeychain.isChecked():
-                self.RemovePasswordFromKeyChain(newvolumename)
+                encfsgui_helper.RemovePasswordFromKeyChain(newvolumename)
             # save new password
             if (self.chk_saveinkeychain.isChecked() and self.txt_password.text() != ""):
-                self.RemovePasswordFromKeyChain(newvolumename)
-                self.SavePasswordInKeyChain(newvolumename, self.txt_password.text())
+                encfsgui_helper.RemovePasswordFromKeyChain(newvolumename)
+                encfsgui_helper.SavePasswordInKeyChain(newvolumename, self.txt_password.text())
             # and close the dialog
             self.close()
         return
@@ -645,18 +645,3 @@ class CVolumeWindow(QtWidgets.QDialog):
                 self.tab_volumetypes.setCurrentWidget(self.tab_gocryptfs_options)
                 #self.chk_mountaslocal.setEnabled(False) 
         return
-
-
-    def SavePasswordInKeyChain(self, volumename, password):
-        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        cmd = "sh -c \"security add-generic-password -U -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' -w '%s' login.keychain\"" % (volumename, volumename, str(password))
-        encfsgui_helper.print_debug(cmd)
-        setpwoutput = encfsgui_helper.execOSCmd(cmd)
-        return
-
-    def RemovePasswordFromKeyChain(self, volumename):
-        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        cmd = "sh -c \"security delete-generic-password -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' login.keychain\"" % (volumename, volumename)
-        encfsgui_helper.print_debug(cmd)
-        setpwoutput = encfsgui_helper.execOSCmd(cmd)
-        return        

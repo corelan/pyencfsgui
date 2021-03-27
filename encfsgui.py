@@ -512,7 +512,7 @@ class CMainWindow(QtWidgets.QDialog):
                 msgBox.addButton(QtWidgets.QMessageBox.Yes)
                 msgBox.show()
                 if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
-                    EncVolumeObj.RemovePasswordFromKeyChain(volumename)
+                    encfsgui_helper.RemovePasswordFromKeyChain(volumename)
                     encfsgui_globals.appconfig.delVolume(volumename)                  
                     encfsgui_globals.appconfig.getVolumes()
                     self.RefreshVolumes()
