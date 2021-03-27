@@ -60,9 +60,13 @@ class CConfig():
             if "passwordsaved" in  volumeconfig[volumename]:
                 EncVolume.passwordsaved = volumeconfig[volumename]["passwordsaved"]
             if "type" in volumeconfig[volumename]:
-                EncVolume.type = volumeconfig[volumename]["type"]
+                EncVolume.enctype = volumeconfig[volumename]["type"]
+            if "enctype" in volumeconfig[volumename]:
+                EncVolume.enctype = volumeconfig[volumename]["enctype"]
             else:
-                EncVolume.type = "encfs"
+                EncVolume.enctype = "encfs"
+            if "sudo" in volumeconfig[volumename]:
+                EncVolume.sudo = volumeconfig[volumename]["sudo"]
 
             # do we need to decrypt ?
             # if encryption is enabled, decrypt strings in memory using master password
@@ -97,12 +101,12 @@ class CConfig():
                 # the extra space is important !
                 path_to_check = "%s " % EncVolume.mount_path
                 for item in mountlist:
-                    if EncVolume.type == "encfs":  
+                    if EncVolume.enctype == "encfs":  
                         if "encfs" in str(item) and path_to_check in str(item):
                             encfsgui_helper.print_debug("EncFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
                             EncVolume.ismounted = True
                             break
-                    elif EncVolume.type == "gocryptfs":
+                    elif EncVolume.enctype == "gocryptfs":
                         if path_to_check in str(item):
                             encfsgui_helper.print_debug("GoCryptFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
                             EncVolume.ismounted = True
@@ -253,7 +257,8 @@ class CConfig():
             config.set(volumename, 'mountaslocal',  EncVolumeObj.mountaslocal)
             config.set(volumename, 'encfsmountoptions',  EncVolumeObj.encfsmountoptions)
             config.set(volumename, 'passwordsaved',  EncVolumeObj.passwordsaved)
-            config.set(volumename, 'type', EncVolumeObj.type)
+            config.set(volumename, 'enctype', EncVolumeObj.enctype)
+            config.set(volumename, 'sudo', EncVolumeObj.sudo)
 
         with open(encfsgui_globals.volumesfile, 'w') as configfile:
             config.write(configfile)

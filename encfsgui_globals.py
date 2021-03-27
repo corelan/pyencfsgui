@@ -30,8 +30,9 @@ class CEncryptedVolume:
         self.automount = 0
         self.preventautounmount = 0
         self.allowother = 0
-        self.mountaslocal=0
+        self.mountaslocal = 0
         self.ismounted = False
         self.enc_path_exists = True
-        self.type = "encfs"
+        self.enctype = "encfs"
+        self.sudo = 0
     

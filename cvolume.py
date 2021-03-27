@@ -52,6 +52,7 @@ class CVolumeWindow(QtWidgets.QDialog):
 
         self.chk_saveinkeychain = self.findChild(QtWidgets.QCheckBox, 'chk_saveinkeychain')
         self.chk_mountaslocal = self.findChild(QtWidgets.QCheckBox, 'chk_mountaslocal')
+        self.chk_usesudo = self.findChild(QtWidgets.QCheckBox, 'chk_usesudo')
         self.chk_automount = self.findChild(QtWidgets.QCheckBox, 'chk_automount')
         self.chk_preventautounmount = self.findChild(QtWidgets.QCheckBox, 'chk_preventautounmount')
         self.chk_accesstoother = self.findChild(QtWidgets.QCheckBox, 'chk_accesstoother')
@@ -271,6 +272,9 @@ class CVolumeWindow(QtWidgets.QDialog):
                     QtWidgets.QMessageBox.warning(None,"Error checking mount folder","Please make sure the mount folder is empty at this point."  )
                     errorfound = True            
 
+        # runmode 0 = create
+        # runmode 1 = add
+        # runmode 2 = edit
         if (self.runmode == 0) or (self.runmode == 1):
             if (newvolumename in encfsgui_globals.g_Volumes):
                 errorfound = True
@@ -318,9 +322,9 @@ class CVolumeWindow(QtWidgets.QDialog):
             EncVolumeObj.encfsmountoptions = str(self.txt_encfsmountoptions.displayText()).strip()
 
             if (self.radio_volumetype_gocryptfs.isChecked()):
-                EncVolumeObj.type = "gocryptfs"
+                EncVolumeObj.enctype = "gocryptfs"
             if (self.radio_volumetype_encfs.isChecked()):
-                EncVolumeObj.type = "encfs"
+                EncVolumeObj.enctype = "encfs"
 
             if (self.chk_mountaslocal.isChecked()):
                 EncVolumeObj.mountaslocal = "1"
@@ -347,6 +351,11 @@ class CVolumeWindow(QtWidgets.QDialog):
             else:
                 EncVolumeObj.allowother = "0"
 
+            if (self.chk_usesudo.isChecked()):
+                EncVolumeObj.sudo = "1"
+            else:
+                EncVolumeObj.sudo = "0"
+
             # in create mode, first create the actual encrypted folder
             # and then add it to the config 
 
@@ -362,7 +371,9 @@ class CVolumeWindow(QtWidgets.QDialog):
             # and add new one
             if (self.runmode == 2):
                 encfsgui_globals.appconfig.delVolume(self.origvolumename)
-                encfsgui_helper.RemovePasswordFromKeyChain(self.origvolumename)
+                # only remove password if a new is set, to avoid that a simple edit would clear the saved password
+                if self.chk_saveinkeychain.isChecked() and not self.txt_password.text() == "" and not self.txt_password2 == "":
+                    encfsgui_helper.RemovePasswordFromKeyChain(self.origvolumename)
 
                 encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
 
@@ -604,6 +615,15 @@ class CVolumeWindow(QtWidgets.QDialog):
             self.grp_gocryptfsoptions.setEnabled(False)
             self.grp_volumetypes.setEnabled(False)
 
+        #unsupported 
+        if encfsgui_helper.isLinux():
+            self.chk_mountaslocal.setEnabled(False)
+            self.chk_mountaslocal.setChecked(False)
+
+        if encfsgui_helper.isWindows():
+            self.chk_usesudo.setEnabled(False)
+            self.chk_usesudo.setChecked(False)
+
         return
 
     def getRunMode(self):
@@ -636,12 +656,24 @@ class CVolumeWindow(QtWidgets.QDialog):
                 self.chk_accesstoother.setChecked(True)
             if str(EncVolumeObj.passwordsaved) == "1":
                 self.chk_saveinkeychain.setChecked(True)
-            if str(EncVolumeObj.type) == "encfs":
+            if str(EncVolumeObj.sudo) == "1":
+                self.chk_usesudo.setChecked(True)                
+            if str(EncVolumeObj.enctype) == "encfs":
                 self.radio_volumetype_encfs.setChecked(True)
                 self.tab_volumetypes.setCurrentWidget(self.tab_encfs_options)  
                 self.chk_mountaslocal.setEnabled(True)       
-            if str(EncVolumeObj.type) == "gocryptfs":
+            if str(EncVolumeObj.enctype) == "gocryptfs":
                 self.radio_volumetype_gocryptfs.setChecked(True)
                 self.tab_volumetypes.setCurrentWidget(self.tab_gocryptfs_options)
-                #self.chk_mountaslocal.setEnabled(False) 
+                #self.chk_mountaslocal.setEnabled(False)
+
+        # overrule, unsupported features
+        if encfsgui_helper.isLinux():
+            self.chk_mountaslocal.setEnabled(False)
+            self.chk_mountaslocal.setChecked(False)
+
+        if encfsgui_helper.isWindows():
+            self.chk_usesudo.setEnabled(False)
+            self.chk_usesudo.setChecked(False)
+
         return

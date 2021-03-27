@@ -526,7 +526,7 @@ class CMainWindow(QtWidgets.QDialog):
             if volumename in encfsgui_globals.g_Volumes:
                 EncVolumeObj =  encfsgui_globals.g_Volumes[volumename]
                 infotext = ""
-                if EncVolumeObj.type == "encfs":
+                if EncVolumeObj.enctype == "encfs":
                     if os.path.exists(encfsgui_globals.g_Settings["encfspath"]):
                         cmd = "%sctl info '%s'" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path)
                         cmdoutput = encfsgui_helper.execOSCmd(cmd)
@@ -535,7 +535,7 @@ class CMainWindow(QtWidgets.QDialog):
                         for l in cmdoutput:
                             infotext = infotext + l + "\n"
 
-                if EncVolumeObj.type == "gocryptfs":
+                if EncVolumeObj.enctype == "gocryptfs":
                     if os.path.exists(encfsgui_globals.g_Settings["gocryptfspath"]):
                         cmd = "%s -info '%s'" % (encfsgui_globals.g_Settings["gocryptfspath"], EncVolumeObj.enc_path)
                         cmdoutput = encfsgui_helper.execOSCmd(cmd)
@@ -546,7 +546,7 @@ class CMainWindow(QtWidgets.QDialog):
                 if not infotext == "":
                     msgBox = QtWidgets.QMessageBox()
                     msgBox.setIcon(QtWidgets.QMessageBox.Information)
-                    msgBox.setWindowTitle("Encrypted Volume info (%s)" % EncVolumeObj.type)
+                    msgBox.setWindowTitle("Encrypted Volume info (%s)" % EncVolumeObj.enctype)
                     msgBox.setText(infotext)
                     msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                     msgBox.show()
@@ -651,7 +651,9 @@ class CMainWindow(QtWidgets.QDialog):
                         dounmount = False
 
             if dounmount:
-                cmd = "%s '%s'" % (encfsgui_globals.g_Settings["umountpath"], EncVolumeObj.mount_path)
+                cmd = "'%s' '%s'" % (encfsgui_globals.g_Settings["umountpath"], EncVolumeObj.mount_path)
+                if EncVolumeObj.sudo == "1":
+                    cmd = "sudo '%s' '%s'" % (encfsgui_globals.g_Settings["umountpath"], EncVolumeObj.mount_path)
                 encfsgui_helper.execOSCmd(cmd)
                 # did unmount work?
                 self.RefreshVolumes()
@@ -678,12 +680,15 @@ class CMainWindow(QtWidgets.QDialog):
         if volumename in encfsgui_globals.g_Volumes:
             EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
             if (password != ""):
-
-                if not encfsgui_helper.ifExists(EncVolumeObj.type):
-                    QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s', '%s' binary not found\n" % ( volumename, EncVolumeObj.type))
+                if not encfsgui_helper.ifExists(EncVolumeObj.enctype):
+                    QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s', '%s' binary not found\n" % ( volumename, EncVolumeObj.enctype))
                 else:
+                    usesudo = ""
+                    if EncVolumeObj.sudo == "1":
+                        usesudo = "sudo"
+
                     # if volume is encfs:
-                    if EncVolumeObj.type == "encfs":
+                    if EncVolumeObj.enctype == "encfs":
                         extra_osxfuse_opts = ""
                         #mountcmd = "%s '%s' '%s' %s" % (encfsgui_globals.g_Settings["encfspath"], EncVolumeObj.enc_path, EncVolumeObj.mount_path, EncVolumeObj.encfsmountoptions)
                         if (str(EncVolumeObj.allowother) == "1"):
@@ -702,12 +707,12 @@ class CMainWindow(QtWidgets.QDialog):
                             encfsmountoptions = "'%s'" % EncVolumeObj.encfsmountoptions
 
                         # do the actual mount
-                        mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
+                        mountcmd = "sh -c \"echo '%s' | %s '%s' -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), usesudo, encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
 
                         encfsgui_helper.execOSCmd(mountcmd)
 
                     # if volume is gocryptfs:
-                    if EncVolumeObj.type == "gocryptfs":
+                    if EncVolumeObj.enctype == "gocryptfs":
                         extra_osxfuse_opts = ""
                         extra_gocryptfs_opts = ""
                         if (str(EncVolumeObj.allowother) == "1"):
@@ -726,7 +731,7 @@ class CMainWindow(QtWidgets.QDialog):
 
                         # do the actual mount
                         #mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), gocryptfsbin, extra_osxfuse_opts, gocryptfsmountoptions, volumename, encvol, mountvol)
-                        mountcmd = "sh -c \"echo '%s' | '%s' -ko volname='%s' -ko fsname='%s' %s %s '%s' '%s'\"" % (str(password), gocryptfsbin, volumename, volumename, extra_osxfuse_opts, extra_gocryptfs_opts, encvol, mountvol)
+                        mountcmd = "sh -c \"echo '%s' | %s '%s' -ko volname='%s' -ko fsname='%s' %s %s '%s' '%s'\"" % (str(password), usesudo, gocryptfsbin, volumename, volumename, extra_osxfuse_opts, extra_gocryptfs_opts, encvol, mountvol)
 
                         encfsgui_helper.execOSCmd(mountcmd)
 

@@ -149,7 +149,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>470</y>
+     <y>460</y>
      <width>601</width>
      <height>121</height>
     </rect>
@@ -227,9 +227,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>590</y>
+     <y>580</y>
      <width>601</width>
-     <height>151</height>
+     <height>161</height>
     </rect>
    </property>
    <property name="title">
@@ -310,6 +310,19 @@
      <string>Mount as a local volume</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="chk_usesudo">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>140</y>
+      <width>581</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Use 'sudo' to mount this volume. (sudo must be configured not to require a password!)</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QPushButton" name="btn_save">
    <property name="geometry">
@@ -350,7 +363,7 @@
     <enum>QTabWidget::Triangular</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
