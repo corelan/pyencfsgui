@@ -2,8 +2,8 @@
 
 ## What is pyencfsgui?
 
-pyencfsgui is a Qt based GUI/wrapper around EncFS (`encfs`, `encfsctl`) and GoCryptFS (`gocryptfs`), `mount` and `umount`. It is written in python3, and relies on OSXFuse to provide a filesystem.<br>
-In other words, it simply provides a GUI that uses the aformentioned utilities, and relies on the ability to launch these binaries, to interact with them and to capture & parse the output from those tools.<br>
+pyencfsgui is a Qt based GUI/wrapper around EncFS (`encfs`, `encfsctl`) and GoCryptFS (`gocryptfs`), `mount` and `umount`. It is written in python3, and relies on `encfs`/`gocryptfs` to be able to mount an enrypted folder. These utilities typically rely on OSXFuse/MacFuse to provide a filesystem.<br>
+In other words, pyencfsgui simply provides a GUI that uses the aformentioned utilities, and relies on the ability to launch these binaries, to interact with them and to capture & parse the output from those tools.<br>
 As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
 The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
 pyencfsgui was developed and tested on OSX High Sierra (and all newer macOS versions), using encfs versions 1.8.x and 1.9.x., and gocryptfs version 1.8.x <br>
