@@ -281,6 +281,12 @@ class CVolumeWindow(QtWidgets.QDialog):
                 if (newvolumename in encfsgui_globals.g_Volumes):
                     errorfound = True
                     QtWidgets.QMessageBox.warning(None,"Error checking volume name","Volume name '%s' already exists.\n Please choose a unique volume name." % newvolumename )
+                else:
+                    print_debug("Volume '%s' will be renamed to '%s'" % (self.origvolumename, newvolumename))
+                
+                if self.chk_saveinkeychain.isChecked() and (self.txt_password.text() == "" or self.txt_password2.text() == ""):
+                    errorfound = True
+                    QtWidgets.QMessageBox.warning(None,"Re-enter password","You are trying to rename a volume that had its password saved in keychain.\n\nPlease enter the password again, or disable saving the password in keychain.\n\n" ) 
 
         if (self.chk_saveinkeychain.isChecked() or self.runmode == 0):
             if (self.txt_password.text() != self.txt_password2.text()):
@@ -356,9 +362,16 @@ class CVolumeWindow(QtWidgets.QDialog):
             # and add new one
             if (self.runmode == 2):
                 encfsgui_globals.appconfig.delVolume(self.origvolumename)
+                self.RemovePasswordFromKeyChain(self.origvolumename)
+
                 encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
 
+            # remove old password
+            if not self.chk_saveinkeychain.isChecked():
+                self.RemovePasswordFromKeyChain(newvolumename)
+            # save new password
             if (self.chk_saveinkeychain.isChecked() and self.txt_password.text() != ""):
+                self.RemovePasswordFromKeyChain(newvolumename)
                 self.SavePasswordInKeyChain(newvolumename, self.txt_password.text())
             # and close the dialog
             self.close()
@@ -640,3 +653,10 @@ class CVolumeWindow(QtWidgets.QDialog):
         encfsgui_helper.print_debug(cmd)
         setpwoutput = encfsgui_helper.execOSCmd(cmd)
         return
+
+    def RemovePasswordFromKeyChain(self, volumename):
+        encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        cmd = "sh -c \"security delete-generic-password -a 'EncFSGUI_%s' -s 'EncFSGUI_%s' login.keychain\"" % (volumename, volumename)
+        encfsgui_helper.print_debug(cmd)
+        setpwoutput = encfsgui_helper.execOSCmd(cmd)
+        return        
