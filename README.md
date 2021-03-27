@@ -7,7 +7,8 @@ It is written in python3, and relies on `encfs`/`gocryptfs` to be able to mount 
 In other words, pyencfsgui simply provides a GUI that uses the aformentioned utilities, and relies on the ability to launch these binaries, to interact with them and to capture & parse the output from those tools.<br>
 As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
 The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
-pyencfsgui was developed and tested on OSX High Sierra (and all newer macOS versions), using encfs versions 1.8.x and 1.9.x., and gocryptfs version 1.8.x <br>
+pyencfsgui was developed on macOS using encfs versions 1.8.x and 1.9.x., and gocryptfs version 1.8.x <br>
+pyencfsgui was tested on recent version of macOS and Kali Linux<br>
 
 ## Dependencies
 
@@ -23,7 +24,7 @@ On macOS, you'll also need to install:
 
 
 
-### Installing dependencies on OSX
+### Installing dependencies on macOS
 
 #### 1. Install Homebrew
 
@@ -160,15 +161,18 @@ On Kali Linux, python3, PyQT5 and pycrypto should already be installed.
 
 
 
-
 ### Running pyencfsgui
 
 - Clone the git project onto your machine
-- Open a Terminal, go to the folder
+  ```
+  git clone https://github.com/corelan/pyencfsgui.git
+  ```
+- Open a Terminal, go to the `pyencfsgui`folder
 - run `python3 encfsgui.py`
-- Check/edit the settings as needed
+- Check/edit the settings as needed. Make sure to verify the path of the various binaries (`encfs`, `gocryptfs`, `mount`)
 - Create a new volume (or add an existing one to the application)
 - Enjoy!
+
 
 ### Can I add a shortcut to the app in my Dock?
 
