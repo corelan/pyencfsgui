@@ -138,8 +138,17 @@ class CConfig():
         # if file does not exist, generate default file
         if not os.path.exists(self.settingsfile):
             self.populateDefaultSettings()
-            self.saveSettings() 
+            self.saveSettings()
 
+        # if file exists, but does not contain the config section, then regenerate the file as well
+        appsettings = configparser.ConfigParser()
+        appsettings.read(self.settingsfile)
+
+        if not "config" in appsettings:
+            self.populateDefaultSettings()
+            self.saveSettings()            
+
+        # we should have a working config file now
         appsettings = configparser.ConfigParser()
         appsettings.read(self.settingsfile)
 
@@ -161,15 +170,35 @@ class CConfig():
     def populateDefaultSettings(self):
         #global encfsgui_globals.g_Settings
         if not "encfspath" in encfsgui_globals.g_Settings:
-            encfsgui_globals.g_Settings["encfspath"] = "/usr/local/bin/encfs"
+            whichpath = encfsgui_helper.runwhich("encfs")
+            if whichpath != "":
+                encfsgui_globals.g_Settings["encfspath"] = whichpath
+            else:
+                encfsgui_globals.g_Settings["encfspath"] = "/usr/local/bin/encfs"
+
         if not "gocryptfspath" in encfsgui_globals.g_Settings:
-            encfsgui_globals.g_Settings["gocryptfspath"] = "/usr/local/bin/gocryptfs"
-            if os.path.exists("/opt/homebrew/bin/gocryptfs"):
-                encfsgui_globals.g_Settings["gocryptfspath"] = "/opt/homebrew/bin/gocryptfs"
+            whichpath = encfsgui_helper.runwhich("gocryptfs")
+            if whichpath != "":
+                encfsgui_globals.g_Settings["gocryptfspath"] = whichpath
+            else:   
+                encfsgui_globals.g_Settings["gocryptfspath"] = "/usr/local/bin/gocryptfs"
+                if os.path.exists("/opt/homebrew/bin/gocryptfs"):
+                    encfsgui_globals.g_Settings["gocryptfspath"] = "/opt/homebrew/bin/gocryptfs"
+
         if not "mountpath" in encfsgui_globals.g_Settings:
-            encfsgui_globals.g_Settings["mountpath"] = "/sbin/mount"
+            whichpath = encfsgui_helper.runwhich("mount")
+            if whichpath != "":
+                encfsgui_globals.g_Settings["mountpath"] = whichpath
+            else:    
+                encfsgui_globals.g_Settings["mountpath"] = "/sbin/mount"
+
         if not "umountpath" in encfsgui_globals.g_Settings:
-            encfsgui_globals.g_Settings["umountpath"] = "/sbin/umount"
+            whichpath = encfsgui_helper.runwhich("umount")
+            if whichpath != "":
+                encfsgui_globals.g_Settings["umountpath"] = whichpath
+            else:    
+                encfsgui_globals.g_Settings["umountpath"] = "/sbin/umount"
+
         if not "autounmount" in encfsgui_globals.g_Settings:
             encfsgui_globals.g_Settings["autounmount"] = "false"
         if not "noconfirmationunmount" in encfsgui_globals.g_Settings:

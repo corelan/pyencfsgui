@@ -141,6 +141,18 @@ def isWindows():
     else:
         return False
 
+def runwhich(binarytofind):
+    whichlocation = ""
+    if binarytofind != "":
+        cmd = ["which",binarytofind]
+        cmdlines, cmdretval = execOSCmdRetVal(cmd)
+        # get the first line that contains the binarytofind
+        for line in cmdlines:
+            if binarytofind in line:
+                if os.path.exists(line.strip()):
+                    whichlocation = line.strip()
+                    break
+    return whichlocation
 
 
 def execOSCmd(cmd):
