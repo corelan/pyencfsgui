@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>588</width>
+    <width>650</width>
     <height>670</height>
    </rect>
   </property>
@@ -21,19 +21,19 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>588</width>
+    <width>650</width>
     <height>670</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>588</width>
+    <width>650</width>
     <height>670</height>
    </size>
   </property>
   <property name="baseSize">
    <size>
-    <width>588</width>
+    <width>650</width>
     <height>670</height>
    </size>
   </property>
@@ -49,7 +49,7 @@
   <widget class="QPushButton" name="btn_OK">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>400</x>
      <y>630</y>
      <width>113</width>
      <height>32</height>
@@ -62,7 +62,7 @@
   <widget class="QPushButton" name="btn_cancel">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>520</x>
      <y>630</y>
      <width>113</width>
      <height>32</height>
@@ -116,7 +116,7 @@
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>451</width>
+     <width>481</width>
      <height>21</height>
     </rect>
    </property>
@@ -132,7 +132,7 @@
     <rect>
      <x>20</x>
      <y>130</y>
-     <width>451</width>
+     <width>481</width>
      <height>21</height>
     </rect>
    </property>
@@ -142,7 +142,7 @@
     <rect>
      <x>20</x>
      <y>180</y>
-     <width>451</width>
+     <width>481</width>
      <height>21</height>
     </rect>
    </property>
@@ -150,7 +150,7 @@
   <widget class="QPushButton" name="btn_selectencfs">
    <property name="geometry">
     <rect>
-     <x>470</x>
+     <x>520</x>
      <y>20</y>
      <width>113</width>
      <height>40</height>
@@ -163,7 +163,7 @@
   <widget class="QPushButton" name="btn_selectmount">
    <property name="geometry">
     <rect>
-     <x>470</x>
+     <x>520</x>
      <y>120</y>
      <width>113</width>
      <height>40</height>
@@ -176,7 +176,7 @@
   <widget class="QPushButton" name="btn_selectumount">
    <property name="geometry">
     <rect>
-     <x>470</x>
+     <x>520</x>
      <y>170</y>
      <width>113</width>
      <height>40</height>
@@ -204,7 +204,7 @@
     <rect>
      <x>20</x>
      <y>230</y>
-     <width>451</width>
+     <width>481</width>
      <height>21</height>
     </rect>
    </property>
@@ -212,7 +212,7 @@
   <widget class="QPushButton" name="btn_selectworkingfolder">
    <property name="geometry">
     <rect>
-     <x>470</x>
+     <x>520</x>
      <y>220</y>
      <width>113</width>
      <height>40</height>
@@ -240,7 +240,7 @@
     <rect>
      <x>20</x>
      <y>260</y>
-     <width>551</width>
+     <width>611</width>
      <height>121</height>
     </rect>
    </property>
@@ -255,7 +255,7 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>211</width>
+      <width>581</width>
       <height>20</height>
      </rect>
     </property>
@@ -268,7 +268,7 @@
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>271</width>
+      <width>591</width>
       <height>20</height>
      </rect>
     </property>
@@ -281,7 +281,7 @@
      <rect>
       <x>10</x>
       <y>70</y>
-      <width>441</width>
+      <width>581</width>
       <height>20</height>
      </rect>
     </property>
@@ -294,7 +294,7 @@
      <rect>
       <x>10</x>
       <y>90</y>
-      <width>391</width>
+      <width>591</width>
       <height>20</height>
      </rect>
     </property>
@@ -308,7 +308,7 @@
     <rect>
      <x>20</x>
      <y>380</y>
-     <width>551</width>
+     <width>611</width>
      <height>101</height>
     </rect>
    </property>
@@ -320,7 +320,7 @@
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>451</width>
+      <width>581</width>
       <height>20</height>
      </rect>
     </property>
@@ -333,7 +333,7 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>451</width>
+      <width>591</width>
       <height>20</height>
      </rect>
     </property>
@@ -346,7 +346,7 @@
      <rect>
       <x>10</x>
       <y>70</y>
-      <width>451</width>
+      <width>591</width>
       <height>20</height>
      </rect>
     </property>
@@ -360,7 +360,7 @@
     <rect>
      <x>20</x>
      <y>480</y>
-     <width>551</width>
+     <width>611</width>
      <height>131</height>
     </rect>
    </property>
@@ -372,7 +372,7 @@
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>451</width>
+      <width>581</width>
       <height>20</height>
      </rect>
     </property>
@@ -385,7 +385,7 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>531</width>
+      <width>591</width>
       <height>31</height>
      </rect>
     </property>
@@ -398,7 +398,7 @@
      <rect>
       <x>30</x>
       <y>80</y>
-      <width>521</width>
+      <width>571</width>
       <height>16</height>
      </rect>
     </property>
@@ -411,12 +411,12 @@
      <rect>
       <x>10</x>
       <y>100</y>
-      <width>451</width>
+      <width>591</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Hide volume if source path cannot be found</string>
+     <string>Hide volume if location of encrypted folder cannot be found</string>
     </property>
    </widget>
   </widget>
@@ -438,7 +438,7 @@
     <rect>
      <x>20</x>
      <y>80</y>
-     <width>451</width>
+     <width>481</width>
      <height>21</height>
     </rect>
    </property>
@@ -452,7 +452,7 @@
   <widget class="QPushButton" name="btn_selectgocryptfs">
    <property name="geometry">
     <rect>
-     <x>470</x>
+     <x>520</x>
      <y>70</y>
      <width>113</width>
      <height>40</height>
