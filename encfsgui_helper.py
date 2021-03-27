@@ -187,7 +187,10 @@ def execOScmdAsync(cmdarray):
 
 def openFolder(foldername):
     print_debug("Start %s" % inspect.stack()[0][3])
-    subprocess.call(["open", "-R", foldername + "/"])
+    if ismacOS():
+        subprocess.call(["open", "-R", foldername + "/"])
+    elif isLinux():
+        subprocess.call(["xdg-open", foldername + "/"])
     return
 
 def getKeyChainPassword(volumename):
