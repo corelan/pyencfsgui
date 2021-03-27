@@ -594,7 +594,7 @@
   <widget class="QFrame" name="frame">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>10</x>
      <y>90</y>
      <width>1100</width>
      <height>341</height>
@@ -617,8 +617,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1100</width>
-      <height>331</height>
+      <width>1101</width>
+      <height>341</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -629,6 +629,7 @@
     </property>
     <property name="font">
      <font>
+      <family>Jura</family>
       <pointsize>11</pointsize>
      </font>
     </property>
@@ -697,8 +698,8 @@
     <rect>
      <x>759</x>
      <y>440</y>
-     <width>201</width>
-     <height>20</height>
+     <width>351</width>
+     <height>16</height>
     </rect>
    </property>
    <property name="font">

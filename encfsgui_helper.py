@@ -1,4 +1,5 @@
 import os
+import platform
 import sys
 import time
 import datetime
@@ -88,15 +89,6 @@ def getEncFSVersion():
     encfsversion = outputparts[-1].replace('\n','')
     return encfsversion
 
-def ifExists(encfsapp="encfs"):
-    print_debug("Start %s" % inspect.stack()[0][3])
-    encbinfound = False
-    dictkey = "%spath" % encfsapp
-    if dictkey in encfsgui_globals.g_Settings:
-        encbinpath = encfsgui_globals.g_Settings[dictkey]
-        if os.path.exists(encbinpath):
-            encbinfound = True
-    return encbinfound
 
 def getGoCryptFSVersion():
     print_debug("Start %s" % inspect.stack()[0][3])
@@ -114,6 +106,41 @@ def getGoCryptFSVersion():
     versionparts = gocryptfspart.split(" ")
     gocryptfsversion = versionparts[-1].replace('\n','')
     return gocryptfsversion
+
+
+def ifExists(encfsapp="encfs"):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    encbinfound = False
+    dictkey = "%spath" % encfsapp
+    if dictkey in encfsgui_globals.g_Settings:
+        encbinpath = encfsgui_globals.g_Settings[dictkey]
+        if os.path.exists(encbinpath):
+            encbinfound = True
+    return encbinfound
+
+
+def getOSType():
+    return platform.system()
+
+
+def ismacOS():
+    if "darwin" in getOSType().lower():
+        return True
+    else:
+        return False
+
+def isLinux():
+    if "linux" in getOSType().lower():
+        return True
+    else:
+        return False
+
+def isWindows():
+    if "windows" in getOSType().lower():
+        return True
+    else:
+        return False
+
 
 
 def execOSCmd(cmd):
@@ -202,7 +229,6 @@ def autoUpdate():
             updateresult = 1 # update found
 
     return updateresult, gitoutput
-
 
 def getExpectScriptContents(scripttype, insertbreak = False):
     print_debug("Start %s" % inspect.stack()[0][3])

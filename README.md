@@ -2,7 +2,8 @@
 
 ## What is pyencfsgui?
 
-pyencfsgui is a Qt based GUI/wrapper around EncFS (`encfs`, `encfsctl`) and GoCryptFS (`gocryptfs`), `mount` and `umount`. It is written in python3, and relies on `encfs`/`gocryptfs` to be able to mount an enrypted folder. These utilities typically rely on OSXFuse/MacFuse to provide a filesystem.<br>
+pyencfsgui is a Qt based GUI/wrapper around EncFS (`encfs`, `encfsctl`) and GoCryptFS (`gocryptfs`), `mount` and `umount`. 
+It is written in python3, and relies on `encfs`/`gocryptfs` to be able to mount an enrypted folder. (These utilities typically rely on OSXFuse/MacFuse to provide a filesystem.)<br>
 In other words, pyencfsgui simply provides a GUI that uses the aformentioned utilities, and relies on the ability to launch these binaries, to interact with them and to capture & parse the output from those tools.<br>
 As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
 The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
@@ -14,9 +15,12 @@ In order to use pyencfsgui, you need to install the following dependencies:
 
 - python3 (3.9.x or higher)
 - python3 libraries: PyQT5, pycrypto
-- OSXFuse
 - encfs (1.9.x) and/or gocryptfs (1.8.x)
+
+On macOS, you'll also need to install:
 - Developer Command Line Tools
+- OSXFuse/macFuse (depends on what encfs/gocryptfs needs)
+
 
 
 ### Installing dependencies on OSX
@@ -92,7 +96,6 @@ Note: on recent Mac devices (with M1 processor) running Big Sur or later, you ma
   ```
 
 
-
 #### 4. Install python3
   ```
   brew install python3
@@ -121,6 +124,41 @@ Note: On my 2020 MacBook Air (M1 processor), I had to install PyQT5 using the fo
   ```
   xcode-select --install
   ```
+
+
+#### 6. Jura font
+
+Download & install the Jura font from here: https://fontsov.com/font/juraregular.html
+
+
+
+
+### Installing dependencies on Linux (tested on Kali)
+
+On Kali Linux, python3, PyQT5 and pycrypto should already be installed.
+
+#### 1. Jura font
+
+  ```
+  sudo apt install fonts-jura
+  ```
+
+#### 2. Install encfs / gocryptfs
+
+##### 2.1 Encfs
+
+  ```
+  sudo apt install encfs
+  ```
+
+##### 2.2 GoCryptFS
+
+  ```
+  sudo apt install gocryptfs
+  ```
+
+
+
 
 
 ### Running pyencfsgui

@@ -264,6 +264,7 @@ class CMainWindow(QtWidgets.QDialog):
             abouttext +=  "Gocryptfs not found.\n\n"
         
         abouttext +=  "This application uses icons from https://icons8.com.\n"
+        abouttext +=  "\nYou are running %s" % encfsgui_helper.getOSType()
 
         msgBox = QMessageBox()
         msgBox.setWindowTitle("About pyencfsgui")
@@ -729,7 +730,6 @@ class CMainWindow(QtWidgets.QDialog):
 
                         encfsgui_helper.execOSCmd(mountcmd)
 
-
                     self.RefreshVolumes()
                     EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
                     if not EncVolumeObj.ismounted:
@@ -773,14 +773,14 @@ class CMainWindow(QtWidgets.QDialog):
         #self.volumetable.setRowCount(len(encfsgui_globals.g_Volumes))
         self.volumetable.setRowCount(0)
 
-        columnheaders = ['Mounted?', 'Volume Name', 'EncFS path', 'Mount at', 'Automount?']
+        columnheaders = ['Mounted?', 'Volume Name', 'Encrypted folder', 'Mount at', 'Automount?']
         self.volumetable.setHorizontalHeaderLabels(columnheaders)
 
-        self.volumetable.setColumnWidth(0,70)
-        self.volumetable.setColumnWidth(1,120)
-        self.volumetable.setColumnWidth(2,360)
-        self.volumetable.setColumnWidth(3,320)
-        self.volumetable.setColumnWidth(4,90)
+        self.volumetable.setColumnWidth(0,75)
+        self.volumetable.setColumnWidth(1,125)
+        self.volumetable.setColumnWidth(2,365)
+        self.volumetable.setColumnWidth(3,325)
+        self.volumetable.setColumnWidth(4,95)
 
         # sort 
         sorted_volumes = {k: encfsgui_globals.g_Volumes[k] for k in sorted(encfsgui_globals.g_Volumes)}

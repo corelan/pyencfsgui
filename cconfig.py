@@ -103,7 +103,7 @@ class CConfig():
                             EncVolume.ismounted = True
                             break
                     elif EncVolume.type == "gocryptfs":
-                        if "osxfuse" in str(item) and path_to_check in str(item) and not "encfs" in str(item):
+                        if path_to_check in str(item):
                             encfsgui_helper.print_debug("GoCryptFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
                             EncVolume.ismounted = True
                             break                            
