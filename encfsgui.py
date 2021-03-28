@@ -146,11 +146,14 @@ class CMainWindow(QtWidgets.QDialog):
         icondir = encfsgui_helper.getCurDir()
         iconfolder = os.path.join(icondir,'bitmaps' )
         iconpath = os.path.join(iconfolder, 'encfsgui.ico')
+        wiconpath = os.path.join(iconfolder, 'encfsgui.png')
         self.tray_icon.setIcon(QIcon(iconpath))
         self.tray_icon.setVisible(True)
         self.tray_menu = QMenu()
         self.volume_menu = QMenu()
         self.CreateTrayMenu()
+
+        self.setWindowIcon(QIcon(wiconpath))
 
         # context menu for TableWidget
         self.volumetable = self.findChild(QtWidgets.QTableWidget, 'tbl_Volumes')
