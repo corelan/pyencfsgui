@@ -1007,6 +1007,15 @@ if __name__ == "__main__":
             mainwindow.PopulateVolumeMenu()
             encfsgui_globals.appconfig.clearMasterKeyIfNeeded()
 
+        try:
+            icondir = encfsgui_helper.getCurDir()
+            iconfolder = os.path.join(icondir,'bitmaps' )
+            iconpath = os.path.join(iconfolder, 'encfsgui.ico')
+            encfsgui_globals.app.setWindowIcon(QIcon(iconpath))
+        except:
+            print_debug("Unable to set application icon '%s'" % iconpath)
+            pass
+
         encfsgui_globals.app.setQuitOnLastWindowClosed(False)
 
         encfsgui_globals.app.exec_()

@@ -35,6 +35,16 @@ from cgetmasterkey import CMasterKeyWindow
 ### METHODS, HELPER FUNCTIONS ###
 #################################
 
+def getCurDir():
+    print_debug("Start %s" % inspect.stack()[0][3])
+    curdir = "./"
+    try:
+        os.chdir(os.path.dirname(os.path.abspath(sys.argv[0])))
+        curdir = os.getcwd()
+    except Exception as e:
+        print_debug("Unable to determine current directory: %s" % str(e))
+        pass
+    return curdir
 
 def getNow():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
