@@ -142,7 +142,11 @@ class CMainWindow(QtWidgets.QDialog):
         # system tray menu
         self.tray_icon = QSystemTrayIcon(self)
         #self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_DriveHDIcon))
-        self.tray_icon.setIcon(QIcon('./bitmaps/encfsgui.png'))
+        #self.tray_icon.setIcon(QIcon('./bitmaps/encfsgui.png'))
+        icondir = encfsgui_helper.getCurDir()
+        iconfolder = os.path.join(icondir,'bitmaps' )
+        iconpath = os.path.join(iconfolder, 'encfsgui.ico')
+        self.tray_icon.setIcon(QIcon(iconpath))
         self.tray_menu = QMenu()
         self.volume_menu = QMenu()
         self.CreateTrayMenu()
@@ -243,7 +247,14 @@ class CMainWindow(QtWidgets.QDialog):
             encfsgui_globals.masterkey = ""
         encfsgui_globals.ishidden = True
         self.PopulateVolumeMenu()   # will disable menu if needed
-        self.hide()
+        # only hide on macos
+        try:
+            if encfsgui_helper.ismacOS():
+                self.hide()
+            elif encfsgui_helper.isLinux():
+                self.self.showMinimized()
+        except Exception as e:
+            print_debug("Error hiding/minimizing: %s" % str(e))
         return
 
     def AboutClicked(self):
@@ -1012,6 +1023,7 @@ if __name__ == "__main__":
             iconfolder = os.path.join(icondir,'bitmaps' )
             iconpath = os.path.join(iconfolder, 'encfsgui.ico')
             encfsgui_globals.app.setWindowIcon(QIcon(iconpath))
+            print_debug("Set application icon '%s'" % iconpath)
         except:
             print_debug("Unable to set application icon '%s'" % iconpath)
             pass

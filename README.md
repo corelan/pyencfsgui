@@ -23,7 +23,7 @@ On macOS, you'll also need to install:
 - OSXFuse/macFuse (depending on what encfs/gocryptfs needs)
 
 Kali Linux already has most dependencies installed. If you're using a different distro, you may have to install some utilities as needed.
-
+(If you're using xfce as Desktop Manager, you may want to install & run something like `plank` to see application icons at the bottom of your screen)
 
 ### Installing dependencies on macOS
 
@@ -222,3 +222,10 @@ GoCryptFS doesn't seem to support the ability to mount folders, specifying a cus
 #### Mount as local volume
 
 This feature does not seem to be supported by gocryptfs.
+
+
+### Linux Desktop Manager limitations
+
+#### Hide to System Tray
+
+Some Linux Desktop Managers will not show the system tray icon when "hiding" pyencfsgui.  This appears to be a PyQt5/Linux Desktop Manager compatibility issue.  As a result, I highly recommend not to "hide" pyencfsgui, as you may not be able to "unhide" it (due to lack of a system tray icon).
