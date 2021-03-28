@@ -147,6 +147,7 @@ class CMainWindow(QtWidgets.QDialog):
         iconfolder = os.path.join(icondir,'bitmaps' )
         iconpath = os.path.join(iconfolder, 'encfsgui.ico')
         self.tray_icon.setIcon(QIcon(iconpath))
+        self.tray_icon.setVisible(True)
         self.tray_menu = QMenu()
         self.volume_menu = QMenu()
         self.CreateTrayMenu()
