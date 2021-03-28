@@ -1017,7 +1017,10 @@ if __name__ == "__main__":
             encfsgui_globals.ishidden = True
             mainwindow.PopulateVolumeMenu()
             encfsgui_globals.appconfig.clearMasterKeyIfNeeded()
-
+            # on Linux, show minimized
+            if encfsgui_helper.isLinux():
+                #mainwindow.show()
+                mainwindow.showMinimized()
         try:
             icondir = encfsgui_helper.getCurDir()
             iconfolder = os.path.join(icondir,'bitmaps' )
