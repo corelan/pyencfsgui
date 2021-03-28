@@ -3,8 +3,8 @@
 ## What is pyencfsgui?
 
 pyencfsgui is a Qt based GUI/wrapper around EncFS (`encfs`, `encfsctl`) and GoCryptFS (`gocryptfs`), `mount` and `umount`. 
-It is written in python3, and relies on `encfs`/`gocryptfs` to be able to mount an enrypted folder. (These utilities typically rely on OSXFuse/MacFuse to provide a filesystem.)<br>
-In other words, pyencfsgui simply provides a GUI that uses the aformentioned utilities, and relies on the ability to launch these binaries, to interact with them and to capture & parse the output from those tools.<br>
+It is written in python3, and relies on `encfs`/`gocryptfs` to be able to mount an enrypted folder. (These utilities typically rely on OSXFuse/MacFuse/...Fuse to provide a filesystem.)<br>
+In other words, pyencfsgui simply provides a GUI that uses the aformentioned utilities in the backend, and relies on the ability to launch these binaries, to interact with them and to capture & parse the output from those tools.<br>
 As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
 The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
 pyencfsgui was developed on macOS using encfs versions 1.8.x and 1.9.x., and gocryptfs version 1.8.x <br>
@@ -20,8 +20,9 @@ In order to use pyencfsgui, you need to install the following dependencies:
 
 On macOS, you'll also need to install:
 - Developer Command Line Tools
-- OSXFuse/macFuse (depends on what encfs/gocryptfs needs)
+- OSXFuse/macFuse (depending on what encfs/gocryptfs needs)
 
+Kali Linux already has most dependencies installed. If you're using a different distro, you may have to install some utilities as needed.
 
 
 ### Installing dependencies on macOS

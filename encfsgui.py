@@ -1,6 +1,9 @@
 #!/usr/local/bin/python3
 import os
 import sys
+if sys.version_info <(3,0,0):
+    sys.stderr.write("\n  ** You need python v3 or later to run this script **\n\n")
+    exit(1)
 import time
 import datetime
 import string
@@ -922,7 +925,7 @@ if __name__ == "__main__":
         encfsgui_helper.createFile(encfsgui_globals.logfile)
 
         encfsgui_globals.appconfig = CConfig()
-        encfsgui_globals.appconfig.getSettings()
+        settingsfilefound = encfsgui_globals.appconfig.getSettings()
 
         encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
             
@@ -989,6 +992,10 @@ if __name__ == "__main__":
 
         encfsgui_globals.appconfig.getVolumes()
 
+        if not settingsfilefound:
+            QtWidgets.QMessageBox.information(None,"Please verify and confirm settings","It looks like the application settings were not verified & confirmed yet.\n\nI'll open the settings window so you can check if everything looks ok.")
+            mainwindow.SetttingsButtonClicked()
+
         mainwindow.RefreshVolumes()
         mainwindow.AutoMount()
 
@@ -1001,6 +1008,7 @@ if __name__ == "__main__":
             encfsgui_globals.appconfig.clearMasterKeyIfNeeded()
 
         encfsgui_globals.app.setQuitOnLastWindowClosed(False)
+
         encfsgui_globals.app.exec_()
 
         encfsgui_helper.print_debug("Application has exited.")

@@ -573,7 +573,7 @@ class CVolumeWindow(QtWidgets.QDialog):
                             takenote = True
                         if takenote:
                             if "-" in line:
-                                masterkeyinfo += "%s\n" % line.replace(" ","").replace("[2m","").replace("[0m","")
+                                masterkeyinfo += "%s\n" % str(line.replace(" ","").replace("[2m","").replace("[0m","").replace("\x1b",""))
                     QtWidgets.QMessageBox.information(None,"Your master key","WARNING! This is the only time when you get to see your master key!\n\nYour master key is:\n\n%s\n\nPrint it to a piece of paper and store it in a safe location.\n" % masterkeyinfo)                          
                     #delete script file again
                     os.remove(expectfilename)  

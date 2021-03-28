@@ -131,6 +131,7 @@ class CConfig():
         return
 
     def getSettings(self):
+        settingsfound = True
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
         curframe = inspect.currentframe()
         calframe = inspect.getouterframes(curframe, 2)
@@ -139,6 +140,7 @@ class CConfig():
         if not os.path.exists(self.settingsfile):
             self.populateDefaultSettings()
             self.saveSettings()
+            settingsfound = False
 
         # if file exists, but does not contain the config section, then regenerate the file as well
         appsettings = configparser.ConfigParser()
@@ -146,7 +148,8 @@ class CConfig():
 
         if not "config" in appsettings:
             self.populateDefaultSettings()
-            self.saveSettings()            
+            self.saveSettings()
+            settingsfound = False        
 
         # we should have a working config file now
         appsettings = configparser.ConfigParser()
@@ -165,7 +168,7 @@ class CConfig():
 
         encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
 
-        return
+        return settingsfound 
 
     def populateDefaultSettings(self):
         #global encfsgui_globals.g_Settings
