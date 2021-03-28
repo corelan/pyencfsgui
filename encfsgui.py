@@ -252,7 +252,7 @@ class CMainWindow(QtWidgets.QDialog):
             if encfsgui_helper.ismacOS():
                 self.hide()
             elif encfsgui_helper.isLinux():
-                self.self.showMinimized()
+                self.showMinimized()
         except Exception as e:
             print_debug("Error hiding/minimizing: %s" % str(e))
         return
