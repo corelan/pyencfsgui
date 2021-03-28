@@ -5,9 +5,10 @@
 pyencfsgui is a Qt based GUI/wrapper around EncFS (`encfs`, `encfsctl`) and GoCryptFS (`gocryptfs`), `mount` and `umount`. 
 It is written in python3, and relies on `encfs`/`gocryptfs` to be able to mount an enrypted folder. (These utilities typically rely on OSXFuse/MacFuse/...Fuse to provide a filesystem.)<br>
 In other words, pyencfsgui simply provides a GUI that uses the aformentioned utilities in the backend, and relies on the ability to launch these binaries, to interact with them and to capture & parse the output from those tools.<br>
-As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.<br>
-The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
+As a result, the EncFSGui source code is pretty easy to understand, as it does not contain any crypto or other black magic to do its job.  The downside is that it is a wrapper and may break if tools start behaving in a different way.<br>
+
 pyencfsgui was developed on macOS using encfs versions 1.8.x and 1.9.x., and gocryptfs version 1.8.x <br>
+
 pyencfsgui was tested on recent version of macOS and Kali Linux<br>
 
 ## Dependencies
@@ -116,19 +117,18 @@ Note: On my 2020 MacBook Air (M1 processor), I had to install PyQT5 using the fo
   brew install PyQt5
   ```
 
-#### 6. Install pycrypto
-  ```
-  python3 -m pip install pycrypto --user
-  ```
-  
-  If the installer fails, you may have to install the macOS Developer Command Line Tools first:
+#### 6. Install macOS Developer Command Line Tools:
 
   ```
   xcode-select --install
   ```
 
+#### 7. Install pycrypto
+  ```
+  python3 -m pip install pycrypto --user
+  ```
 
-#### 6. Jura font
+#### 8. Jura font
 
 Download & install the Jura font from here: https://fontsov.com/font/juraregular.html
 
@@ -218,11 +218,6 @@ You're not supposed to use a single-tick (') or exclamation mark (!) in the pass
 
 GoCryptFS doesn't seem to support the ability to mount folders, specifying a custom volume name.  As a result, the mounted volume will simply have the name of the folder it is mounted at.
 (Choose your folder names wisely!) 
-
-#### Mount as local volume
-
-This feature does not seem to be supported by gocryptfs.
-
 
 ### Linux Desktop Manager limitations
 
