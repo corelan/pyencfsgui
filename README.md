@@ -223,4 +223,5 @@ GoCryptFS doesn't seem to support the ability to mount folders, specifying a cus
 
 #### Hide to System Tray
 
-Some Linux Desktop Managers will not show the system tray icon when "hiding" pyencfsgui.  This appears to be a PyQt5/Linux Desktop Manager compatibility issue.  As a result, I highly recommend not to "hide" pyencfsgui, as you may not be able to "unhide" it (due to lack of a system tray icon).
+Some Linux Desktop Managers will not show the system tray icon when "hiding" pyencfsgui.  This appears to be a PyQt5/Linux Desktop Manager compatibility issue.  
+On Linux I decided to "minimize" the GUI rather than "hide" it, as you may not be able to "unhide" it (due to lack of a system tray icon you can interact with).

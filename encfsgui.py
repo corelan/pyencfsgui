@@ -263,23 +263,25 @@ class CMainWindow(QtWidgets.QDialog):
 
     def AboutClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        abouttext = "pyencfsgui is a python3/PyQT5 based GUI wrapper around encfs and/or gocryptfs.\n\n"
+        abouttext = "pyencfsgui (EncFSGui) is a python3/PyQT5 based GUI wrapper around encfs and/or gocryptfs.\n\n"
         abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina (and newer macOS versions), \n"
         abouttext += "and with gocryptfs 1.8.x on OSX Big Sur (and newer macOS versions). \n"
-        abouttext += "It may work on older systems and older versions of encfs/gocryptfs, but you'll have to try and see for yourself.\n\n"
-        abouttext += "pyencfsgui development started in 2019. The utility was written by Peter 'corelanc0d3r' Van Eeckhoutte.\n"
+        abouttext += "Additionally, EncFSGui has been confirmed to work in Kali Linux\n"
+        abouttext += "Development started in 2019. The utility was written by Peter 'corelanc0d3r' Van Eeckhoutte.\n"
         abouttext += "Corelan Consulting bv - www.corelan-consulting.com | www.corelan-training.com\n\n"
         abouttext += "Project repository: https://github.com/corelan/pyencfsgui\n\n"
         abouttext += "\nVersion info:\n"
+        abouttext += "EncFSGui version %s.\n" % encfsgui_helper.getVersion()
+
         if os.path.exists(encfsgui_globals.g_Settings["encfspath"]):
-            abouttext +=  "You are running encfs version %s.\n" % getEncFSVersion()
+            abouttext +=  "encfs version %s.\n" % getEncFSVersion()
         else:
-            abouttext +=  "Encfs not found.\n"
+            abouttext +=  "encfs not found.\n"
         
         if os.path.exists(encfsgui_globals.g_Settings["gocryptfspath"]):
-            abouttext +=  "You are running gocryptfs version %s.\n\n" % getGoCryptFSVersion()
+            abouttext +=  "gocryptfs version %s.\n\n" % getGoCryptFSVersion()
         else:
-            abouttext +=  "Gocryptfs not found.\n\n"
+            abouttext +=  "gocryptfs not found.\n\n"
         
         abouttext +=  "This application uses icons from https://icons8.com.\n"
         abouttext +=  "\nYou are running %s" % encfsgui_helper.getOSType()
@@ -1002,6 +1004,22 @@ if __name__ == "__main__":
         mainwindow.lbl_updatestate.setText("")
         mainwindow.initMainWindow()
 
+        try:
+            icondir = encfsgui_helper.getCurDir()
+            iconfolder = os.path.join(icondir,'bitmaps' )
+            iconpath = os.path.join(iconfolder, 'encfsgui.ico')
+            encfsgui_globals.app.setWindowIcon(QIcon(iconpath))
+            print_debug("Set application icon '%s'" % iconpath)
+        except:
+            print_debug("Unable to set application icon '%s'" % iconpath)
+            pass
+
+        curversion = "EncFSGui v%s" % encfsgui_helper.getVersion()
+
+        encfsgui_globals.app.setApplicationName(curversion)
+        encfsgui_globals.app.setApplicationDisplayName(curversion)
+        mainwindow.setWindowTitle(curversion)
+
         if encfsgui_globals.g_Settings["encrypt"].lower() == "true":
             encfsgui_helper.getMasterKey()
 
@@ -1025,15 +1043,6 @@ if __name__ == "__main__":
             if encfsgui_helper.isLinux():
                 #mainwindow.show()
                 mainwindow.showMinimized()
-        try:
-            icondir = encfsgui_helper.getCurDir()
-            iconfolder = os.path.join(icondir,'bitmaps' )
-            iconpath = os.path.join(iconfolder, 'encfsgui.ico')
-            encfsgui_globals.app.setWindowIcon(QIcon(iconpath))
-            print_debug("Set application icon '%s'" % iconpath)
-        except:
-            print_debug("Unable to set application icon '%s'" % iconpath)
-            pass
 
         encfsgui_globals.app.setQuitOnLastWindowClosed(False)
 

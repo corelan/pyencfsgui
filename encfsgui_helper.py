@@ -49,14 +49,27 @@ def getCurDir():
 def getNow():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+def getVersion():
+    thisversion = ""
+    versionlines = readfile("version.txt")
+    for thisline in versionlines:
+        if not thisline.strip() == "":
+            thisversion = thisline.strip()
+            break
+    return thisversion
+
 def readfile(filename):
     print_debug("Start %s" % inspect.stack()[0][3])
     print_debug("Reading %s" % filename)
     contents = []
-    f = open(filename,"r")
-    contents = f.readlines()
-    f.close()
-    print_debug("Read %d lines" % len(contents))
+    try:
+        f = open(filename,"r")
+        contents = f.readlines()
+        f.close()
+        print_debug("Read %d lines" % len(contents))
+    except Exception as e:
+        print_debug("Unable to read file %s: %s" % (filename, str(e)))
+        pass
     return contents
 
 def writefile(filename,contents):

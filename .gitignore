@@ -8,3 +8,4 @@ old/
 .vscode/
 __pycache__/
 pyencfsgui.code-workspace
+.DS_Store
