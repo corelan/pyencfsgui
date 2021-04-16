@@ -13,10 +13,12 @@ pyencfsgui was tested on recent version of macOS and Kali Linux<br>
 
 ## Dependencies
 
-In order to use pyencfsgui, you need to install the following dependencies:
+In order for pyencfsgui to be able to function, you need to install the following dependencies:
 
 - python3 (3.9.x or higher)
 - python3 libraries: PyQT5, pycrypto
+
+Of course, as pyencfsgui relies on encfs and/or gocryptfs, those utilities need to be installed as well.
 - encfs (1.9.x) and/or gocryptfs (1.8.x)
 
 On macOS, you'll also need to install:
@@ -26,7 +28,7 @@ On macOS, you'll also need to install:
 Kali Linux already has most dependencies installed. If you're using a different distro, you may have to install some utilities as needed.
 (If you're using xfce as Desktop Manager, you may want to install & run something like `plank` to see application icons at the bottom of your screen)
 
-## Note April 16 2021 - encfs/gocryptfs brew recipe issues
+### Note: April 16 2021 - encfs/gocryptfs brew recipe issues
 
 It appears that the brew recipes for encfs and gocryptfs are currently disabled
 
@@ -34,13 +36,10 @@ https://github.com/Homebrew/discussions/discussions/1250
 https://github.com/vgough/encfs/issues/629
 https://github.com/vgough/encfs/issues/630
 
-The instruction below used to work fine until a few days ago, I guess we'll have to wait until someone addresses the issues.
+The homebrew-based procedure below used to work fine until a few days ago. If you prefer to use Homebrew, you'll have to wait until someone addresses the issues.
 If you already have encfs/gocryptfs installed and working, then you can skip those parts of the installation procedure below.
 
-Of course, you can also try to install encfs via MacPorts
-
-
-Once you've run through those instructions it's recommended to update macports with sudo port selfupdate, then you can install enfcs with sudo port install encfs
+Of course, you can also try to install encfs via MacPorts. You may have to compile gocryptfs yourself.
 
 
 ### Installing dependencies on macOS
