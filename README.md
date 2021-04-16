@@ -26,6 +26,19 @@ On macOS, you'll also need to install:
 Kali Linux already has most dependencies installed. If you're using a different distro, you may have to install some utilities as needed.
 (If you're using xfce as Desktop Manager, you may want to install & run something like `plank` to see application icons at the bottom of your screen)
 
+## Note April 16 2021 - encfs/gocryptfs issues
+
+It appears that the brew recipes for encfs and gocryptfs are currently disabled
+
+https://github.com/Homebrew/discussions/discussions/1250
+https://github.com/vgough/encfs/issues/629
+https://github.com/vgough/encfs/issues/630
+
+The instruction below used to work fine until a few days ago, I guess we'll have to wait until someone addresses the issues.
+If you already have encfs/gocryptfs installed and working, then you can skip those parts of the installation procedure below.
+
+
+
 ### Installing dependencies on macOS
 
 #### 1. Install Homebrew
@@ -104,6 +117,7 @@ Note: on recent Mac devices (with M1 processor) running Big Sur or later, you ma
   brew install python3
   ```
   (Make sure you're running a recent version of python3. Version 3.9.x or higher should work)
+
 
 #### 5. Install PyQt5
   ```
