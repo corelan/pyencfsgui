@@ -414,8 +414,6 @@ class CVolumeWindow(QtWidgets.QDialog):
 
         if (msgBox.exec_() == QtWidgets.QMessageBox.Yes):
 
-            # gocryptfs
-
             # encfs
 
             if self.radio_volumetype_encfs.isChecked():            
@@ -518,6 +516,8 @@ class CVolumeWindow(QtWidgets.QDialog):
                     if not encfsgui_globals.debugmode:
                         os.remove(expectfilename)
             
+            # gocryptfs
+
             if self.radio_volumetype_gocryptfs.isChecked():            
 
                 # create expect script

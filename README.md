@@ -26,7 +26,7 @@ On macOS, you'll also need to install:
 Kali Linux already has most dependencies installed. If you're using a different distro, you may have to install some utilities as needed.
 (If you're using xfce as Desktop Manager, you may want to install & run something like `plank` to see application icons at the bottom of your screen)
 
-## Note April 16 2021 - encfs/gocryptfs issues
+## Note April 16 2021 - encfs/gocryptfs brew recipe issues
 
 It appears that the brew recipes for encfs and gocryptfs are currently disabled
 
@@ -37,17 +37,26 @@ https://github.com/vgough/encfs/issues/630
 The instruction below used to work fine until a few days ago, I guess we'll have to wait until someone addresses the issues.
 If you already have encfs/gocryptfs installed and working, then you can skip those parts of the installation procedure below.
 
+Of course, you can also try to install encfs via MacPorts
+
+
+Once you've run through those instructions it's recommended to update macports with sudo port selfupdate, then you can install enfcs with sudo port install encfs
 
 
 ### Installing dependencies on macOS
 
-#### 1. Install Homebrew
+#### 1. Install Homebrew / MacPorts
+
+If you'd like to use Homebrew:
 
   ```
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   sudo chown -R $(whoami) /usr/local/lib/pkgconfig
   brew doctor
   ```
+
+If you prefer to use MacPorts instead, check installation instructions at  https://www.macports.org/install.php
+
 
 #### 2. Install OSXFuse/MacFuse
 
@@ -59,7 +68,7 @@ If you already have encfs/gocryptfs installed and working, then you can skip tho
   brew tap homebrew/cask
   brew install --cask osxfuse
   ```
-
+  
 Next,
 
 - Make sure to enable the kernel extension in System Preferences → Security & Privacy → General  if/as requested
@@ -77,6 +86,7 @@ Note: on recent Mac devices (with M1 processor) running Big Sur or later, you ma
 
 ##### 3.1 Encfs
 
+If you're using Homebrew:
   ```
   brew update
   ``` 
@@ -93,8 +103,21 @@ Note: on recent Mac devices (with M1 processor) running Big Sur or later, you ma
   encfs    
   ```
 
+If you're using MacPorts:
+
+  ```
+  sudo port selfupdate
+  sudo port install encfs
+  ```
+
+  Check if encfs works:
+  ```
+  encfs    
+  ```
+
 ##### 3.2 GoCryptFS
 
+Homebrew:
   ```
   brew update
   ``` 
@@ -113,6 +136,8 @@ Note: on recent Mac devices (with M1 processor) running Big Sur or later, you ma
 
 
 #### 4. Install python3
+
+Homebrew:
   ```
   brew install python3
   ```
@@ -127,6 +152,7 @@ Note: on recent Mac devices (with M1 processor) running Big Sur or later, you ma
 
 Note: On my 2020 MacBook Air (M1 processor), I had to install PyQT5 using the following command instead:
 
+Homebrew:
   ```
   brew install PyQt5
   ```

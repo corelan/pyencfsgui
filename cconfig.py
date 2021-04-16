@@ -43,6 +43,8 @@ class CConfig():
         for volumename in volumeconfig.sections():
             EncVolume = CEncryptedVolume()
             
+            EncVolume.errormessage = ""
+
             if "enc_path" in volumeconfig[volumename]:
                 EncVolume.enc_path = volumeconfig[volumename]["enc_path"]
             if "mount_path" in volumeconfig[volumename]:
@@ -94,9 +96,13 @@ class CConfig():
             encfsgui_helper.print_debug("Check if path '%s' exists" % EncVolume.enc_path)
             EncVolume.enc_path_exists = os.path.exists(EncVolume.enc_path)
             encfsgui_helper.print_debug(">> %s" % str(EncVolume.enc_path_exists))
-
+            if not EncVolume.enc_path_exists:
+                EncVolume.errormessage += "- Encrypted folder '%s' does not seem to exist\n" % EncVolume.enc_path
             EncVolume.ismounted = False
             encfsgui_helper.print_debug("Check if %s volume '%s' is mounted at '%s'" % (EncVolume.enctype, volumename, EncVolume.mount_path))
+            if not os.path.exists(EncVolume.mount_path):
+                encfsgui_helper.print_debug("Warning! '%s' does not seem to exist!" % (EncVolume.mount_path))
+                EncVolume.errormessage += "- Mount path '%s' does not seem to exist\n" % EncVolume.mount_path
             if EncVolume.mount_path != "":
                 # the extra space is important !
                 path_to_check = "%s " % EncVolume.mount_path
@@ -118,6 +124,8 @@ class CConfig():
                             break                            
                 if not EncVolume.ismounted:
                     encfsgui_helper.print_debug("Volume is not mounted")
+                else:
+                    EncVolume.errormessage = ""
             encfsgui_globals.g_Volumes[volumename] = EncVolume
 
         self.clearMasterKeyIfNeeded()

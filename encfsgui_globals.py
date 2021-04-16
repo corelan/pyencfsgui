@@ -35,4 +35,5 @@ class CEncryptedVolume:
         self.enc_path_exists = True
         self.enctype = "encfs"
         self.sudo = 0
+        self.errormessage = ""
     

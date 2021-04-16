@@ -758,7 +758,7 @@ class CMainWindow(QtWidgets.QDialog):
                     self.RefreshVolumes()
                     EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
                     if not EncVolumeObj.ismounted:
-                        QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n" % volumename)
+                        QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n\n%s" % ( volumename, EncVolumeObj.errormessage ))
             else:
                 encfsgui_helper.print_debug("Did not attempt to mount, empty password given")
 
