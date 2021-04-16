@@ -101,15 +101,19 @@ class CConfig():
                 # the extra space is important !
                 path_to_check = "%s " % EncVolume.mount_path
                 for item in mountlist:
+                    thismountline = str(item).strip()
+                    foundinitem = False
+                    if path_to_check in thismountline:
+                        foundinitem = True
+                    encfsgui_helper.print_debug("Mount check: Does '%s' contain '%s'? %s" % (thismountline, path_to_check, str(foundinitem)))
                     if EncVolume.enctype == "encfs":  
-                        #if "encfs" in str(item) and path_to_check in str(item):
-                        if path_to_check in str(item):
-                            encfsgui_helper.print_debug("EncFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
+                        if path_to_check in thismountline:
+                            encfsgui_helper.print_debug("EncFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, thismountline))
                             EncVolume.ismounted = True
                             break
                     elif EncVolume.enctype == "gocryptfs":
-                        if path_to_check in str(item):
-                            encfsgui_helper.print_debug("GoCryptFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
+                        if path_to_check in thismountline:
+                            encfsgui_helper.print_debug("GoCryptFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, thismountline))
                             EncVolume.ismounted = True
                             break                            
                 if not EncVolume.ismounted:
