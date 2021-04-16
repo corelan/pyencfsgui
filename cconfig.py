@@ -96,13 +96,14 @@ class CConfig():
             encfsgui_helper.print_debug(">> %s" % str(EncVolume.enc_path_exists))
 
             EncVolume.ismounted = False
-            encfsgui_helper.print_debug("Check if volume '%s' is mounted" % volumename)
+            encfsgui_helper.print_debug("Check if %s volume '%s' is mounted at '%s'" % (EncVolume.enctype, volumename, EncVolume.mount_path))
             if EncVolume.mount_path != "":
                 # the extra space is important !
                 path_to_check = "%s " % EncVolume.mount_path
                 for item in mountlist:
                     if EncVolume.enctype == "encfs":  
-                        if "encfs" in str(item) and path_to_check in str(item):
+                        #if "encfs" in str(item) and path_to_check in str(item):
+                        if path_to_check in str(item):
                             encfsgui_helper.print_debug("EncFS volume is mounted, mount path '%s' found in '%s'" % (path_to_check, str(item).strip()))
                             EncVolume.ismounted = True
                             break

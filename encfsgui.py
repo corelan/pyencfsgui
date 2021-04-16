@@ -266,11 +266,11 @@ class CMainWindow(QtWidgets.QDialog):
         abouttext = "pyencfsgui (EncFSGui) is a python3/PyQT5 based GUI wrapper around encfs and/or gocryptfs.\n\n"
         abouttext += "This version has been tested with encfs 1.9.x on OSX Catalina (and newer macOS versions), \n"
         abouttext += "and with gocryptfs 1.8.x on OSX Big Sur (and newer macOS versions). \n"
-        abouttext += "Additionally, EncFSGui has been confirmed to work in Kali Linux\n"
+        abouttext += "Additionally, EncFSGui has been confirmed to work in Kali Linux.\n\n"
         abouttext += "Development started in 2019. The utility was written by Peter 'corelanc0d3r' Van Eeckhoutte.\n"
-        abouttext += "Corelan Consulting bv - www.corelan-consulting.com | www.corelan-training.com\n\n"
-        abouttext += "Project repository: https://github.com/corelan/pyencfsgui\n\n"
-        abouttext += "\nVersion info:\n"
+        abouttext += "Corelan Consulting bv\nwww.corelan-consulting.com | www.corelan-training.com\n\n"
+        abouttext += "Project repository:\nhttps://github.com/corelan/pyencfsgui\n\n"
+        abouttext += "Version info:\n"
         abouttext += "EncFSGui version %s.\n" % encfsgui_helper.getVersion()
 
         if os.path.exists(encfsgui_globals.g_Settings["encfspath"]):
