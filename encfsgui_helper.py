@@ -259,7 +259,7 @@ def autoUpdate():
         for l in gitoutput:
             if (encfsgui_globals.debugmode):
                 print_debug("  >> %s" % l)
-            if ":" in l and not "fatal" in l and not "not staged" in l:
+            if ":" in l and not "fatal" in l and not "not staged" in l and not "hint:" in l:
                 updatefound = True
                 break
     

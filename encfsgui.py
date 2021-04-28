@@ -982,7 +982,7 @@ if __name__ == "__main__":
             msgBox = QMessageBox()
             msgBox.setIcon(QMessageBox.Information)
             msgBox.setWindowTitle("Update found?")
-            msgBox.setText("An update has been found and downloaded via 'git pull'.\nPlease restart the application to run the updated code.\nWould you like to exit now?")
+            msgBox.setText("An update has been found and downloaded via 'git pull'.\n\nPlease restart the application to run the updated code.\n\nWould you like to exit now?")
             msgBox.setStandardButtons(QtWidgets.QMessageBox.No)
             msgBox.addButton(QtWidgets.QMessageBox.Yes)
             msgBox.show()
