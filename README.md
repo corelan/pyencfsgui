@@ -166,7 +166,13 @@ Homebrew:
 
 #### 7. Install pycrypto
   ```
-  python3 -m pip install pycrypto --user
+  python3 -m pip install pycrypto --user --break-system-packages
+  ```
+
+If `pycrypto` is installed, but you are still getting the error `*** Error importing Ramdom from Crypto ***` install also this:
+
+  ```
+  python3 -m pip install pycryptodome --break-system-packages
   ```
 
 #### 8. Jura font
