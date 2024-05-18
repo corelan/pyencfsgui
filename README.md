@@ -169,9 +169,10 @@ Homebrew:
   python3 -m pip install pycrypto --user --break-system-packages
   ```
 
-If `pycrypto` is installed, but you are still getting the error `*** Error importing Ramdom from Crypto ***` install also this:
+  If `pycrypto` is installed, but you are still getting the error `*** Error importing Ramdom from Crypto ***` then try this:
 
   ```
+  python3 -m pip uninstall pycrypto
   python3 -m pip install pycryptodome --break-system-packages
   ```
 
