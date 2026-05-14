@@ -39,52 +39,6 @@ def _to_bytes(value):
     return str(value).encode("utf-8")
 
 
-def _legacy_char_bytes(value):
-    if isinstance(value, bytes):
-        return value
-
-    text_value = str(value)
-    byte_values = []
-    for char in text_value:
-        codepoint = ord(char)
-        if codepoint > 255:
-            raise UnicodeEncodeError("legacy-char-bytes", text_value, 0, len(text_value), "character out of range")
-        byte_values.append(codepoint)
-    return bytes(byte_values)
-
-
-def _candidate_key_bytes(value):
-    """Try likely legacy and modern key byte encodings."""
-    if isinstance(value, bytes):
-        return [value]
-
-    text_value = str(value)
-    candidates = []
-    try:
-        legacy_bytes = _legacy_char_bytes(text_value)
-        candidates.append(legacy_bytes)
-    except UnicodeEncodeError:
-        pass
-
-    for encoding in ("utf-8", "latin-1"):
-        try:
-            encoded = text_value.encode(encoding)
-            if encoded not in candidates:
-                candidates.append(encoded)
-        except UnicodeEncodeError:
-            pass
-    return candidates
-
-
-def _decode_legacy_text(cleartext_bytes):
-    for encoding in ("utf-8", sys.getfilesystemencoding() or "utf-8", "latin-1"):
-        try:
-            return cleartext_bytes.decode(encoding)
-        except UnicodeDecodeError:
-            pass
-    raise UnicodeDecodeError("utf-8", cleartext_bytes, 0, 1, "unable to decode decrypted text")
-
-
 #################################
 ### METHODS, HELPER FUNCTIONS ###
 #################################
@@ -633,24 +587,6 @@ def decrypt(ciphertext):
     #remove spaces from the end again
     cleartext = cleartext.rstrip()
     return cleartext
-
-
-def decrypt_to_text(ciphertext):
-    print_debug("Start %s" % inspect.stack()[0][3])
-    ciphertext_bytes = base64.b64decode(ciphertext)
-    last_error = None
-
-    for key in _candidate_key_bytes(encfsgui_globals.masterkey):
-        try:
-            obj = AES.new(key, AES.MODE_CBC, AES_IV)
-            cleartext = obj.decrypt(ciphertext_bytes).rstrip()
-            return _decode_legacy_text(cleartext)
-        except Exception as exc:
-            last_error = exc
-
-    if last_error is not None:
-        raise last_error
-    raise ValueError("Unable to decrypt ciphertext")
 
 def makePW32(key):
     print_debug("Start %s" % inspect.stack()[0][3])
