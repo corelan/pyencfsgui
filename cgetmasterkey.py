@@ -36,20 +36,30 @@ class CMasterKeyWindow(QtWidgets.QDialog):
         self.cancelbutton.clicked.connect(self.CancelButtonClicked)        
 
         self.txt_password = self.findChild(QtWidgets.QLineEdit, 'txt_password')
+        self._password_accepted = False
 
 
     def getPassword(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        if not self._password_accepted:
+            return ""
+        if self.txt_password.text() == "":
+            return ""
         pw = encfsgui_helper.makePW32(self.txt_password.text()[0:31])
         return pw
 
     def OKButtonClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
-        self.close()
+        if self.txt_password.text() == "":
+            QtWidgets.QMessageBox.critical(None, "Error", "Master password cannot be empty.")
+            return
+        self._password_accepted = True
+        self.accept()
         return
 
     def CancelButtonClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        self._password_accepted = False
         self.txt_password.setText("")
-        self.close()
+        self.reject()
         return

@@ -78,6 +78,9 @@ class CConfig():
                     # ask for masterkey
                     encfsgui_helper.getMasterKey()
                     print_debug("Obtained masterkey, length %d" % len(encfsgui_globals.masterkey))
+                if len(encfsgui_globals.masterkey) != 32:
+                    QtWidgets.QMessageBox.critical(None,"Error","No master password was entered.\n\nThe application will now exit.")
+                    sys.exit(1)
                 if (encfsgui_globals.masterkey != ""):
                     try:
                         EncVolume.enc_path = encfsgui_helper.decrypt_to_text(EncVolume.enc_path)
@@ -87,11 +90,8 @@ class CConfig():
                         msg = traceback.format_exc()
                         print(msg)
                         encfsgui_helper.print_debug(msg)
-                        QtWidgets.QMessageBox.critical(None,"Error","Error decrypting information.\n\nTry again later.")
-                        encfsgui_globals.masterkey = ""
-                        encfsgui_globals.timeswrong += 1
-                        if encfsgui_globals.timeswrong > 3:
-                            sys.exit(1)
+                        QtWidgets.QMessageBox.critical(None,"Error","Error decrypting information.\n\nThe application will now exit.")
+                        sys.exit(1)
 
             encfsgui_helper.print_debug("Check if path '%s' exists" % EncVolume.enc_path)
             EncVolume.enc_path_exists = os.path.exists(EncVolume.enc_path)

@@ -142,7 +142,7 @@ Homebrew:
   ```
   brew install python3
   ```
-  (Make sure you're running a recent version of python3. Version 3.9.x or higher should work)
+  (Make sure you're running a recent version of python3. Version 3.14.x or higher should work)
 
 
 #### 5. Create a virtual environment and install Python dependencies

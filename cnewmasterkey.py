@@ -37,10 +37,13 @@ class CNewMasterKeyWindow(QtWidgets.QDialog):
 
         self.txt_password1 = self.findChild(QtWidgets.QLineEdit, 'txt_password1')
         self.txt_password2 = self.findChild(QtWidgets.QLineEdit, 'txt_password2')
+        self._password_accepted = False
 
 
     def getPassword(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        if not self._password_accepted:
+            return ""
         # make sure password is exactly 32 bytes
         pw = encfsgui_helper.makePW32(self.txt_password1.text()[0:31])
         return pw
@@ -61,7 +64,8 @@ class CNewMasterKeyWindow(QtWidgets.QDialog):
             errorsfound = True
             errortext = "- Password must be 8 characters or longer\n"
         if not errorsfound:
-            self.close()
+            self._password_accepted = True
+            self.accept()
         else:
             errorMsgBox = QtWidgets.QMessageBox()
             errorMsgBox.setWindowTitle("Errors found")
@@ -73,7 +77,8 @@ class CNewMasterKeyWindow(QtWidgets.QDialog):
 
     def CancelButtonClicked(self):
         encfsgui_helper.print_debug("Start %s" % inspect.stack()[0][3])
+        self._password_accepted = False
         self.txt_password1.setText("")
         self.txt_password2.setText("")
-        self.close()
+        self.reject()
         return

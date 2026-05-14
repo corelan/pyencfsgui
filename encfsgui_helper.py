@@ -65,6 +65,20 @@ def _decode_legacy_text(cleartext_bytes):
     raise UnicodeDecodeError("utf-8", cleartext_bytes, 0, 1, "unable to decode decrypted text")
 
 
+def _looks_like_path(text_value):
+    if text_value == "":
+        return False
+    if any(ord(char) < 32 for char in text_value):
+        return False
+    if os.path.sep in text_value or "/" in text_value or "\\" in text_value:
+        return True
+    if text_value.startswith(".") or text_value.startswith("~"):
+        return True
+    if len(text_value) > 1 and text_value[1] == ":":
+        return True
+    return False
+
+
 #################################
 ### METHODS, HELPER FUNCTIONS ###
 #################################
@@ -624,10 +638,14 @@ def decrypt_to_text(ciphertext):
         try:
             obj = AES.new(key, AES.MODE_CBC, AES_IV)
             cleartext = obj.decrypt(ciphertext_bytes).rstrip()
-            return _decode_legacy_text(cleartext)
+            text_value = _decode_legacy_text(cleartext)
+            if _looks_like_path(text_value):
+                return text_value
         except Exception as exc:
             last_error = exc
 
+    if last_error is None:
+        last_error = ValueError("Decrypted text is not a valid path")
     if last_error is not None:
         raise last_error
     raise ValueError("Unable to decrypt ciphertext")
