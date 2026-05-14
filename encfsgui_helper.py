@@ -17,11 +17,10 @@ from PyQt5 import QtCore
 try:
     import base64
     import hashlib
-    from Crypto import Random
-    from Crypto.Cipher import AES
-except:
+    from crypto_compat import Random, AES, CRYPTO_BACKEND
+except Exception:
     oops = QApplication([])
-    QtWidgets.QMessageBox.critical(None,"Error loading pycrypto library","This version of pyencfsgui requires the 'pycrypto' library.\n\nPlease install using\n'python3 -m pip install pycrypto --user'\n")
+    QtWidgets.QMessageBox.critical(None,"Error loading crypto library","This version of pyencfsgui requires 'pycrypto', 'pycryptodome', or 'pycryptodomex'.\n\nPlease install using\n'python3 -m pip install pycryptodome'\n")
     sys.exit(1)
 
 import encfsgui_globals
@@ -29,6 +28,41 @@ from encfsgui_globals import *
 
 import cgetmasterkey
 from cgetmasterkey import CMasterKeyWindow
+
+
+AES_IV = b'!IVNotSoSecret!!'
+
+
+def _to_bytes(value):
+    if isinstance(value, bytes):
+        return value
+    return str(value).encode("utf-8")
+
+
+def _candidate_key_bytes(value):
+    """Try the modern UTF-8 form first, then a 1:1 legacy byte mapping."""
+    if isinstance(value, bytes):
+        return [value]
+
+    text_value = str(value)
+    candidates = []
+    for encoding in ("utf-8", "latin-1"):
+        try:
+            encoded = text_value.encode(encoding)
+            if encoded not in candidates:
+                candidates.append(encoded)
+        except UnicodeEncodeError:
+            pass
+    return candidates
+
+
+def _decode_legacy_text(cleartext_bytes):
+    for encoding in ("utf-8", sys.getfilesystemencoding() or "utf-8", "latin-1"):
+        try:
+            return cleartext_bytes.decode(encoding)
+        except UnicodeDecodeError:
+            pass
+    raise UnicodeDecodeError("utf-8", cleartext_bytes, 0, 1, "unable to decode decrypted text")
 
 
 #################################
@@ -555,12 +589,13 @@ def encrypt(cleartext):
     print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))   
     ciphertext = ""
     encfsgui_globals.masterkey = str(encfsgui_globals.masterkey)
-    #print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
-    obj = AES.new(encfsgui_globals.masterkey, AES.MODE_CBC, '!IVNotSoSecret!!')
-    while (len(cleartext) % 16 != 0):
+    key = _to_bytes(encfsgui_globals.masterkey)
+    cleartext_bytes = _to_bytes(cleartext)
+    obj = AES.new(key, AES.MODE_CBC, AES_IV)
+    while (len(cleartext_bytes) % 16 != 0):
         # add spaces at the end, we can remove them later
-        cleartext = cleartext + " "
-    ciphertext=base64.b64encode(obj.encrypt(cleartext))
+        cleartext_bytes += b" "
+    ciphertext = base64.b64encode(obj.encrypt(cleartext_bytes))
     return ciphertext.decode()
 
 def decrypt(ciphertext):
@@ -569,15 +604,33 @@ def decrypt(ciphertext):
     calframe = inspect.getouterframes(curframe, 2)
     print_debug("%s() Called from: %s()" % (inspect.stack()[0][3],calframe[1][3]))       
     encfsgui_globals.masterkey = str(encfsgui_globals.masterkey)
-    #print_debug("Current length of masterkey: %d" % len(encfsgui_globals.masterkey))
     cleartext = ""
     #print_debug("Requested to decrypt '%s'" % ciphertext)
     #print_debug("Base64 decoded: %s" % base64.b64decode(ciphertext))
-    obj = AES.new(encfsgui_globals.masterkey, AES.MODE_CBC, '!IVNotSoSecret!!')
+    key = _to_bytes(encfsgui_globals.masterkey)
+    obj = AES.new(key, AES.MODE_CBC, AES_IV)
     cleartext = obj.decrypt(base64.b64decode(ciphertext))
     #remove spaces from the end again
     cleartext = cleartext.rstrip()
     return cleartext
+
+
+def decrypt_to_text(ciphertext):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    ciphertext_bytes = base64.b64decode(ciphertext)
+    last_error = None
+
+    for key in _candidate_key_bytes(encfsgui_globals.masterkey):
+        try:
+            obj = AES.new(key, AES.MODE_CBC, AES_IV)
+            cleartext = obj.decrypt(ciphertext_bytes).rstrip()
+            return _decode_legacy_text(cleartext)
+        except Exception as exc:
+            last_error = exc
+
+    if last_error is not None:
+        raise last_error
+    raise ValueError("Unable to decrypt ciphertext")
 
 def makePW32(key):
     print_debug("Start %s" % inspect.stack()[0][3])

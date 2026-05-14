@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 import os
 import sys
 if sys.version_info <(3,0,0):
@@ -14,16 +14,16 @@ import traceback
 
 try:
     import PyQt5
-    from Crypto import Random
-except:
+    from crypto_compat import Random
+except Exception:
     print("*** Oops, some dependencies may be missing: ***")
     print("\t- PyQt5")
-    print("\t- pycrypto")
+    print("\t- pycrypto or pycryptodome")
     print("")
     print("You can install the missing depencies using the following commands:")
-    print("\tpython3 -m pip install PyQt5 --user")
-    print("\tpython3 -m pip install pycrypto --user")
-    print("\nNote: installing pycrypto will require macOS Developer Commandline tools to be installed first.  ('xcode-select --install')")
+    print("\tpython3 -m pip install PyQt5")
+    print("\tpython3 -m pip install pycryptodome")
+    print("\nIf you still rely on the older package, pycrypto may work on older Python versions only.")
     print("")
     exit(1)
 

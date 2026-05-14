@@ -15,8 +15,8 @@ pyencfsgui was tested on recent version of macOS and Kali Linux<br>
 
 In order for pyencfsgui to be able to function, you need to install the following dependencies:
 
-- python3 (3.9.x or higher)
-- python3 libraries: PyQT5, pycrypto
+- python3 (3.9.x or higher, tested with newer Python 3 releases as well)
+- python3 libraries: PyQt5, and either `pycrypto` or a maintained replacement such as `pycryptodome`
 
 Of course, as pyencfsgui relies on encfs and/or gocryptfs, those utilities need to be installed as well.
 - encfs (1.9.x) and/or gocryptfs (1.8.x)
@@ -145,10 +145,17 @@ Homebrew:
   (Make sure you're running a recent version of python3. Version 3.9.x or higher should work)
 
 
-#### 5. Install PyQt5
+#### 5. Create a virtual environment and install Python dependencies
+
+pyencfsgui now ships with a launcher script that creates and uses a local virtual environment automatically.
+The virtual environment folder is named `pyencfsgui`.
+
+You can still install the dependencies manually if you prefer:
+
   ```
-  pip3 install --upgrade pip --user
-  python3 -m pip install PyQt5 --user
+  python3 -m venv pyencfsgui
+  ./pyencfsgui/bin/python -m pip install --upgrade pip
+  ./pyencfsgui/bin/python -m pip install -r requirements.txt
   ```
 
 Note: On my 2020 MacBook Air (M1 processor), I had to install PyQT5 using the following command instead:
@@ -164,10 +171,17 @@ Homebrew:
   xcode-select --install
   ```
 
-#### 7. Install pycrypto
+#### 7. Crypto library notes
+
+The original project used `pycrypto`. That package is no longer maintained and typically does not work on newer Python releases.
+
+Recommended:
+
   ```
-  python3 -m pip install pycrypto --user
+  ./pyencfsgui/bin/python -m pip install pycryptodome
   ```
+
+If you are running an older Python version and still want the legacy dependency, the code will also work with the old `pycrypto` package as long as it installs successfully in your environment.
 
 #### 8. Jura font
 
@@ -178,7 +192,7 @@ Download & install the Jura font from here: https://fontsov.com/font/juraregular
 
 ### Installing dependencies on Linux (tested on Kali)
 
-On Kali Linux, python3, PyQT5 and pycrypto should already be installed.
+On Kali Linux, some dependencies may already be present, but using the local virtual environment is still recommended.
 
 #### 1. Jura font
 
@@ -210,7 +224,15 @@ On Kali Linux, python3, PyQT5 and pycrypto should already be installed.
   git clone https://github.com/corelan/pyencfsgui.git
   ```
 - Open a Terminal, go to the `pyencfsgui`folder
-- run `python3 encfsgui.py`
+- Make the launcher executable if needed:
+  ```
+  chmod +x pyencfsgui.sh
+  ```
+- Run the launcher:
+  ```
+  ./pyencfsgui.sh
+  ```
+- On first run, the script will create a local virtual environment in `./pyencfsgui` and install the Python dependencies from `requirements.txt`
 - Check/edit the settings as needed. Make sure to verify the path of the various binaries (`encfs`, `gocryptfs`, `mount`)
 - Create a new volume (or add an existing one to the application)
 - Enjoy!
@@ -219,7 +241,6 @@ On Kali Linux, python3, PyQT5 and pycrypto should already be installed.
 ### Can I add a shortcut to the app in my Dock?
 
 Sure!  Simply follow these steps:
-- Edit file pyencfsgui.sh and replace `path_to_pyencfsgui_here` (first line) with the full path to the folder where you have put the pyencfsgui repository
 - Open a Terminal and go to the folder than contains the pyencfsgui repository
 - Make the script executable:
     ```

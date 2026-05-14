@@ -7,5 +7,6 @@ runpyencfsgui.sh
 old/
 .vscode/
 __pycache__/
+pyencfsgui/
 pyencfsgui.code-workspace
 .DS_Store

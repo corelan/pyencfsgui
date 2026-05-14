@@ -80,8 +80,8 @@ class CConfig():
                     print_debug("Obtained masterkey, length %d" % len(encfsgui_globals.masterkey))
                 if (encfsgui_globals.masterkey != ""):
                     try:
-                        EncVolume.enc_path = encfsgui_helper.decrypt(EncVolume.enc_path).decode()
-                        EncVolume.mount_path = encfsgui_helper.decrypt(EncVolume.mount_path).decode()
+                        EncVolume.enc_path = encfsgui_helper.decrypt_to_text(EncVolume.enc_path)
+                        EncVolume.mount_path = encfsgui_helper.decrypt_to_text(EncVolume.mount_path)
                         encfsgui_globals.timeswrong = 0
                     except Exception: 
                         msg = traceback.format_exc()
