@@ -233,6 +233,7 @@ On Kali Linux, some dependencies may already be present, but using the local vir
   ./pyencfsgui.sh
   ```
 - On first run, the script will create a local virtual environment in `./pyencfsgui` and install the Python dependencies from `requirements.txt`
+- The launcher changes into the repository folder before starting the app, so relative files resolve correctly and the built-in `git pull` update check runs from the project directory
 - Check/edit the settings as needed. Make sure to verify the path of the various binaries (`encfs`, `gocryptfs`, `mount`)
 - Create a new volume (or add an existing one to the application)
 - Enjoy!
@@ -241,30 +242,16 @@ On Kali Linux, some dependencies may already be present, but using the local vir
 ### Can I add a shortcut to the app in my Dock?
 
 Sure!  Simply follow these steps:
-- Open a Terminal and go to the folder than contains the pyencfsgui repository
-- Make the script executable:
+- Use the included `pyencfsgui.app` bundle in the repository root
+- Make sure `pyencfsgui.sh` is executable:
     ```
     chmod +x pyencfsgui.sh
-    ````
-- Rename the script to pyencfsgui.app
     ```
-    mv pyencfsgui.sh pyencfsgui.app
-    ```
-- Open Finder, go to the folder that contains the repository, and drag the .app file into your dock
-- In Terminal, rename the file back to .sh
-    ```
-    mv pyencfsgui.app pyencfsgui.sh
-    ```
-- Open Finder, go to the folder that contains the repository, select the pyencfsgui.sh script, right-click and choose "Get Info"
-- Make sure the script will open with "Terminal"
-
-(it might be a good idea to also check/confirm that Terminal will close itself when the script exits)
-
-Bonus: if you would like to use the encfsgui icon for the shortcut in Dock, follow these steps:
-- Open "encfsgui.png" in the bitmaps folder
-- Use Cmd+A to select the image, and then Cmd+C to copy it to clipboard
-- Launch finder, open the folder that contains the pyencfsgui.sh script. Select the file, right-click and choose "Get Info"
-- Select the icon in the upper left corner of the Info window.  Then press Cmd+V to paste the image.
+- In Finder, open the repository folder and drag `pyencfsgui.app` into your Dock
+- Launching the Dock icon will start `pyencfsgui.sh` without opening a Terminal window
+- The app bundle does not hardcode your home folder. It resolves its own location at runtime and expects to live inside the repository folder, next to `pyencfsgui.sh`
+- If you move `pyencfsgui.app` somewhere else, it will no longer know where the repository is. Keep the `.app` bundle in the project folder and add that copy to the Dock
+- The bundle already uses the `bitmaps/encfsgui.icns` icon
 
 
 ## Known issues

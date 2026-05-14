@@ -1,0 +1,9 @@
+#!/bin/zsh
+
+set -e
+
+BUNDLE_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+REPO_DIR="$(cd "$BUNDLE_ROOT/.." && pwd)"
+
+cd "$REPO_DIR"
+exec "$REPO_DIR/pyencfsgui.sh"
