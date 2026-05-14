@@ -39,6 +39,56 @@ def _to_bytes(value):
     return str(value).encode("utf-8")
 
 
+def _legacy_char_bytes(value):
+    if isinstance(value, bytes):
+        return value
+
+    text_value = str(value)
+    byte_values = []
+    for char in text_value:
+        codepoint = ord(char)
+        if codepoint > 255:
+            raise UnicodeEncodeError("legacy-char-bytes", text_value, 0, len(text_value), "character out of range")
+        byte_values.append(codepoint)
+    return bytes(byte_values)
+
+
+def _candidate_key_bytes(value):
+    candidates = []
+    for converter in (_legacy_char_bytes, _to_bytes):
+        try:
+            candidate = converter(value)
+            if candidate not in candidates:
+                candidates.append(candidate)
+        except UnicodeEncodeError:
+            pass
+    return candidates
+
+
+def _candidate_plaintexts(ciphertext):
+    ciphertext_bytes = base64.b64decode(ciphertext)
+    for key_bytes in _candidate_key_bytes(encfsgui_globals.masterkey):
+        obj = AES.new(key_bytes, AES.MODE_CBC, AES_IV)
+        cleartext = obj.decrypt(ciphertext_bytes).rstrip()
+        yield cleartext
+
+
+def decrypt_to_text(ciphertext):
+    print_debug("Start %s" % inspect.stack()[0][3])
+    last_error = None
+
+    for cleartext in _candidate_plaintexts(ciphertext):
+        for encoding in ("utf-8", sys.getfilesystemencoding() or "utf-8", "latin-1"):
+            try:
+                return cleartext.decode(encoding)
+            except UnicodeDecodeError as exc:
+                last_error = exc
+
+    if last_error is not None:
+        raise last_error
+    raise ValueError("Unable to decrypt ciphertext")
+
+
 #################################
 ### METHODS, HELPER FUNCTIONS ###
 #################################
