@@ -39,13 +39,33 @@ def _to_bytes(value):
     return str(value).encode("utf-8")
 
 
+def _legacy_char_bytes(value):
+    if isinstance(value, bytes):
+        return value
+
+    text_value = str(value)
+    byte_values = []
+    for char in text_value:
+        codepoint = ord(char)
+        if codepoint > 255:
+            raise UnicodeEncodeError("legacy-char-bytes", text_value, 0, len(text_value), "character out of range")
+        byte_values.append(codepoint)
+    return bytes(byte_values)
+
+
 def _candidate_key_bytes(value):
-    """Try the modern UTF-8 form first, then a 1:1 legacy byte mapping."""
+    """Try likely legacy and modern key byte encodings."""
     if isinstance(value, bytes):
         return [value]
 
     text_value = str(value)
     candidates = []
+    try:
+        legacy_bytes = _legacy_char_bytes(text_value)
+        candidates.append(legacy_bytes)
+    except UnicodeEncodeError:
+        pass
+
     for encoding in ("utf-8", "latin-1"):
         try:
             encoded = text_value.encode(encoding)
