@@ -68,6 +68,19 @@ encfsgui_globals.g_Settings = { }
 encfsgui_globals.g_CurrentlySelected = ""
 
 
+def getAppIconPaths():
+    icondir = encfsgui_helper.getCurDir()
+    iconfolder = os.path.join(icondir, 'bitmaps')
+
+    if encfsgui_helper.ismacOS():
+        primary_icon = os.path.join(iconfolder, 'encfsgui.icns')
+    else:
+        primary_icon = os.path.join(iconfolder, 'encfsgui.ico')
+
+    fallback_icon = os.path.join(iconfolder, 'encfsgui.png')
+    return primary_icon, fallback_icon
+
+
 #################
 ### Main form ###
 #################
@@ -143,10 +156,7 @@ class CMainWindow(QtWidgets.QDialog):
         self.tray_icon = QSystemTrayIcon(self)
         #self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_DriveHDIcon))
         #self.tray_icon.setIcon(QIcon('./bitmaps/encfsgui.png'))
-        icondir = encfsgui_helper.getCurDir()
-        iconfolder = os.path.join(icondir,'bitmaps' )
-        iconpath = os.path.join(iconfolder, 'encfsgui.ico')
-        wiconpath = os.path.join(iconfolder, 'encfsgui.png')
+        iconpath, wiconpath = getAppIconPaths()
         self.tray_icon.setIcon(QIcon(iconpath))
         self.tray_icon.setVisible(True)
         self.tray_menu = QMenu()
@@ -1005,9 +1015,9 @@ if __name__ == "__main__":
         mainwindow.initMainWindow()
 
         try:
-            icondir = encfsgui_helper.getCurDir()
-            iconfolder = os.path.join(icondir,'bitmaps' )
-            iconpath = os.path.join(iconfolder, 'encfsgui.ico')
+            iconpath, fallback_icon = getAppIconPaths()
+            if not os.path.exists(iconpath):
+                iconpath = fallback_icon
             encfsgui_globals.app.setWindowIcon(QIcon(iconpath))
             print_debug("Set application icon '%s'" % iconpath)
         except:
