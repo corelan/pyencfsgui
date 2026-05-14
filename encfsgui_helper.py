@@ -70,13 +70,9 @@ def _looks_like_path(text_value):
         return False
     if any(ord(char) < 32 for char in text_value):
         return False
-    if os.path.sep in text_value or "/" in text_value or "\\" in text_value:
-        return True
-    if text_value.startswith(".") or text_value.startswith("~"):
-        return True
-    if len(text_value) > 1 and text_value[1] == ":":
-        return True
-    return False
+    if text_value.strip() == "":
+        return False
+    return True
 
 
 #################################
