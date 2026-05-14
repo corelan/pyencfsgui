@@ -11,7 +11,6 @@ import subprocess
 import configparser
 import inspect
 import traceback
-import getpass
 
 try:
     import PyQt5
@@ -67,55 +66,6 @@ encfsgui_globals.app = QApplication([])
 encfsgui_globals.g_Volumes = { }
 encfsgui_globals.g_Settings = { }
 encfsgui_globals.g_CurrentlySelected = ""
-
-
-def _diagnostic_decrypt_value(value, decrypt_twice=False):
-    result = {"raw": value, "once": "", "twice": "", "twice_error": ""}
-    result["once"] = encfsgui_helper.decrypt_to_text(value)
-
-    if decrypt_twice:
-        try:
-            result["twice"] = encfsgui_helper.decrypt_to_text(result["once"])
-        except Exception as exc:
-            result["twice_error"] = str(exc)
-
-    return result
-
-
-def run_decrypt_diagnostic(decrypt_twice=False):
-    volumeconfig = configparser.ConfigParser()
-    volumeconfig.read(encfsgui_globals.volumesfile)
-
-    entered_password = getpass.getpass("Master password: ")
-    if entered_password == "":
-        print("No master password entered.")
-        return 1
-
-    encfsgui_globals.masterkey = encfsgui_helper.makePW32(entered_password[0:31])
-
-    for volumename in volumeconfig.sections():
-        print("[{0}]".format(volumename))
-        for field_name in ("enc_path", "mount_path"):
-            if field_name not in volumeconfig[volumename]:
-                continue
-
-            print("{0}:".format(field_name))
-            raw_value = volumeconfig[volumename][field_name]
-            print("  raw   : {0}".format(raw_value))
-
-            try:
-                results = _diagnostic_decrypt_value(raw_value, decrypt_twice)
-                print("  once  : {0}".format(results["once"]))
-                if decrypt_twice:
-                    if results["twice_error"] != "":
-                        print("  twice : <error: {0}>".format(results["twice_error"]))
-                    else:
-                        print("  twice : {0}".format(results["twice"]))
-            except Exception as exc:
-                print("  error : {0}".format(str(exc)))
-        print("")
-
-    return 0
 
 
 #################
@@ -995,9 +945,6 @@ if __name__ == "__main__":
         settingsfilefound = encfsgui_globals.appconfig.getSettings()
 
         encfsgui_globals.volumesfile = encfsgui_globals.g_Settings["workingfolder"] + "/" + 'encfsgui.volumes'
-
-        if "-2" in sys.argv[1:]:
-            sys.exit(run_decrypt_diagnostic(decrypt_twice=True))
             
         if str(encfsgui_globals.g_Settings["debugmode"]).lower() == "true":
             encfsgui_globals.debugmode = True
