@@ -133,6 +133,14 @@ Homebrew:
   gocryptfs    
   ```
 
+MacPorts:
+
+  ```
+  sudo port selfupdate
+  sudo port install gocryptfs
+  ```
+
+
 On a M1 Mac, check out this Github issue for instructions on how to compile gocryptfs: https://github.com/rfjakob/gocryptfs/issues/556#issuecomment-845810085 
 
 
