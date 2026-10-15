@@ -157,8 +157,12 @@ class CMainWindow(QtWidgets.QDialog):
         #self.tray_icon.setIcon(self.style().standardIcon(QStyle.SP_DriveHDIcon))
         #self.tray_icon.setIcon(QIcon('./bitmaps/encfsgui.png'))
         iconpath, wiconpath = getAppIconPaths()
-        self.tray_icon.setIcon(QIcon(iconpath))
+        tray_icon = QIcon(wiconpath) if encfsgui_helper.ismacOS() else QIcon(iconpath)
+        if tray_icon.isNull():
+            tray_icon = QIcon(iconpath if encfsgui_helper.ismacOS() else wiconpath)
+        self.tray_icon.setIcon(tray_icon)
         self.tray_icon.setVisible(True)
+        encfsgui_helper.print_debug("System tray available: %s; tray icon null: %s" % (QSystemTrayIcon.isSystemTrayAvailable(), self.tray_icon.icon().isNull()))
         self.tray_menu = QMenu()
         self.volume_menu = QMenu()
         self.CreateTrayMenu()
