@@ -28,4 +28,5 @@ if ! "$VENV_DIR/bin/python" -c 'import PyQt5; from crypto_compat import AES' >/d
 fi
 
 source "$VENV_DIR/bin/activate"
-exec "$VENV_DIR/bin/python" "$REPO_DIR/encfsgui.py"
+nohup "$VENV_DIR/bin/python" "$REPO_DIR/encfsgui.py" >/tmp/pyencfsgui-launcher.log 2>&1 &
+exit 0
