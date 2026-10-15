@@ -147,7 +147,7 @@ Homebrew:
 
 #### 5. Python environment and dependencies
 
-When you launch `pyencfsgui.app` for the first time, its macOS app executable creates a virtual environment named `pyencfsgui-venv` in the repository folder. It then checks whether the required Python packages are importable and, if not, silently installs the packages from `requirements.txt`. This first launch requires network access if packages need to be downloaded. Later launches reuse the same environment and only install dependencies if the import check fails.
+When you launch `pyencfsgui.app` for the first time, its macOS app executable creates a virtual environment named `pyencfsgui-venv` in the repository folder. It then checks whether the required Python packages are importable and, if not, silently installs the packages from `requirements.txt`. This first launch requires network access if packages need to be downloaded. During this setup, the GUI is not displayed, so startup may appear to hang; wait for the setup to finish and the GUI to open. Later launches reuse the same environment and only install dependencies if the import check fails.
 
 The terminal source launcher uses the same `pyencfsgui-venv` environment, so the app bundle and `pyencfsgui.sh` share dependencies. You can also create and populate the environment manually:
 
@@ -225,7 +225,7 @@ For normal macOS use, launch `pyencfsgui.app` from Finder or the Dock. The steps
   ```
   ./pyencfsgui.sh
   ```
-- On first run, `pyencfsgui.sh` creates `./pyencfsgui-venv` if needed and installs dependencies from `requirements.txt` if required. This is the same environment used by `pyencfsgui.app`.
+- On first run, `pyencfsgui.sh` creates `./pyencfsgui-venv` if needed and installs dependencies from `requirements.txt` if required. This is the same environment used by `pyencfsgui.app`. While the environment is being created or packages installed, the GUI is not displayed and startup may appear to hang; wait for setup to finish and the GUI to open.
 - The launcher changes into the repository folder before starting the app, so relative files resolve correctly and the built-in `git pull` update check runs from the project directory
 - Check/edit the settings as needed. Make sure to verify the path of the various binaries (`encfs`, `gocryptfs`, `mount`)
 - Create a new volume (or add an existing one to the application)
