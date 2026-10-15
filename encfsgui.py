@@ -773,9 +773,9 @@ class CMainWindow(QtWidgets.QDialog):
                         failuremessage = "Unable to mount volume '%s'\n\n%s" % (volumename, EncVolumeObj.errormessage)
                         commandoutput = mount_output.strip()
                         if commandoutput:
-                            failuremessage += "\n\nCommand output:\n%s" % commandoutput
-                        if mount_returncode is not None:
-                            encfsgui_helper.print_debug("ERROR: Mount failed for volume '%s' (exit code %s). Command output:\n%s" % (volumename, mount_returncode, commandoutput or "<no output>"))
+                            encfsgui_helper.print_debug("ERROR: Mount command output:\n%s" % commandoutput)
+                        else:
+                            encfsgui_helper.print_debug("ERROR: Mount command produced no output (exit code %s)" % mount_returncode)
                         QtWidgets.QMessageBox.critical(None,"Error mounting volume", failuremessage)
             else:
                 encfsgui_helper.print_debug("Did not attempt to mount, empty password given")

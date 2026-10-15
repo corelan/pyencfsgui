@@ -4,7 +4,20 @@ set -e
 
 BUNDLE_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 REPO_DIR="$(cd "$BUNDLE_ROOT/.." && pwd)"
+VENV_DIR="$REPO_DIR/pyencfsgui-venv"
+PYTHON_BIN="${PYTHON:-python3}"
 
 cd "$REPO_DIR"
-nohup "$REPO_DIR/pyencfsgui.sh" >/tmp/pyencfsgui-launcher.log 2>&1 &
-exit 0
+
+if [ ! -x "$VENV_DIR/bin/python" ]; then
+	"$PYTHON_BIN" -m venv "$VENV_DIR"
+fi
+
+"$VENV_DIR/bin/python" -m ensurepip --upgrade >/dev/null 2>&1 || true
+
+if ! "$VENV_DIR/bin/python" -c 'import PyQt5; from crypto_compat import AES' >/dev/null 2>&1; then
+	"$VENV_DIR/bin/python" -m pip install --disable-pip-version-check --quiet -r "$REPO_DIR/requirements.txt"
+fi
+
+source "$VENV_DIR/bin/activate"
+exec "$VENV_DIR/bin/python" "$REPO_DIR/encfsgui.py"
