@@ -10,7 +10,9 @@ PYTHON_BIN="${PYTHON:-python3}"
 cd "$REPO_DIR"
 
 if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-	git pull || printf '%s\n' "Warning: git pull failed; starting pyencfsgui with the existing files."
+	if ! git pull; then
+		printf '%s\n' "Warning: git pull failed; starting pyencfsgui with the existing files."
+	fi
 else
 	printf '%s\n' "Warning: git is unavailable or this folder is not a Git checkout; skipping update."
 fi
