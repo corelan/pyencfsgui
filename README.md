@@ -16,7 +16,7 @@ pyencfsgui was tested on recent version of macOS and Kali Linux<br>
 In order for pyencfsgui to be able to function, you need to install the following dependencies:
 
 - python3 (3.9.x or higher, tested with newer Python 3 releases as well)
-- python3 libraries: PyQt5, and either `pycrypto` or a maintained replacement such as `pycryptodome`
+- Python packages listed in `requirements.txt`: `PyQt5` and `pycryptodome` (the maintained crypto package used by this project)
 
 Of course, as pyencfsgui relies on encfs and/or gocryptfs, those utilities need to be installed as well.
 - encfs (1.9.x) and/or gocryptfs (1.8.x)
@@ -145,24 +145,15 @@ Homebrew:
   (Make sure you're running a recent version of python3. Version 3.14.x or higher should work)
 
 
-#### 5. Create a virtual environment and install Python dependencies
+#### 5. Python environment and dependencies
 
-pyencfsgui now ships with a launcher script that creates and uses a local virtual environment automatically.
-The virtual environment folder is named `pyencfsgui`.
+When you launch `pyencfsgui.app` for the first time, its macOS app executable creates a virtual environment named `pyencfsgui-venv` in the repository folder. It then checks whether the required Python packages are importable and, if not, silently installs the packages from `requirements.txt`. This first launch requires network access if packages need to be downloaded. Later launches reuse the same environment and only install dependencies if the import check fails.
 
-You can still install the dependencies manually if you prefer:
+If you run the application from a terminal or prefer to set up the environment yourself, create and populate a virtual environment manually:
 
   ```
-  python3 -m venv pyencfsgui
-  ./pyencfsgui/bin/python -m pip install --upgrade pip
-  ./pyencfsgui/bin/python -m pip install -r requirements.txt
-  ```
-
-Note: On my 2020 MacBook Air (M1 processor), I had to install PyQT5 using the following command instead:
-
-Homebrew:
-  ```
-  brew install PyQt5
+  python3 -m venv pyencfsgui-venv
+  ./pyencfsgui-venv/bin/python -m pip install -r requirements.txt
   ```
 
 #### 6. Install macOS Developer Command Line Tools:
@@ -178,10 +169,10 @@ The original project used `pycrypto`. That package is no longer maintained and t
 Recommended:
 
   ```
-  ./pyencfsgui/bin/python -m pip install pycryptodome
+  ./pyencfsgui-venv/bin/python -m pip install pycryptodome
   ```
 
-If you are running an older Python version and still want the legacy dependency, the code will also work with the old `pycrypto` package as long as it installs successfully in your environment.
+`pycryptodome` is declared in `requirements.txt`; the app's first-launch setup installs it automatically if needed. The code has a compatibility import fallback for `Cryptodome`, but the standard dependency is `pycryptodome`.
 
 #### 8. Jura font
 
@@ -217,14 +208,14 @@ On Kali Linux, some dependencies may already be present, but using the local vir
 
 
 
-### Running pyencfsgui
+### Running pyencfsgui from source
 
 - Clone the git project onto your machine
   ```
   git clone https://github.com/corelan/pyencfsgui.git
   ```
 - Open a Terminal, go to the `pyencfsgui`folder
-- Make the launcher executable if needed:
+- Make the shell launcher executable if needed:
   ```
   chmod +x pyencfsgui.sh
   ```
@@ -232,7 +223,7 @@ On Kali Linux, some dependencies may already be present, but using the local vir
   ```
   ./pyencfsgui.sh
   ```
-- On first run, the script will create a local virtual environment in `./pyencfsgui` and install the Python dependencies from `requirements.txt`
+- On first run, `pyencfsgui.sh` creates the `./pyencfsgui` virtual environment and installs dependencies from `requirements.txt` if required
 - The launcher changes into the repository folder before starting the app, so relative files resolve correctly and the built-in `git pull` update check runs from the project directory
 - Check/edit the settings as needed. Make sure to verify the path of the various binaries (`encfs`, `gocryptfs`, `mount`)
 - Create a new volume (or add an existing one to the application)
@@ -243,13 +234,9 @@ On Kali Linux, some dependencies may already be present, but using the local vir
 
 Sure!  Simply follow these steps:
 - Use the included `pyencfsgui.app` bundle in the repository root
-- Make sure `pyencfsgui.sh` is executable:
-    ```
-    chmod +x pyencfsgui.sh
-    ```
 - In Finder, open the repository folder and drag `pyencfsgui.app` into your Dock
-- Launching the Dock icon will start `pyencfsgui.sh` without opening a Terminal window
-- The app bundle does not hardcode your home folder. It resolves its own location at runtime and expects to live inside the repository folder, next to `pyencfsgui.sh`
+- Launching the Dock icon runs the app bundle's own executable, which creates/uses `pyencfsgui-venv` and starts pyencfsgui without opening a Terminal window
+- The app bundle resolves the repository relative to its own location and expects to remain in the repository root
 - If you move `pyencfsgui.app` somewhere else, it will no longer know where the repository is. Keep the `.app` bundle in the project folder and add that copy to the Dock
 - The bundle already uses the `bitmaps/encfsgui.icns` icon
 

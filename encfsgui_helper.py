@@ -244,7 +244,7 @@ def execOSCmd(cmd):
         print_debug("Note: A part of the command below will not shown because it might contain sensitive information (password)")
         cmdparts = cmd.split("|")
         if len(cmdparts) > 1:
-            print_debug("Executing [ %s ]" % cmdparts[1])
+            print_debug("Executing [ %s ]" % cmdparts[1].replace("echo '", "echo '******' # ", 1))
     p = subprocess.Popen('%s' % cmd,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT,
@@ -265,7 +265,7 @@ def execOSCmdRetValShell(cmd):
         print_debug("Note: A part of the command below will not shown because it might contain sensitive information (password)")
         cmdparts = cmd.split("|")
         if len(cmdparts) > 1:
-            print_debug("Executing [ %s ]" % cmdparts[1])
+            print_debug("Executing [ %s ]" % cmdparts[1].replace("echo '", "echo '******' # ", 1))
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                        text=True, shell=True)
     return p.stdout, p.returncode
