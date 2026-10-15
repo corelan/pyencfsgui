@@ -713,6 +713,8 @@ class CMainWindow(QtWidgets.QDialog):
                 if not encfsgui_helper.ifExists(EncVolumeObj.enctype):
                     QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s', '%s' binary not found\n" % ( volumename, EncVolumeObj.enctype))
                 else:
+                    mount_output = ""
+                    mount_returncode = None
                     usesudo = ""
                     if EncVolumeObj.sudo == "1":
                         usesudo = "sudo"
@@ -739,7 +741,7 @@ class CMainWindow(QtWidgets.QDialog):
                         # do the actual mount
                         mountcmd = "sh -c \"echo '%s' | %s '%s' -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), usesudo, encfsbin, extra_osxfuse_opts, encfsmountoptions, volumename, encvol, mountvol)
 
-                        encfsgui_helper.execOSCmd(mountcmd)
+                        mount_output, mount_returncode = encfsgui_helper.execOSCmdRetValShell(mountcmd)
 
                     # if volume is gocryptfs:
                     if EncVolumeObj.enctype == "gocryptfs":
@@ -763,12 +765,18 @@ class CMainWindow(QtWidgets.QDialog):
                         #mountcmd = "sh -c \"echo '%s' | %s -v -S %s %s -o volname='%s' '%s' '%s' \"" % (str(password), gocryptfsbin, extra_osxfuse_opts, gocryptfsmountoptions, volumename, encvol, mountvol)
                         mountcmd = "sh -c \"echo '%s' | %s '%s' -ko volname='%s' -ko fsname='%s' %s %s '%s' '%s'\"" % (str(password), usesudo, gocryptfsbin, volumename, volumename, extra_osxfuse_opts, extra_gocryptfs_opts, encvol, mountvol)
 
-                        encfsgui_helper.execOSCmd(mountcmd)
+                        mount_output, mount_returncode = encfsgui_helper.execOSCmdRetValShell(mountcmd)
 
                     self.RefreshVolumes()
                     EncVolumeObj = encfsgui_globals.g_Volumes[volumename]
                     if not EncVolumeObj.ismounted:
-                        QtWidgets.QMessageBox.critical(None,"Error mounting volume","Unable to mount volume '%s'\n\n%s" % ( volumename, EncVolumeObj.errormessage ))
+                        failuremessage = "Unable to mount volume '%s'\n\n%s" % (volumename, EncVolumeObj.errormessage)
+                        commandoutput = mount_output.strip()
+                        if commandoutput:
+                            failuremessage += "\n\nCommand output:\n%s" % commandoutput
+                        if mount_returncode is not None:
+                            encfsgui_helper.print_debug("ERROR: Mount failed for volume '%s' (exit code %s). Command output:\n%s" % (volumename, mount_returncode, commandoutput or "<no output>"))
+                        QtWidgets.QMessageBox.critical(None,"Error mounting volume", failuremessage)
             else:
                 encfsgui_helper.print_debug("Did not attempt to mount, empty password given")
 

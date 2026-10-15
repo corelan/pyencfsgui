@@ -10,3 +10,4 @@ __pycache__/
 pyencfsgui/
 pyencfsgui.code-workspace
 .DS_Store
+.venv
