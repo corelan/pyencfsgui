@@ -149,7 +149,7 @@ Homebrew:
 
 When you launch `pyencfsgui.app` for the first time, its macOS app executable creates a virtual environment named `pyencfsgui-venv` in the repository folder. It then checks whether the required Python packages are importable and, if not, silently installs the packages from `requirements.txt`. This first launch requires network access if packages need to be downloaded. Later launches reuse the same environment and only install dependencies if the import check fails.
 
-If you run the application from a terminal or prefer to set up the environment yourself, create and populate a virtual environment manually:
+The terminal source launcher uses the same `pyencfsgui-venv` environment, so the app bundle and `pyencfsgui.sh` share dependencies. You can also create and populate the environment manually:
 
   ```
   python3 -m venv pyencfsgui-venv
@@ -210,6 +210,8 @@ On Kali Linux, some dependencies may already be present, but using the local vir
 
 ### Running pyencfsgui from source
 
+For normal macOS use, launch `pyencfsgui.app` from Finder or the Dock. The steps below are for running directly from a terminal (for example, during development); `pyencfsgui.sh` prints a reminder when started.
+
 - Clone the git project onto your machine
   ```
   git clone https://github.com/corelan/pyencfsgui.git
@@ -223,7 +225,7 @@ On Kali Linux, some dependencies may already be present, but using the local vir
   ```
   ./pyencfsgui.sh
   ```
-- On first run, `pyencfsgui.sh` creates the `./pyencfsgui` virtual environment and installs dependencies from `requirements.txt` if required
+- On first run, `pyencfsgui.sh` creates `./pyencfsgui-venv` if needed and installs dependencies from `requirements.txt` if required. This is the same environment used by `pyencfsgui.app`.
 - The launcher changes into the repository folder before starting the app, so relative files resolve correctly and the built-in `git pull` update check runs from the project directory
 - Check/edit the settings as needed. Make sure to verify the path of the various binaries (`encfs`, `gocryptfs`, `mount`)
 - Create a new volume (or add an existing one to the application)
