@@ -360,8 +360,9 @@ class CVolumeWindow(QtWidgets.QDialog):
             # and then add it to the config 
 
             if (self.runmode == 0):
-                if (self.CreateNewEncryptedVolume()):
-                    encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
+                if not self.CreateNewEncryptedVolume():
+                    return
+                encfsgui_globals.appconfig.addVolume(newvolumename, EncVolumeObj)
 
             # add mode
             if (self.runmode == 1):
