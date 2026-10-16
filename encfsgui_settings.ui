@@ -241,7 +241,7 @@
      <x>20</x>
      <y>260</y>
      <width>611</width>
-     <height>121</height>
+    <height>101</height>
     </rect>
    </property>
    <property name="title">
@@ -250,19 +250,6 @@
    <property name="flat">
     <bool>false</bool>
    </property>
-   <widget class="QCheckBox" name="chk_autoupdate">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>581</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Update at startup (git pull)</string>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="chk_starthidden">
     <property name="geometry">
      <rect>
@@ -280,7 +267,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>70</y>
+      <y>50</y>
       <width>581</width>
       <height>20</height>
      </rect>
@@ -293,7 +280,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>90</y>
+      <y>70</y>
       <width>591</width>
       <height>20</height>
      </rect>

@@ -976,26 +976,22 @@ if __name__ == "__main__":
 
         updateresult = 0
 
-        encfsgui_helper.print_debug("Check for updates? %s" % str(encfsgui_globals.g_Settings["autoupdate"]).lower())
+        encfsgui_helper.print_debug("Checking for updates")
+        mainwindow.lbl_infolabel.setText("Checking for updates...")
+        updateresult, gitoutput = encfsgui_helper.autoUpdate()
 
-        if str(encfsgui_globals.g_Settings["autoupdate"]).lower() == "true":
-            
-            mainwindow.lbl_infolabel.setText("Checking for updates...")
+        if updateresult == 0:
+            appupdatestatus = "Up to date."
+        elif updateresult == 1:
+            appupdatestatus = '<span style="color:red">Update found, please restart.<span>'
+        elif updateresult == -1:
+            appupdatestatus = '<span style="color:red">Possible error while running "git pull"<span>'
 
-            updateresult, gitoutput = encfsgui_helper.autoUpdate()
-
-            if updateresult == 0:
-                appupdatestatus = "Up to date."
-            elif updateresult == 1:
-                appupdatestatus = '<span style="color:red">Update found, please restart.<span>'
-            elif updateresult == -1:
-                appupdatestatus = '<span style="color:red">Possible error while running "git pull"<span>'
-
-            mainwindow.lbl_updatestate.setText(appupdatestatus)
-            if not updateresult == 0:
-                boldfont = QFont()
-                boldfont.setBold(True)
-                mainwindow.lbl_updatestate.setFont(boldfont)
+        mainwindow.lbl_updatestate.setText(appupdatestatus)
+        if not updateresult == 0:
+            boldfont = QFont()
+            boldfont.setBold(True)
+            mainwindow.lbl_updatestate.setFont(boldfont)
 
         if updateresult == 1:
             msgBox = QMessageBox()

@@ -139,7 +139,6 @@ class CSettingsWindow(QtWidgets.QDialog):
         self.txt_workingfolder.setText("%s" % encfsgui_globals.g_Settings["workingfolder"])
         self.chk_starthidden = self.findChild(QtWidgets.QCheckBox, 'chk_starthidden')
         self.chk_autounmount = self.findChild(QtWidgets.QCheckBox, 'chk_autounmount')
-        self.chk_autoupdate = self.findChild(QtWidgets.QCheckBox, 'chk_autoupdate')
         self.chk_noconfirmationunmount = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationunmount')
         self.chk_noconfirmationexit = self.findChild(QtWidgets.QCheckBox, 'chk_noconfirmationexit')
         self.chk_debugmode = self.findChild(QtWidgets.QCheckBox, 'chk_debugmode')
@@ -165,9 +164,6 @@ class CSettingsWindow(QtWidgets.QDialog):
 
         if (encfsgui_globals.g_Settings["debugmode"].lower() == "true"):
             self.chk_debugmode.setChecked(True)
-
-        if (encfsgui_globals.g_Settings["autoupdate"].lower() == "true"):
-            self.chk_autoupdate.setChecked(True)
 
         if (encfsgui_globals.g_Settings["confirmforceunmountall"].lower() == "true"):
             self.chk_confirmforceunmountall.setChecked(True)
@@ -202,7 +198,6 @@ class CSettingsWindow(QtWidgets.QDialog):
         encfsgui_globals.g_Settings["noconfirmationexit"] = str(self.chk_noconfirmationexit.isChecked()).lower()
         encfsgui_globals.g_Settings["starthidden"] = str(self.chk_starthidden.isChecked()).lower()
         encfsgui_globals.g_Settings["debugmode"] = str(self.chk_debugmode.isChecked()).lower()
-        encfsgui_globals.g_Settings["autoupdate"] = str(self.chk_autoupdate.isChecked()).lower()
         encfsgui_globals.g_Settings["confirmforceunmountall"] = str(self.chk_confirmforceunmountall.isChecked()).lower()
         encfsgui_globals.g_Settings["doubleclickmount"] = str(self.chk_doubleclickmount.isChecked()).lower()
         encfsgui_globals.g_Settings["clearkeywhenhidden"] = str(self.chk_clearkeywhenhidden.isChecked()).lower()

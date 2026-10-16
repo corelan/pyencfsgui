@@ -319,18 +319,39 @@ def autoUpdate():
     print_debug("Start %s" % inspect.stack()[0][3])
     cmdarr = ["git","pull"]
     gitoutput, gitretval = execOSCmdRetVal(cmdarr)
+    outputtext = "\n".join(line.strip() for line in gitoutput if line.strip()).lower()
+    network_error_markers = (
+        "could not resolve",
+        "couldn't resolve",
+        "failed to connect",
+        "could not connect",
+        "couldn't connect",
+        "connection timed out",
+        "operation timed out",
+        "connection refused",
+        "connection reset",
+        "network is unreachable",
+        "network is down",
+        "no route to host",
+        "temporary failure in name resolution",
+        "failed to establish a new connection",
+    )
 
     if (encfsgui_globals.debugmode):
         print_debug("Git output:")
+        for line in gitoutput:
+            if line.strip():
+                print_debug("  >> %s" % line)
 
     if gitretval != 0:
-        updateresult = -1
+        if not outputtext or any(marker in outputtext for marker in network_error_markers):
+            print_debug("Ignoring git pull failure with empty output or a network error")
+        else:
+            updateresult = -1
     else:
 
         updatefound = False
         for l in gitoutput:
-            if (encfsgui_globals.debugmode):
-                print_debug("  >> %s" % l)
             if ":" in l and not "fatal" in l and not "not staged" in l and not "hint:" in l:
                 updatefound = True
                 break
