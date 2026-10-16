@@ -184,8 +184,7 @@ Recommended:
 
 #### 8. Jura font
 
-Download & install the Jura font from here: https://fontsov.com/font/juraregular.html
-
+Download & install the Jura font from Google fonts
 
 
 
